@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node server.js --ignore 'node_modules/' || exit 0",
+    "init-db": "babel-node setup/init-db.js",
+    "start": "babel-node app/server.js --ignore 'node_modules/' || exit 0",
+    "lint": "eslint . -c twa-camp-2016 --no-eslintrc || exit 0",
     "test": "jasmine || exit 1"
   },
   "keywords": [],
