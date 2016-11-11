@@ -3,10 +3,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
+import SignIn from './components/sign-in.jsx';
+require("bootstrap-webpack");
+
 
 
 const router = <Router history={hashHistory}>
     <Route path="/" component={Student}/>
+    <Route path='/a' component={SignIn}/>
 </Router>;
 
 

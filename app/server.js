@@ -4,6 +4,10 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import express from 'express';
 import path from 'path';
+import apiRouter from './api/api.js';
+import db from './db/db';
+
+
 
 const app = express();
 const compiler = webpack(webpackConfig);
@@ -24,6 +28,8 @@ app.use(webpackHotMiddleware(compiler, {
 
 app.use(express.static('./public'));
 
+app.use('/api', apiRouter);
+
 app.get('/hello', function (req, res) {
     res.send('Student, world!');
 });
@@ -37,6 +43,14 @@ app.get('/admin', function (req, res) {
 });
 
 // app.listen(3000, function () {
-app.listen(process.env.PORT || 3000, function () {
-    console.log('Listening on 3000');
-});
+// app.listen(process.env.PORT || 3000, function () {
+//     console.log('Listening on 3000');
+// });
+if (require.main === module) {
+    app.listen(process.env.PORT || 3000, function () {
+        db.connect((err) => {
+            if (err) return console.error('db connection failed');
+        });
+        console.log('Listening on 3000');
+    });
+}
