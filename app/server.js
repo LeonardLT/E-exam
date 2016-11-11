@@ -25,7 +25,7 @@ app.use(webpackHotMiddleware(compiler, {
 app.use(express.static('./public'));
 
 app.get('/hello', function (req, res) {
-    res.send('Hello, world!');
+    res.send('Student, world!');
 });
 
 app.get('/', function (req, res) {
