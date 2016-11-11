@@ -7,8 +7,8 @@ module.exports = {
   //   'webpack-hot-middleware/client'
   // ],
   entry: {
-    entry: "./public/entry.js",
-    admin: "./public/admin.js"
+    entry: "./public/entry.jsx",
+    admin: "./public/admin.jsx"
   },
   output: {
     path: path.join(__dirname, '/assets/'),

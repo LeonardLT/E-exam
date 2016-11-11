@@ -1,4 +1,4 @@
-import Hello from './mana.js';
+import Hello from './mana.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
