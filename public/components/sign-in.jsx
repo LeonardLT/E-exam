@@ -24,11 +24,12 @@ export default class SignIn extends React.Component {
     render() {
 
         return (<form onSubmit={this._onSubmit.bind(this)}>
-            <div className="content">
-                {this.state.product.map(i =><div>{i.time}{i.examName}{i.problems.map(j => <div>{j.problem}</div>)}</div>)}
-                <input type="submit" value="登录" className="btn btn-primary"/>
-            </div>
-
+            {/*<div className="content">*/}
+                {/*{this.state.product.map(i =><div>{i.time}{i.examName}{i.problems.map(j =>*/}
+                    {/*<div>{j.problem}</div>)}</div>)}*/}
+                {/*<input type="submit" value="登录" className="btn btn-primary"/>*/}
+            {/*</div>*/}
+            <input type="Number" min="0" className="form-control" id="bicycleId"/>
         </form>)
     }
 

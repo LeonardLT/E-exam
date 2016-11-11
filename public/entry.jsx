@@ -1,16 +1,17 @@
+require("bootstrap-webpack");
 import Student from './student.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
 import SignIn from './components/sign-in.jsx';
-require("bootstrap-webpack");
-
-
+import StudentIndex from './components/student-index.jsx';
 
 const router = <Router history={hashHistory}>
-    <Route path="/" component={Student}/>
-    <Route path='/a' component={SignIn}/>
+    <Route path="/" component={Student}>
+        <IndexRoute component={StudentIndex}/>
+        <Route path='/a' component={SignIn}/>
+    </Route>
 </Router>;
 
 
