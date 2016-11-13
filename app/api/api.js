@@ -1,10 +1,11 @@
 import express from 'express';
-import problemApi from './problem-api';
-
+import problemsApi from './problem-api';
+import answersApi from './answers-api';
 
 const router = express.Router();
 
-router.use('/problem', problemApi);
+router.use('/problem', problemsApi);
+router.use('/answer',answersApi);
 
 
 export default router;

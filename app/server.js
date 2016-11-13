@@ -3,10 +3,10 @@ import webpackConfig from '../webpack.config';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import express from 'express';
+import bodyParser from 'body-parser';
 import path from 'path';
 import apiRouter from './api/api.js';
 import db from './db/db';
-
 
 
 const app = express();
@@ -21,6 +21,9 @@ app.use(webpackDevMiddleware(compiler, {
     },
     publicPath: webpackConfig.output.publicPath
 }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(webpackHotMiddleware(compiler, {
     log: console.log
