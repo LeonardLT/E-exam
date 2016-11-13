@@ -6,11 +6,14 @@ import $ from 'jquery';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
 import SignIn from './components/sign-in.jsx';
 import StudentIndex from './components/student-index.jsx';
+import Exam from './components/exam.jsx';
+
 
 const router = <Router history={hashHistory}>
     <Route path="/" component={Student}>
         <IndexRoute component={StudentIndex}/>
-        <Route path='/a' component={SignIn}/>
+        {/*<Route path='/a' component={SignIn}/>*/}
+        <Route path='/exam' component={Exam}/>
     </Route>
 </Router>;
 

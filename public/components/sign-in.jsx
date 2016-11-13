@@ -14,7 +14,7 @@ export default class SignIn extends React.Component {
     componentDidMount() {
         request.get('/api/problem')
             .end((err, data) => {
-                console.log(data.body);
+                // console.log(data.body);
                 this.setState({
                     product: data.body
                 });
@@ -38,7 +38,7 @@ export default class SignIn extends React.Component {
         event.preventDefault();
         request.get('/api/problem')
             .end((err, data) => {
-                console.log(data.body);
+                // console.log(data.body);
                 this.setState({
                     product: data.body
                 });

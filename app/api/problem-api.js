@@ -13,10 +13,9 @@ const router = express.Router();
 // });
 
 router.get('/', (req, res, next) => {
-    Exam.find({}, (err, data) => {
+    Exam.findOne({id:1}, (err, data) => {
         if (err) return next(err);
         console.log(data);
-        console.log(data[1]);
         res.json(data);
     });
 });

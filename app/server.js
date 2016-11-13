@@ -51,6 +51,6 @@ if (require.main === module) {
         db.connect((err) => {
             if (err) return console.error('db connection failed');
         });
-        console.log('Listening on 3000');
+        console.log('Listening on 3000 , http://localhost:3000');
     });
 }
