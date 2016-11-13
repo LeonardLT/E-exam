@@ -6,7 +6,7 @@ export default class Exam extends React.Component {
 
     constructor(props) {
         super(props);
-        this.s = [];
+        this.studentAnswers = [];
         this.state = {
             exam: {},
             problems: [],
@@ -28,6 +28,7 @@ export default class Exam extends React.Component {
         const problems = this.state.problems;
         return (
             <div>
+                <div>考试ID：{exam.id}</div>
                 <div>考试名称：{exam.examName}</div>
                 <div>考试时间：{exam.time}</div>
                 <hr/>
@@ -62,24 +63,29 @@ export default class Exam extends React.Component {
             return null;
         };
 
-        let item = isExistInArray(id, this.s);
+        let item = isExistInArray(id, this.studentAnswers);
         if (item === null) {
-            this.s.push({
+            this.studentAnswers.push({
                 id: id,
                 answer: answer
             });
         } else {
             item.answer = answer;
         }
-        console.log(this.s);
+        console.log(this.studentAnswers);
     }
 
 
     _onSubmit(event) {
         event.preventDefault();
-        console.log(this.s);
+        console.log(this.studentAnswers);
         request.post('/api/answer')
-            .send(this.s)
+            .send(
+                {
+                    'examId': this.state.exam.id,
+                    'studentAnswers': this.studentAnswers
+                }
+            )
             .end();
     }
 }
