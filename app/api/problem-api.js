@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 router.get('/', (req, res, next) => {
-    Exam.findOne({id: 1}, (err, data) => {
+    Exam.findOne({examId: 1}, (err, data) => {
         if (err) return next(err);
         console.log(data);
         res.json(data);

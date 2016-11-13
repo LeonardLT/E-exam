@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "examId": 1,
     "examName": "数学",
     "time": 60,
     "problems": [
@@ -25,7 +25,7 @@
     ]
   },
   {
-    "id": 2,
+    "examId": 2,
     "examName": "语文",
     "time": 60,
     "problems": [

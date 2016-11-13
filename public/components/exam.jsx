@@ -28,7 +28,7 @@ export default class Exam extends React.Component {
         const problems = this.state.problems;
         return (
             <div>
-                <div>考试ID：{exam.id}</div>
+                <div>考试ID：{exam.examId}</div>
                 <div>考试名称：{exam.examName}</div>
                 <div>考试时间：{exam.time}</div>
                 <hr/>
