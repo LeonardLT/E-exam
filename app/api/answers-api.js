@@ -6,21 +6,22 @@ const router = express.Router();
 router.post('/', (req, res, next) => {
 
     const {examId, studentAnswers} = req.body;
+    console.log(examId, studentAnswers + '-----------');
     let score = 0;
-    let findAnswer = (id, problems) => {
-        return problems.find(p => p.id == id).answer;
+    let findAnswer = (problemId, problems) => {
+        return problems.find(p => p.problemId == problemId).answer;
     };
 
     const rightAnswers = [];
-    Exam.findOne({id: examId}, (err, {problems}) => {
+    Exam.findOne({examId: examId}, (err, {problems}) => {
         if (err) return next(err);
         problems.map(problem => {
             rightAnswers.push(problem.answer)
         });
 
 
-        studentAnswers.map(({id, answer}) => {
-            const rightAnswer = findAnswer(id, problems);
+        studentAnswers.map(({problemId, answer}) => {
+            const rightAnswer = findAnswer(problemId, problems);
             if (answer == rightAnswer) {
                 score += 1;
             }

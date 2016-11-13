@@ -7,7 +7,7 @@ const exmaSchema = new Schema({
     examName: String,
     time: Number,
     problems: [{
-        id:Number,
+        problemId:Number,
         problem: String,
         studentAnswer: String,
         answer: String

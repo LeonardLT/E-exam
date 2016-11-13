@@ -36,7 +36,7 @@ export default class Exam extends React.Component {
                 <div>
                     <form onSubmit={this._onSubmit.bind(this)}>
                         <div>{problems.map(p =><div>
-                            <Problem id={p.id}
+                            <Problem problemId={p.problemId}
                                      problem={p.problem}
                                      answer={p.answer}
                                      studentAnswer={p.studentAnswer}
@@ -52,21 +52,21 @@ export default class Exam extends React.Component {
         );
     }
 
-    _saveAnswers(id, answer) {
+    _saveAnswers(problemId, answer) {
 
-        const isExistInArray = (id, array) => {
+        const isExistInArray = (problemId, array) => {
             for (let item of array) {
-                if (item.id == id) {
+                if (item.problemId == problemId) {
                     return item;
                 }
             }
             return null;
         };
 
-        let item = isExistInArray(id, this.studentAnswers);
+        let item = isExistInArray(problemId, this.studentAnswers);
         if (item === null) {
             this.studentAnswers.push({
-                id: id,
+                problemId: problemId,
                 answer: answer
             });
         } else {
@@ -82,7 +82,7 @@ export default class Exam extends React.Component {
         request.post('/api/answer')
             .send(
                 {
-                    'examId': this.state.exam.id,
+                    'examId': this.state.exam.examId,
                     'studentAnswers': this.studentAnswers
                 }
             )
@@ -101,10 +101,10 @@ class Problem extends React.Component {
     }
 
     render() {
-        let {id, problem, answer} = this.props;
+        let {problemId, problem, answer} = this.props;
         return (<div>
                 <div>
-                    <div>ID:{id}</div>
+                    <div>题目ID:{problemId}</div>
                     <h4>题目：{problem}</h4>
                 </div>
                 <div>答案： <input className="form-control" type="text"
@@ -127,7 +127,7 @@ class Problem extends React.Component {
     }
 
     _onBlur(event) {
-        this.saveAnswers(this.props.id, event.target.value);
+        this.saveAnswers(this.props.problemId, event.target.value);
     }
 
 
