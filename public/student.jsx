@@ -1,13 +1,11 @@
 import React from 'react';
+import Nav from './components/nav.jsx';
 
 class Hello extends React.Component {
     render() {
         return (
-            <div className="container-fluid">
-                <div>
-                    <h1>I am a student</h1>
-                </div>
-
+            <div>
+                <Nav/>
                 <div>
                     {this.props.children}
                 </div>

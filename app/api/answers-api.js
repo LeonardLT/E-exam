@@ -6,7 +6,6 @@ const router = express.Router();
 router.post('/', (req, res, next) => {
 
     const {examId, studentAnswers} = req.body;
-    console.log(examId, studentAnswers + '-----------');
     let score = 0;
     let findAnswer = (problemId, problems) => {
         return problems.find(p => p.problemId == problemId).answer;
