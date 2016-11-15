@@ -1,11 +1,11 @@
 import express from 'express';
-import {User} from '../schema/schema';
+import {User} from '../schema/userSchema';
 const router = express.Router();
 import {validateEmail, validatePhone} from '../tools/user-field-validation';
 
 
 function existEmpty(userData) {
-  return !(userData.name === '' || userData.password === '' || userData.email === '' || userData.phone === '');
+  return !(userData.studentId === '' || userData.password === '' || userData.email === '' || userData.phone === '');
 }
 
 function isEmailRight(userData) {
@@ -33,7 +33,7 @@ function isUserInformationLegal(userData) {
 
 
 function isExist(userData, next, callback) {
-  User.findOne({name: userData.name}, function (err, doc) {
+  User.findOne({studentId: userData.studentId}, function (err, doc) {
     if (err) return next(err);
 
     callback(null, doc);
@@ -51,7 +51,7 @@ router.post('/', function (req, res, next) {
       if (err) return next(err);
       if (doc === null) {
         var user = new User({
-          name: userData.name,
+          studentId: userData.studentId,
           password: userData.password,
           email: userData.email,
           phone: userData.phone
@@ -76,8 +76,8 @@ router.post('/', function (req, res, next) {
 
 
 router.get('/', function (req, res, next) {
-  const username = req.query.username;
-  User.findOne({name: username}, (err, userInformation) => {
+  const studentId = req.query.studentId;
+  User.findOne({studentId: studentId}, (err, userInformation) => {
     if (err) return next(err);
 
     res.json(userInformation);

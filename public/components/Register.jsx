@@ -9,7 +9,7 @@ export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
+            studentId: '',
             email: '',
             phone: '',
             password: '',
@@ -22,50 +22,52 @@ export default class Register extends Component {
             <div className='col-md-4 col-md-offset-4'>
 
                 <h3>欢迎注册</h3>
+                <hr/>
                 <div className="form-group">
-                    <label>用户名</label>
-                    <input type="name" className="form-control" id="name"
-                           placeholder="请设置用户名" required
-                           value={this.state.name}
-                           onChange={this._onNameChange.bind(this)}/>
+                    <label>学号：</label>
+                    <input type="text" className="form-control" id="studentId"
+                           placeholder="请输入学号" required
+                           value={this.state.studentId}
+                           onChange={this._onStudentIdChange.bind(this)}/>
                 </div>
                 <div className="form-group">
-                    <label>邮箱</label>
+                    <label>邮箱：</label>
                     <input type="email" className="form-control" id="email"
                            placeholder="请输入邮箱" required
                            value={this.state.email}
                            onChange={this._onEmailChange.bind(this)}/>
                 </div>
                 <div className="form-group">
-                    <label>手机号码</label>
+                    <label>手机号码：</label>
                     <input type="tel" className="form-control" id="phone"
                            placeholder="请输入手机号码" required pattern="^(\+86)?(1[0-9]{10})$"
                            value={this.state.phone}
                            onChange={this._onPhoneChange.bind(this)}/>
                 </div>
                 <div className="form-group">
-                    <label>设置密码</label>
+                    <label>设置密码：</label>
                     <input type="password" className="form-control" id="password"
                            placeholder="请输入密码(至少六位)" required pattern="^.{6,18}$"
                            value={this.state.password}
                            onChange={this._onPasswordChange.bind(this)}/>
                 </div>
                 <div className="form-group">
-                    <label>确认密码</label>
+                    <label>确认密码：</label>
                     <input type="password" className="form-control" id="confirm-password"
                            placeholder="请确认密码(至少六位)" required pattern="^.{6,18}$"
                            value={this.state.confirmPassword}
                            onChange={this._onConfirmPasswordChange.bind(this)}/>
                 </div>
-                <input type="submit" value="注册" className="btn btn-primary"/>
-                <span>有账号?<Link to="login" className="to-register">登陆 </Link></span>
+                <hr/>
+                <input type="submit" value="注册" className="btn btn-lg btn-block btn-primary"/>
+                <span className="pull-right">有账号?<Link to="login" className="to-register">登陆 </Link></span>
             </div>
         </form>
     }
 
-    _onNameChange(event) {
+    _onStudentIdChange(event) {
         this.setState({
-            name: event.target.value
+            studentId: event.target.value
         });
     }
 
@@ -101,7 +103,7 @@ export default class Register extends Component {
         else {
             request.post('/api/users')
                 .send({
-                    name: this.state.name,
+                    studentId: this.state.studentId,
                     email: this.state.email,
                     phone: this.state.phone,
                     password: this.state.password,

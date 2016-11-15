@@ -10,7 +10,7 @@ export default class SignIn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
+            studentId: '',
             password: ''
         }
 
@@ -22,12 +22,12 @@ export default class SignIn extends React.Component {
             <form onSubmit={this._onSubmit.bind(this)} className="loginForm">
                 <div className='col-md-4 col-md-offset-4'>
                     <h3 className="welcome">Eurasia-EXAM</h3>
-
+                    <hr/>
                     <div className="form-group">
                         <label>学号：</label>
-                        <input className="form-control" type="text" placeholder="请输入学号" id="name"
-                               value={this.state.name}
-                               onChange={this._onNameChange.bind(this)}
+                        <input className="form-control" type="text" placeholder="请输入学号" id="studentId"
+                               value={this.state.studentId}
+                               onChange={this._onStudentIdChange.bind(this)}
                         />
                     </div>
 
@@ -50,9 +50,8 @@ export default class SignIn extends React.Component {
                             </div>
                         </div>
                     </div>
-
                     <div>
-                        <label> </label>
+                        <hr/>
                         <button type="submit" className="btn btn-lg btn-block btn-primary">登录</button>
                     </div>
                 </div>
@@ -60,9 +59,9 @@ export default class SignIn extends React.Component {
         </div>)
     }
 
-    _onNameChange(event) {
+    _onStudentIdChange(event) {
         this.setState({
-            name: event.target.value
+            studentId: event.target.value
         });
     }
 
@@ -76,13 +75,13 @@ export default class SignIn extends React.Component {
         event.preventDefault();
         request.post('/api/sessions')
             .send({
-                name: this.state.name,
+                studentId: this.state.studentId,
                 password: this.state.password
             })
             .end((err, res) => {
                 if (res.statusCode === 201) {
                     alert('login success');
-                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.name + '</a></li>');
+                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.studentId + '</a></li>');
                     hashHistory.push('/');
                 } else if (res.statusCode === 400 && res.text == 'name and password can not be null') {
                     alert(res.text);
