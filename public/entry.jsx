@@ -7,12 +7,17 @@ import {Router, Route, IndexRoute, hashHistory} from 'react-router';
 import SignIn from './components/sign-in.jsx';
 import StudentIndex from './components/student-index.jsx';
 import Exam from './components/exam.jsx';
+import LoginForm from './components/LoginForm.jsx';
+import Register from './components/register.jsx';
 
 
 const router = <Router history={hashHistory}>
     <Route path="/" component={Student}>
         <IndexRoute component={StudentIndex}/>
-        {/*<Route path='/a' component={SignIn}/>*/}
+        {/*<Route path='/login' component={LoginForm}/>*/}
+        <Route path='/ss' component={SignIn}/>
+        <Route path='/register' component={Register}/>
+        <Route path='/login' component={SignIn}/>
         <Route path='/exam' component={Exam}/>
     </Route>
 </Router>;

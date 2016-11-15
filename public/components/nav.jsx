@@ -29,8 +29,8 @@ export default class Nav extends React.Component {
                             </ul>
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
-                            <li><a href="#">登陆</a></li>
-                            <li><a href="#">注册</a></li>
+                            <li><Link to="/login">登陆</Link></li>
+                            <li><Link to="/register">注册</Link></li>
                         </ul>
                     </div>
                 </div>
