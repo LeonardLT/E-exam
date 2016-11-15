@@ -10,7 +10,7 @@ export default class Nav extends React.Component {
                 <div className="container">
                     <div className="navbar-header">
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
-                                data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                data-target="#bs-example-navbar-collapse-1">
                             <span className="sr-only">Toggle navigation</span>
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
@@ -21,14 +21,12 @@ export default class Nav extends React.Component {
 
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
-                            <ul className="nav navbar-nav">
-                                <li className="active"><a href="#">首页</a></li>
-                                <li><a href="#">试题练习</a></li>
-                                <li><Link to="/exam">在线考试</Link></li>
-                                <li><a href="#">个人中心</a></li>
-                            </ul>
+                            <li className="active"><a href="#">首页</a></li>
+                            <li><a href="#">试题练习</a></li>
+                            <li><Link to="/exam">在线考试</Link></li>
+                            <li><a href="#">个人中心</a></li>
                         </ul>
-                        <ul className="nav navbar-nav navbar-right">
+                        <ul id="loginNav" className="nav navbar-nav navbar-right">
                             <li><Link to="/login">登陆</Link></li>
                             <li><Link to="/register">注册</Link></li>
                         </ul>

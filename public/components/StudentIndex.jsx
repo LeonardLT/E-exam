@@ -1,5 +1,5 @@
 import React from 'react';
-import Notice from './notice.jsx';
+import Notice from './Notice.jsx';
 import {Link} from 'react-router';
 
 

@@ -4,27 +4,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
-import SignIn from './components/sign-in.jsx';
-import StudentIndex from './components/student-index.jsx';
-import Exam from './components/exam.jsx';
+import StudentIndex from './components/StudentIndex.jsx';
+import Exam from './components/Exam.jsx';
 import LoginForm from './components/LoginForm.jsx';
-import Register from './components/register.jsx';
+import Register from './components/Register.jsx';
 
 
 const router = <Router history={hashHistory}>
     <Route path="/" component={Student}>
         <IndexRoute component={StudentIndex}/>
-        {/*<Route path='/login' component={LoginForm}/>*/}
-        <Route path='/ss' component={SignIn}/>
         <Route path='/register' component={Register}/>
-        <Route path='/login' component={SignIn}/>
+        <Route path='/login' component={LoginForm}/>
         <Route path='/exam' component={Exam}/>
     </Route>
 </Router>;
 
 
 ReactDOM.render(
-    // <Student />,
     router,
     document.getElementById("content")
 );

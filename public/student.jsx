@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from './components/nav.jsx';
+import Nav from './components/Nav.jsx';
 
 class Hello extends React.Component {
     render() {
