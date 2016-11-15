@@ -81,7 +81,7 @@ export default class SignIn extends React.Component {
             .end((err, res) => {
                 if (res.statusCode === 201) {
                     alert('login success');
-                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.studentId + '</a></li>');
+                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.studentId + '</a></li>' + '<li><a href="/">退出</a></li>');
                     hashHistory.push('/');
                 } else if (res.statusCode === 400 && res.text == 'name and password can not be null') {
                     alert(res.text);

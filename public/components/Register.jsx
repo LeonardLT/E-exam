@@ -13,7 +13,10 @@ export default class Register extends Component {
             email: '',
             phone: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            branch: '',
+            major: '',
+            class: ''
         }
     }
 
@@ -29,6 +32,25 @@ export default class Register extends Component {
                            placeholder="请输入学号" required
                            value={this.state.studentId}
                            onChange={this._onStudentIdChange.bind(this)}/>
+                </div>
+                <div className="form-group">
+                    <label>分院：</label>
+                    <select className="form-control" id="branch"
+                            onChange={this._onBranchChange.bind(this)}>
+                        <option disabled="disabled" selected="selected">请选择</option>
+                        <option value="信息工程学院">信息工程学院</option>
+                        <option value="艾德艺术学院">艾德艺术学院</option>
+                        <option value="人文教育学院">人文教育学院</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label>专业：</label>
+                    <select className="form-control" id="major"
+                            onChange={this._onMajorChange.bind(this)}>
+                        <option disabled="disabled" selected="selected">请选择</option>
+                        <option value="软件工程">软件工程</option>
+                    </select>
                 </div>
                 <div className="form-group">
                     <label>邮箱：</label>
@@ -63,6 +85,18 @@ export default class Register extends Component {
                 <span className="pull-right">有账号?<Link to="login" className="to-register">登陆 </Link></span>
             </div>
         </form>
+    }
+
+    _onMajorChange(event) {
+        this.setState({
+            major: event.target.value
+        });
+    }
+
+    _onBranchChange(event) {
+        this.setState({
+            branch: event.target.value
+        });
     }
 
     _onStudentIdChange(event) {
@@ -100,13 +134,18 @@ export default class Register extends Component {
         if (this.state.password !== this.state.confirmPassword) {
             alert('密码不一致,请重新输入密码!');
         }
+        if ('' === this.state.branch || '' === this.state.major) {
+            alert('分院或专业不能为空');
+        }
         else {
             request.post('/api/users')
                 .send({
                     studentId: this.state.studentId,
+                    password: this.state.password,
                     email: this.state.email,
                     phone: this.state.phone,
-                    password: this.state.password,
+                    branch: this.state.branch,
+                    major: this.state.major,
                 })
                 .end((err, res) => {
                     if (res.statusCode === 400 && res.text === 'Please finish the form') {
