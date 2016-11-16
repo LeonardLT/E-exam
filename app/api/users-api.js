@@ -5,7 +5,7 @@ import {validateEmail, validatePhone} from '../tools/user-field-validation';
 
 
 function existEmpty(userData) {
-    return !('' === userData.studentId
+    return !('' === userData.username
     || '' === userData.password
     || '' === userData.email
     || '' === userData.phone
@@ -38,7 +38,7 @@ function isUserInformationLegal(userData) {
 
 
 function isExist(userData, next, callback) {
-    User.findOne({studentId: userData.studentId}, function (err, doc) {
+    User.findOne({username: userData.username}, function (err, doc) {
         if (err) return next(err);
 
         callback(null, doc);
@@ -56,12 +56,17 @@ router.post('/', function (req, res, next) {
             if (err) return next(err);
             if (doc === null) {
                 var user = new User({
-                    studentId: userData.studentId,
+                    username: userData.username,
                     password: userData.password,
+                    cardID: userData.username,
+                    name: userData.username,
+                    sex: '男',
                     email: userData.email,
                     phone: userData.phone,
                     branch: userData.branch,
-                    major: userData.major
+                    major: userData.major,
+                    class: '',
+                    type: '学生'
                 });
                 user.save(function (err) {
                     if (err) return next(err);
@@ -83,8 +88,8 @@ router.post('/', function (req, res, next) {
 
 
 router.get('/', function (req, res, next) {
-    const studentId = req.query.studentId;
-    User.findOne({studentId: studentId}, (err, userInformation) => {
+    const username = req.query.username;
+    User.findOne({username: username}, (err, userInformation) => {
         if (err) return next(err);
 
         res.json(userInformation);

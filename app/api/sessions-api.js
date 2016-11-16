@@ -6,20 +6,20 @@ import sha1 from 'sha1';
 
 const router = express.Router();
 router.post('/', (req, res, next) => {
-    const studentId = req.body.studentId;
+    const username = req.body.username;
     const password = req.body.password;
-
-    if (_.isEmpty(studentId) || _.isEmpty(password)) {
-        return res.status(400).send('studentId and password can not be null');
+    const type = req.body.type;
+    if (_.isEmpty(username) || _.isEmpty(password) || _.isEmpty(type)) {
+        return res.status(400).send('username or password or type can not be null');
     }
     else {
-        User.findOne({studentId}, (err, userData) => {
+        User.findOne({username}, (err, userData) => {
             if (err) return next(err);
-            if (userData === null || userData.password !== password) {
-                return res.status(401).send('studentId or password is wrong');
+            if (userData === null || userData.password !== password || userData.type !== type) {
+                return res.status(401).send('username or password is wrong');
             }
-            else if (userData.password === password) {
-                res.cookie('token', generateInfo(studentId, password), {maxAge: 600 * 1000});
+            else if (userData.password === password && userData.type === type) {
+                res.cookie('token', generateInfo(username, password), {maxAge: 600 * 1000});
                 return res.status(201).send('login success');
             }
 

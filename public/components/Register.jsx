@@ -9,7 +9,7 @@ export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            studentId: '',
+            username: '',
             email: '',
             phone: '',
             password: '',
@@ -28,10 +28,10 @@ export default class Register extends Component {
                 <hr/>
                 <div className="form-group">
                     <label>学号：</label>
-                    <input type="text" className="form-control" id="studentId"
+                    <input type="text" className="form-control" id="username"
                            placeholder="请输入学号" required
-                           value={this.state.studentId}
-                           onChange={this._onStudentIdChange.bind(this)}/>
+                           value={this.state.username}
+                           onChange={this._onUsernameChange.bind(this)}/>
                 </div>
                 <div className="form-group">
                     <label>分院：</label>
@@ -99,9 +99,9 @@ export default class Register extends Component {
         });
     }
 
-    _onStudentIdChange(event) {
+    _onUsernameChange(event) {
         this.setState({
-            studentId: event.target.value
+            username: event.target.value
         });
     }
 
@@ -140,7 +140,7 @@ export default class Register extends Component {
         else {
             request.post('/api/users')
                 .send({
-                    studentId: this.state.studentId,
+                    username: this.state.username,
                     password: this.state.password,
                     email: this.state.email,
                     phone: this.state.phone,

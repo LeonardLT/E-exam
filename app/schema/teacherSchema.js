@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const teacherSchema = new Schema({
     username: String,
     password: String,
-    cardID: String,
+    teacherId: String,
     name: String,
     sex: String,
     email: String,
@@ -16,8 +16,8 @@ const userSchema = new Schema({
     type: String
 });
 
-const User = mongoose.model('User', userSchema);
+const Teacher = mongoose.model('Teacher', teacherSchema);
 
 export {
-    User,
+    Teacher,
 };

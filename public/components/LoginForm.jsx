@@ -10,8 +10,9 @@ export default class SignIn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            studentId: '',
-            password: ''
+            username: '',
+            password: '',
+            type: '学生'
         }
 
     }
@@ -25,8 +26,8 @@ export default class SignIn extends React.Component {
                     <hr/>
                     <div className="form-group">
                         <label>学号：</label>
-                        <input className="form-control" type="text" placeholder="请输入学号" id="studentId"
-                               value={this.state.studentId}
+                        <input className="form-control" type="text" placeholder="请输入学号" id="username"
+                               value={this.state.username}
                                onChange={this._onStudentIdChange.bind(this)}
                         />
                     </div>
@@ -40,14 +41,13 @@ export default class SignIn extends React.Component {
                     </div>
 
                     <div className="row">
-                        <div className="">
-                            <div className='col-md-8'>
-                                <input className="form-control" type="text" placeholder="请输入验证码" name="captcha"/>
-                            </div>
-
-                            <div className="col-md-4">
-                                <img title="点击刷新验证码"/>
-                            </div>
+                        <div className='col-md-8'>
+                        </div>
+                        <div className="col-md-4">
+                            <select className="form-control" onChange={this._onTypeChange.bind(this)}>
+                                <option value="学生">学生</option>
+                                <option value="教师">教师</option>
+                            </select>
                         </div>
                     </div>
                     <div>
@@ -59,9 +59,15 @@ export default class SignIn extends React.Component {
         </div>)
     }
 
+    _onTypeChange(event) {
+        this.setState({
+            type: event.target.value
+        });
+    }
+
     _onStudentIdChange(event) {
         this.setState({
-            studentId: event.target.value
+            username: event.target.value
         });
     }
 
@@ -75,18 +81,19 @@ export default class SignIn extends React.Component {
         event.preventDefault();
         request.post('/api/sessions')
             .send({
-                studentId: this.state.studentId,
-                password: this.state.password
+                username: this.state.username,
+                password: this.state.password,
+                type: this.state.type
             })
             .end((err, res) => {
                 if (res.statusCode === 201) {
                     alert('login success');
-                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.studentId + '</a></li>' + '<li><a href="/">退出</a></li>');
+                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.username + '</a></li>' + '<li><a href="/">退出</a></li>');
                     hashHistory.push('/');
-                } else if (res.statusCode === 400 && res.text == 'name and password can not be null') {
+                } else if (res.statusCode === 400 && res.text == 'username and password can not be null') {
                     alert(res.text);
                 }
-                else if (res.statusCode === 401 && res.text === 'name or password is wrong') {
+                else if (res.statusCode === 401 && res.text === 'username or password is wrong') {
                     alert(res.text);
                 }
             })
