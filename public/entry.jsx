@@ -8,6 +8,7 @@ import StudentIndex from './components/StudentIndex.jsx';
 import Exam from './components/Exam.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import Register from './components/Register.jsx';
+import PersonalPage from './components/PersonalPage.jsx';
 
 
 const router = <Router history={hashHistory}>
@@ -16,6 +17,7 @@ const router = <Router history={hashHistory}>
         <Route path='/register' component={Register}/>
         <Route path='/login' component={LoginForm}/>
         <Route path='/exam' component={Exam}/>
+        <Route path='/personalPage' component={PersonalPage}/>
     </Route>
 </Router>;
 

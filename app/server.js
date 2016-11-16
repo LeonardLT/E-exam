@@ -5,6 +5,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import apiRouter from './api/api.js';
 import db from './db/db';
 
@@ -22,6 +23,7 @@ app.use(webpackDevMiddleware(compiler, {
     publicPath: webpackConfig.output.publicPath
 }));
 
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
+import request from 'superagent';
+import {hashHistory} from 'react-router'
 
 
 export default class Nav extends React.Component {
@@ -24,7 +26,7 @@ export default class Nav extends React.Component {
                             <li className="active"><a href="#">首页</a></li>
                             <li><a href="#">试题练习</a></li>
                             <li><Link to="/exam">在线考试</Link></li>
-                            <li><a href="#">个人中心</a></li>
+                            <li><Link to="" onClick={this._personalClick.bind(this)}>个人中心</Link></li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">
                             <li><Link to="/login">登陆</Link></li>
@@ -36,5 +38,17 @@ export default class Nav extends React.Component {
 
 
         </div>);
+    }
+
+    _personalClick(event) {
+        request
+            .get('/api/personal')
+            .end((err, res) => {
+                if (err || res.statusCode === 401) {
+                    alert('请先登录！');
+                    return hashHistory.push('/login');
+                }
+                return hashHistory.push('/personalPage');
+            });
     }
 };

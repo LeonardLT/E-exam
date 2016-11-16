@@ -19,7 +19,7 @@ router.post('/', (req, res, next) => {
                 return res.status(401).send('username or password is wrong');
             }
             else if (userData.password === password && userData.type === type) {
-                res.cookie('token', generateInfo(username, password), {maxAge: 600 * 1000});
+                res.cookie('token', generateInfo(username, password), {maxAge: 60 * 1000});
                 return res.status(201).send('login success');
             }
 

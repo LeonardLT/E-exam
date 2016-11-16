@@ -3,6 +3,7 @@ import problemsApi from './problem-api';
 import answersApi from './answers-api';
 import loginApi from './sessions-api';
 import userApi from './users-api';
+import personal from './personal';
 
 const router = express.Router();
 
@@ -10,6 +11,6 @@ router.use('/problem', problemsApi);
 router.use('/answer', answersApi);
 router.use('/sessions', loginApi);
 router.use('/users', userApi);
-
+router.use('/personal', personal);
 
 export default router;
