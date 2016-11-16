@@ -3,6 +3,9 @@
     "examId": 1,
     "examName": "数学",
     "time": 60,
+    "branch": "信息工程学院",
+    "major": "软件工程",
+    "class": "1301",
     "problems": [
       {
         "problemId": 1,
@@ -28,6 +31,9 @@
     "examId": 2,
     "examName": "语文",
     "time": 60,
+    "branch": "信息工程学院",
+    "major": "软件工程",
+    "class": "1301",
     "problems": [
       {
         "problemId": 4,

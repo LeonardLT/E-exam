@@ -6,8 +6,11 @@ const exmaSchema = new Schema({
     examId: Number,
     examName: String,
     time: Number,
+    branch: String,
+    major: String,
+    classroom: String,
     problems: [{
-        problemId:Number,
+        problemId: Number,
         problem: String,
         studentAnswer: String,
         answer: String

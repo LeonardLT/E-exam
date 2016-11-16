@@ -26,7 +26,7 @@ export default class Nav extends React.Component {
                             <li className="active"><a href="#">首页</a></li>
                             <li><a href="#">试题练习</a></li>
                             <li><Link to="/exam">在线考试</Link></li>
-                            <li><Link to="" onClick={this._personalClick.bind(this)}>个人中心</Link></li>
+                            <li><a onClick={this._personalClick.bind(this)}>个人中心</a></li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">
                             <li><Link to="/login">登陆</Link></li>

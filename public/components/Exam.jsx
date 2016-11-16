@@ -7,6 +7,7 @@ export default class Exam extends React.Component {
     constructor(props) {
         super(props);
         this.studentAnswers = [];
+        this.examId = this.props.params.examId;
         this.state = {
             exam: {},
             problems: [],
@@ -14,7 +15,9 @@ export default class Exam extends React.Component {
     }
 
     componentWillMount() {
+        console.log("～～～" + this.props.params.examId);
         request.get('/api/problem')
+            .query({examId: this.props.params.examId})
             .end((err, data) => {
                 this.setState({
                     exam: data.body,

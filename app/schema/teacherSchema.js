@@ -12,7 +12,7 @@ const teacherSchema = new Schema({
     phone: String,
     branch: String,
     major: String,
-    class: String,
+    classroom: String,
     type: String
 });
 
