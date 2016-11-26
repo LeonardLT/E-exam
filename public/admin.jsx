@@ -7,12 +7,15 @@ import Teacher from './teacher.jsx';
 import TeacherIndex from './components/teacher/TeacherIndex.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import PersonalPage from './components/PersonalPage.jsx';
+import AddQuestion from './components/teacher/AddQuestion.jsx';
+import QuestionBankPage from './components/teacher/QuestionBankPage.jsx';
 
-
-const router = <Router>
+const router = <Router history={hashHistory}>
     <Route path="/teacher" component={Teacher}>
         <IndexRoute components={TeacherIndex}/>
         <Route path='/personalPage' component={PersonalPage}/>
+        <Route path='/addQuestion' components={AddQuestion}/>
+        <Route path='/questionBankPage' components={QuestionBankPage}/>
     </Route>
     <Route path='/' component={LoginForm}/>
 </Router>;

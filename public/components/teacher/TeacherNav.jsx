@@ -26,7 +26,7 @@ export default class TeacherNav extends React.Component {
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
                             <li className="active"><Link to="/teacher">首页</Link></li>
-                            <li><a href="#">T</a></li>
+                            <li><Link to="/questionBankPage">题库</Link></li>
                             <li><Link to="/exam">T</Link></li>
                             <li><a onClick={this._personalClick.bind(this)}>个人中心</a></li>
                         </ul>

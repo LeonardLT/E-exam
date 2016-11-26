@@ -5,6 +5,7 @@ import loginApi from './sessions-api';
 import userApi from './users-api';
 import personal from './personal';
 import exams from './exams-api';
+import question from './question-api';
 
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.use('/sessions', loginApi);
 router.use('/users', userApi);
 router.use('/personal', personal);
 router.use('/exams', exams);
+router.use('/question', question);
 
 export default router;
