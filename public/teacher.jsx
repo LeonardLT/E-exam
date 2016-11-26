@@ -21,7 +21,7 @@ class Hello extends React.Component {
                 if (err) {
                     if (res.statusCode === 401) {
                         // alert('please login!');
-                        return hashHistory.push('/login');
+                        return hashHistory.push('/');
                     } else {
                         return alert('请先登录!');
                     }

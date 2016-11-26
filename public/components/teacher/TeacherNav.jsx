@@ -48,7 +48,7 @@ export default class TeacherNav extends React.Component {
             .end((err, res) => {
                 if (err || res.statusCode === 401) {
                     alert('请先登录！');
-                    return hashHistory.push('/login');
+                    return hashHistory.push('/');
                 }
                 return hashHistory.push('/personalPage');
             });
