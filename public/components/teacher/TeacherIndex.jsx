@@ -1,7 +1,5 @@
 import React from 'react';
-import Notice from './Notice.jsx';
-import {Link} from 'react-router';
-
+import Notice from '../Notice.jsx';
 
 export default class TeacherIndex extends React.Component {
     render() {

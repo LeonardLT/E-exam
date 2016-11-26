@@ -1,9 +1,9 @@
 require("bootstrap-webpack");
-import Student from './student.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
+import Student from './student.jsx';
 import StudentIndex from './components/StudentIndex.jsx';
 import Exam from './components/Exam.jsx';
 import LoginForm from './components/LoginForm.jsx';

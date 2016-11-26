@@ -1,12 +1,20 @@
-import Teacher from './teacher.jsx';
+require("bootstrap-webpack");
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
+import Teacher from './teacher.jsx';
+import TeacherIndex from './components/teacher/TeacherIndex.jsx';
+import LoginForm from './components/LoginForm.jsx';
+import PersonalPage from './components/PersonalPage.jsx';
 
 
 const router = <Router>
-    <Route path="/" component={Teacher}/>
+    <Route path="/teacher" component={Teacher}>
+        <IndexRoute components={TeacherIndex}/>
+        <Route path='/personalPage' component={PersonalPage}/>
+    </Route>
+    <Route path='/' component={LoginForm}/>
 </Router>;
 
 

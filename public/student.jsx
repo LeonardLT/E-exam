@@ -3,14 +3,12 @@ import Nav from './components/Nav.jsx';
 
 class Hello extends React.Component {
     render() {
-        return (
+        return (<div>
+            <Nav/>
             <div>
-                <Nav/>
-                <div>
-                    {this.props.children}
-                </div>
+                {this.props.children}
             </div>
-        );
+        </div>);
     }
 }
 export default Hello;

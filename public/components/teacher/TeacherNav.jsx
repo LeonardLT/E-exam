@@ -4,7 +4,9 @@ import request from 'superagent';
 import {hashHistory} from 'react-router'
 
 
-export default class Nav extends React.Component {
+export default class TeacherNav extends React.Component {
+
+
     render() {
         return (<div>
 
@@ -18,14 +20,14 @@ export default class Nav extends React.Component {
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                         </button>
-                        <a className="navbar-brand" href="#"><big>EXAM</big></a>
+                        <Link className="navbar-brand" to="/teacher"><big>Teacher</big></Link>
                     </div>
 
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
-                            <li className="active"><a href="#">首页</a></li>
-                            <li><a href="#">试题练习</a></li>
-                            <li><Link to="/exam">在线考试</Link></li>
+                            <li className="active"><Link to="/teacher">首页</Link></li>
+                            <li><a href="#">T</a></li>
+                            <li><Link to="/exam">T</Link></li>
                             <li><a onClick={this._personalClick.bind(this)}>个人中心</a></li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">
@@ -51,4 +53,5 @@ export default class Nav extends React.Component {
                 return hashHistory.push('/personalPage');
             });
     }
-};
+}
+

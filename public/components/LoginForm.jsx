@@ -25,8 +25,8 @@ export default class SignIn extends React.Component {
                     <h3 className="welcome">Eurasia-EXAM</h3>
                     <hr/>
                     <div className="form-group">
-                        <label>学号：</label>
-                        <input className="form-control" type="text" placeholder="请输入学号" id="username"
+                        <label>用户名：</label>
+                        <input className="form-control" type="text" placeholder="请输入用户名" id="username"
                                value={this.state.username}
                                onChange={this._onStudentIdChange.bind(this)}
                         />
@@ -91,11 +91,12 @@ export default class SignIn extends React.Component {
                     $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.username + '</a></li>' + '<li><a href="/" onchange={console.log(1231)}>退出</a></li>');
                     if ('教师' === this.state.type) {
                         alert("Welcome the teacher!");
-                        var a = req.cookies['token'];
-                        console.log(a);
-                        self.location = '/admin';
+                        // var a = req.cookies['token'];
+                        // const token = req.cookies['token'];
+                        // console.log(token);
+                        self.location = '/admin#/teacher';
                     } else {
-                        hashHistory.push('/');
+                        hashHistory.push('/teacher');
                     }
                 } else if (res.statusCode === 400 && res.text == 'username and password can not be null') {
                     alert(res.text);
