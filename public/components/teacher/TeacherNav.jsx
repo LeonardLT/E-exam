@@ -26,8 +26,17 @@ export default class TeacherNav extends React.Component {
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
                             <li className="active"><Link to="/teacher">首页</Link></li>
-                            <li><Link to="/questionBankPage">题库</Link></li>
-                            <li><Link to="/exam">T</Link></li>
+                            {/*<li><Link to="/questionBankPage">题库</Link></li>*/}
+                            <li className="dropdown">
+                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">题库 <span
+                                    className="caret"></span></a>
+                                <ul className="dropdown-menu" role="menu">
+                                    <li><Link to="/examQuestionBankPage">考试题库</Link></li>
+                                    <li><Link to="/practiceQuestionBankPage">练习题库</Link></li>
+                                </ul>
+                            </li>
+                            <li><Link to="/exam">考试</Link></li>
+                            <li><Link to="/teacher">成绩</Link></li>
                             <li><a onClick={this._personalClick.bind(this)}>个人中心</a></li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">

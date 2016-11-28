@@ -22,4 +22,14 @@ router.post('/', (req, res, next) => {
     });
 });
 
+
+router.get('/examQuestions',(req,res,next) => {
+
+    BlankQuestion.find({},(err,data) => {
+        if (err) return next(err);
+        console.log("++++");
+        console.log(data);
+    });
+});
+
 export default router;
