@@ -23,13 +23,27 @@ router.post('/', (req, res, next) => {
 });
 
 
-router.get('/examQuestions',(req,res,next) => {
+router.get('/examQuestions', (req, res, next) => {
 
-    BlankQuestion.find({},(err,data) => {
+    BlankQuestion.find({}, (err, data) => {
         if (err) return next(err);
         console.log("++++");
         console.log(data);
+        res.json(data);
     });
 });
 
+router.delete('/', (req, res, next) => {
+    const id = req.query.id;
+    console.log(id + "============");
+    BlankQuestion.find({_id: id}).remove(err => {
+        if (err) return next(err);
+        BlankQuestion.find({}, (err, data) => {
+            if (err) return next(err);
+            console.log("++++");
+            console.log(data);
+            res.json(data);
+        });
+    });
+});
 export default router;

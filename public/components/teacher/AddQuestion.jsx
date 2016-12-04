@@ -16,24 +16,31 @@ class AddQuestion extends React.Component {
     }
 
     render() {
-        return (<div>
-                add QS!
+        return (<div className="container-fluid">
+
+                <h3>添加题目</h3>
+                <hr/>
 
                 <form onSubmit={this._onSubmit.bind(this)}>
-                    <label>questionType:{this.state.questionType}</label><br/>
-                    <label>questionId:</label>
-                    <input className="form-control" type="text" name="questionId"
-                           onChange={this._onQuestionIdChange.bind(this)}/>
-                    {this.state.questionId}
-                    <label>question:</label>
-                    <input className="form-control" type="text" name="question"
-                           onChange={this._onQuestionChange.bind(this)}/>
-                    {this.state.question}
-                    <label>rightAnswers:</label>
-                    <input className="form-control" type="text" name="rightAnswers"
-                           onChange={this._onRightAnswerChange.bind(this)}/>
-                    {this.state.rightAnswer}
-                    <input className="btn btn-lg btn-block btn-primary" type="submit" value="保存"/>
+                    <div className='col-md-6 col-md-offset-3'>
+                        <label>questionType : {this.state.questionType}</label><br/>
+                        <label>questionId:</label>
+                        <input className="form-control" type="text" name="questionId"
+                               onChange={this._onQuestionIdChange.bind(this)}/>
+                        {this.state.questionId}
+                        <label>question:</label>
+                        <textarea className="form-control" rows="3" name="question"
+                                  onChange={this._onQuestionChange.bind(this)}>
+                        </textarea>
+                        {/*<input className="form-control" type="text" name="question"*/}
+                        {/*onChange={this._onQuestionChange.bind(this)}/>*/}
+                        {this.state.question}
+                        <label>rightAnswers:</label>
+                        <input className="form-control" type="text" name="rightAnswers"
+                               onChange={this._onRightAnswerChange.bind(this)}/>
+                        {this.state.rightAnswer}
+                        <input className="btn btn-lg btn-block btn-primary" type="submit" value="保存"/>
+                    </div>
                 </form>
             </div>
         );
@@ -52,7 +59,7 @@ class AddQuestion extends React.Component {
             .end((err, res) => {
                 if (res.statusCode === 201) {
                     alert("success");
-                    hashHistory.push('/questionBankPage');
+                    hashHistory.push('/examQuestionBankPage');
                 }
             });
 
