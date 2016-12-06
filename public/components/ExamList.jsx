@@ -48,7 +48,7 @@ class ExamList extends React.Component {
                                 <td>{exam.branch}</td>
                                 <td>{exam.major}</td>
                                 <td><input className="btn btn-success btn-sm" type="button" value="参加考试"
-                                           onClick={this._joinTheExam(exam.examId)}
+                                           onClick={this._joinTheExam(exam._id)}
                                 /></td>
                             </tr>)
                         }
@@ -61,9 +61,9 @@ class ExamList extends React.Component {
         </div>);
     }
 
-    _joinTheExam(examId) {
+    _joinTheExam(id) {
         return () => {
-            hashHistory.push('/joinExam/' + examId);
+            hashHistory.push('/joinExam/' + id);
         };
     }
 }

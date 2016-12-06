@@ -4,11 +4,11 @@ const router = express.Router();
 
 
 router.get('/', (req, res, next) => {
-    const examId = req.query.examId;
-    console.log("++++++" + examId);
-    Exam.findOne({examId: examId}, (err, data) => {
+    // const examId = req.query.examId;
+    const _id = req.query._id;
+    // Exam.findOne({examId: examId}, (err, data) => {
+    Exam.findOne({_id: _id}, (err, data) => {
         if (err) return next(err);
-        console.log(data);
         res.json(data);
     });
 });

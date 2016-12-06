@@ -5,27 +5,32 @@ const router = express.Router();
 
 router.post('/', (req, res, next) => {
 
-    const {examId, studentAnswers} = req.body;
+    const {_id, studentAnswers} = req.body;
     let score = 0;
-    let findAnswer = (problemId, problems) => {
-        return problems.find(p => p.problemId == problemId).answer;
+    let findAnswer = (questionId, questions) => {
+        const rightAnswers = questions.find(question => question.questionId == questionId).rightAnswers;
+        // console.log(rightAnswers[0].rightAnswer);
+        return rightAnswers[0].rightAnswer;
     };
 
     const rightAnswers = [];
-    Exam.findOne({examId: examId}, (err, {problems}) => {
+    Exam.findOne({_id: _id}, (err, {questions}) => {
         if (err) return next(err);
-        problems.map(problem => {
-            rightAnswers.push(problem.answer)
+        questions.map(question => {
+            rightAnswers.push(question.answer)
         });
 
 
-        studentAnswers.map(({problemId, answer}) => {
-            const rightAnswer = findAnswer(problemId, problems);
+        studentAnswers.map(({questionId, answer}) => {
+            const rightAnswer = findAnswer(questionId, questions);
+            console.log("++answer" + answer);
+            console.log("++rightAnswer" + rightAnswer);
             if (answer == rightAnswer) {
                 score += 1;
             }
         });
 
+        return res.json({score: score});
         console.log("成绩：" + score);
     });
 

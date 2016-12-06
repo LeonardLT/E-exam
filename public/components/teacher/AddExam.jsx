@@ -22,14 +22,13 @@ class AddExam extends React.Component {
             currentQuestionRightAnswer: ''
 
         };
-        this.selectedQuestions = [];
     }
 
     render() {
         return (<div className="container-fluid">
             <h3>新增考试</h3>
             <hr/>
-            <form className="form-horizontal" role="form">
+            <form className="form-horizontal" role="form" onSubmit={this._onSubmit.bind(this)}>
                 <div className='col-md-6 col-md-offset-3'>
                     <div className="form-group">
                         <label className="col-sm-2 control-label">examId</label>
@@ -78,7 +77,6 @@ class AddExam extends React.Component {
 
                     <hr/>
                     <label>已选题目:</label>
-
                     <table className="table">
                         <thead>
                         <tr>
@@ -94,15 +92,47 @@ class AddExam extends React.Component {
                             <td data-toggle="tooltip"
                                 title={selectedQuestion.question}>{selectedQuestion.question.substr(0, 10)}……
                             </td>
-                            {/*<td>*/}
-                                {/*<button type="button" className="btn btn-primary btn-sm" data-toggle="modal"*/}
-                                        {/*data-target="#details" onClick={this._onDetailsClick(question)}>查看详情*/}
-                                {/*</button>*/}
-                            {/*</td>*/}
+                            <td>
+                                <button type="button" className="btn btn-primary btn-sm" data-toggle="modal"
+                                        data-target="#selectedQuestion"
+                                        onClick={this._onDetailsClick(selectedQuestion)}>查看详情
+                                </button>
+                            </td>
                         </tr>)}
                         </tbody>
                     </table>
 
+                    <div className="modal fade bs-example-modal-lg" tabIndex="-1" role="dialog"
+                         aria-labelledby="myLargeModalLabel" aria-hidden="true" id="selectedQuestion">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal"><span
+                                        aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                                    <h4 className="modal-title">Modal title</h4>
+                                </div>
+                                <div className="modal-body">
+                                    <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestionId}
+                                    <hr/>
+                                    <label>题目类型 :&nbsp;&nbsp; </label>{this.state.currentQuestionType}
+                                    <hr/>
+                                    <label>题目内容 : </label><br/>{this.state.currentQuestion}
+                                    <hr/>
+                                    <label>正确答案 : </label><br/>
+                                    {this.state.currentQuestionRightAnswers.map(rightAnswer => <div>
+                                        {rightAnswer.rightAnswer}
+                                    </div>)}
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-default" data-dismiss="modal"
+                                            onClick={() => {
+                                                this.refs.showQuestions.click();
+                                            }}>返回
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <hr/>
                     <div className="form-group">
                         <lable className="col-sm-2 control-label">题型 ：</lable>
@@ -114,6 +144,7 @@ class AddExam extends React.Component {
                         </div>
                         <div className="col-sm-2">
                             <button type="button" className="btn btn-primary btn-sm" data-toggle="modal"
+                                    ref="showQuestions"
                                     data-target="#details" onClick={this._onShowQuestionClick(this.state.type)}>预览题库
                             </button>
                         </div>
@@ -148,6 +179,11 @@ class AddExam extends React.Component {
                                     <td>{question.questionType}</td>
                                     <td>{question.question.substr(0, 10)}……</td>
                                     <td>
+                                        <button type="button" className="btn btn-primary btn-sm" data-toggle="modal"
+                                                data-target="#selectedQuestion"
+                                                onClick={this._onDetailsClick(question)}>查看详情
+                                        </button>
+                                        &nbsp;
                                         <button type="button" className="btn btn-primary btn-sm"
                                                 onClick={this._onAddClick(question)}>添加
                                         </button>
@@ -160,19 +196,42 @@ class AddExam extends React.Component {
                             <button type="button" className="btn btn-default" data-dismiss="modal" ref="buttonClose">
                                 Close
                             </button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>);
     }
+
+    _onSubmit(event) {
+        event.preventDefault();
+        request
+            .post("/api/exams")
+            .send({
+                examId: this.state.examId,
+                examName: this.state.examName,
+                time: this.state.time,
+                branch: this.state.branch,
+                major: this.state.major,
+                classroom: this.state.classroom,
+                questions: this.state.selectedQuestions,
+            })
+            .end((err, res) => {
+                if (res.statusCode === 201) {
+                    alert("save success");
+                }else {
+                    alert('保存失败');
+                }
+            });
+    }
+
     _onDetailsClick(question) {
         let rightAnswer = '';
         question.rightAnswers.forEach(ele => {
             rightAnswer = ele.rightAnswer;
         });
         return () => {
+            this.refs.buttonClose.click();
             this.setState({
                 currentQuestion_Id: question._id,
                 currentQuestion: question.question,

@@ -1,5 +1,7 @@
 import React from 'react';
 import request from 'superagent';
+import {hashHistory} from 'react-router'
+
 
 
 export default class Exam extends React.Component {
@@ -7,28 +9,28 @@ export default class Exam extends React.Component {
     constructor(props) {
         super(props);
         this.studentAnswers = [];
-        this.examId = this.props.params.examId;
+        this._id = this.props.params._id;
         this.state = {
             exam: {},
-            problems: [],
+            questions: [],
         };
     }
 
     componentWillMount() {
-        console.log("～～～" + this.props.params.examId);
+        console.log("～～～" + this.props.params._id);
         request.get('/api/problem')
-            .query({examId: this.props.params.examId})
+            .query({_id: this.props.params._id})
             .end((err, data) => {
                 this.setState({
                     exam: data.body,
-                    problems: data.body.problems,
+                    questions: data.body.questions,
                 });
             });
     }
 
     render() {
         const exam = this.state.exam;
-        const problems = this.state.problems;
+        const questions = this.state.questions;
         return (
             <div className="container">
                 {exam._id}
@@ -39,10 +41,10 @@ export default class Exam extends React.Component {
 
                 <div>
                     <form onSubmit={this._onSubmit.bind(this)}>
-                        <div>{problems.map(p =><div>
-                            <Problem problemId={p.problemId}
-                                     problem={p.problem}
-                                     answer={p.answer}
+                        <div>{questions.map(question => <div>
+                            <Problem questionId={question.questionId}
+                                     question={question.question}
+                                     answer={question.answer}
                                      saveAnswers={this._saveAnswers.bind(this)}
                             />
                         </div>)}</div>
@@ -55,21 +57,21 @@ export default class Exam extends React.Component {
         );
     }
 
-    _saveAnswers(problemId, answer) {
+    _saveAnswers(questionId, answer) {
 
-        const isExistInArray = (problemId, array) => {
+        const isExistInArray = (questionId, array) => {
             for (let item of array) {
-                if (item.problemId == problemId) {
+                if (item.questionId == questionId) {
                     return item;
                 }
             }
             return null;
         };
 
-        let item = isExistInArray(problemId, this.studentAnswers);
+        let item = isExistInArray(questionId, this.studentAnswers);
         if (item === null) {
             this.studentAnswers.push({
-                problemId: problemId,
+                questionId: questionId,
                 answer: answer
             });
         } else {
@@ -85,11 +87,15 @@ export default class Exam extends React.Component {
         request.post('/api/answer')
             .send(
                 {
-                    'examId': this.state.exam.examId,
+                    '_id': this.state.exam._id,
                     'studentAnswers': this.studentAnswers
                 }
             )
-            .end();
+            .end((err, res) => {
+                const score = res.body.score;
+                alert('你的成绩：' + score);
+                hashHistory.push('/');
+            });
     }
 }
 
@@ -104,11 +110,11 @@ class Problem extends React.Component {
     }
 
     render() {
-        let {problemId, problem, answer} = this.props;
+        let {questionId, question, answer} = this.props;
         return (<div>
                 <div>
-                    <div>题目ID:{problemId}</div>
-                    <h4>题目：{problem}</h4>
+                    <div>题目ID:{questionId}</div>
+                    <h4>题目：{question}</h4>
                 </div>
                 <div>答案： <input className="form-control" type="text"
                                 value={this.state.studentAnswer}
@@ -130,7 +136,7 @@ class Problem extends React.Component {
     }
 
     _onBlur(event) {
-        this.saveAnswers(this.props.problemId, event.target.value);
+        this.saveAnswers(this.props.questionId, event.target.value);
     }
 
 

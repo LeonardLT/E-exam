@@ -17,7 +17,7 @@ const router = <Router history={hashHistory}>
         <IndexRoute component={StudentIndex}/>
         <Route path='/register' component={Register}/>
         <Route path='/login' component={LoginForm}/>
-        <Route path='/joinExam/:examId' component={Exam}/>
+        <Route path='/joinExam/:_id' component={Exam}/>
         <Route path='/exam' component={ExamList}/>
         <Route path='/personalPage' component={PersonalPage}/>
     </Route>
