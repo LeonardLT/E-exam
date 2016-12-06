@@ -94,11 +94,11 @@ class AddExam extends React.Component {
                             <td data-toggle="tooltip"
                                 title={selectedQuestion.question}>{selectedQuestion.question.substr(0, 10)}……
                             </td>
-                            <td>
-                                <button type="button" className="btn btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#details" onClick={this._onDetailsClick(question)}>查看详情
-                                </button>
-                            </td>
+                            {/*<td>*/}
+                                {/*<button type="button" className="btn btn-primary btn-sm" data-toggle="modal"*/}
+                                        {/*data-target="#details" onClick={this._onDetailsClick(question)}>查看详情*/}
+                                {/*</button>*/}
+                            {/*</td>*/}
                         </tr>)}
                         </tbody>
                     </table>
