@@ -36,7 +36,14 @@ export default class TeacherNav extends React.Component {
                                     <li><Link to="/addQuestion">新增题目</Link></li>
                                 </ul>
                             </li>
-                            <li><Link to="/exam">考试</Link></li>
+                            {/*<li><Link to="/exam">考试</Link></li>*/}
+                            <li className="dropdown">
+                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">考试 <span
+                                    className="caret"></span></a>
+                                <ul className="dropdown-menu" role="menu">
+                                    <li><Link to="/addExam">创建考试</Link></li>
+                                </ul>
+                            </li>
                             <li><Link to="/teacher">成绩</Link></li>
                             <li><a onClick={this._personalClick.bind(this)}>个人中心</a></li>
                         </ul>

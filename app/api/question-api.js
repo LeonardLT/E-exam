@@ -58,6 +58,13 @@ router.post('/updateQuestion', (req, res, next) => {
                 res.json(data);
             });
         });
+});
 
+router.get('/type', (req, res, next) => {
+    const questionType = req.query.questionType;
+    BlankQuestion.find({questionType: questionType}, (err, data) => {
+        if (err) return next(err);
+        res.json(data);
+    });
 });
 export default router;

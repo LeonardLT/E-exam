@@ -43,7 +43,6 @@ export default class Exam extends React.Component {
                             <Problem problemId={p.problemId}
                                      problem={p.problem}
                                      answer={p.answer}
-                                     studentAnswer={p.studentAnswer}
                                      saveAnswers={this._saveAnswers.bind(this)}
                             />
                         </div>)}</div>
