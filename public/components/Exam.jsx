@@ -3,7 +3,6 @@ import request from 'superagent';
 import {hashHistory} from 'react-router'
 
 
-
 export default class Exam extends React.Component {
 
     constructor(props) {
@@ -11,12 +10,23 @@ export default class Exam extends React.Component {
         this.studentAnswers = [];
         this._id = this.props.params._id;
         this.state = {
+            username:'unknown',
             exam: {},
             questions: [],
         };
     }
 
     componentWillMount() {
+        request
+            .get('/api/personal')
+            .end((err, res) => {
+                if (err || res.statusCode === 401) {
+                    alert('please login!');
+                    return hashHistory.push('/login');
+                }
+                const {username} = res.body;
+                this.setState({username: username});
+            });
         console.log("～～～" + this.props.params._id);
         request.get('/api/problem')
             .query({_id: this.props.params._id})
@@ -84,9 +94,11 @@ export default class Exam extends React.Component {
     _onSubmit(event) {
         event.preventDefault();
         console.log(this.studentAnswers);
+        console.log(this.state.username+"======");
         request.post('/api/answer')
             .send(
                 {
+                    'username':this.state.username,
                     '_id': this.state.exam._id,
                     'studentAnswers': this.studentAnswers
                 }

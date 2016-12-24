@@ -1,11 +1,13 @@
 import express from 'express';
 import {Exam} from '../schema/examSchema';
+import {ExamScore} from '../schema/examScoreSchema';
 
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
 
-    const {_id, studentAnswers} = req.body;
+    const {username, _id, studentAnswers} = req.body;
+    console.log(username + "~!@~!~@!~");
     let score = 0;
     let findAnswer = (questionId, questions) => {
         const rightAnswers = questions.find(question => question.questionId == questionId).rightAnswers;
@@ -30,8 +32,18 @@ router.post('/', (req, res, next) => {
             }
         });
 
-        return res.json({score: score});
-        console.log("成绩：" + score);
+        var examScore = new ExamScore({
+            examId: _id,
+            username: username,
+            score: score
+        });
+        console.log(examScore);
+        examScore.save(() => {
+            if (err) return next(err);
+            console.log("成绩：" + score);
+            console.log('save status:', err ? 'failed' : 'success');
+            return res.json({score: score});
+        });
     });
 
 

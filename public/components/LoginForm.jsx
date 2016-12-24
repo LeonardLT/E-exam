@@ -95,6 +95,8 @@ export default class SignIn extends React.Component {
                         // const token = req.cookies['token'];
                         // console.log(token);
                         self.location = '/admin#/teacher';
+                    }else if('学生' === this.state.type){
+                        hashHistory.push('/');
                     } else {
                         hashHistory.push('/teacher');
                     }

@@ -63,7 +63,16 @@ class ExamList extends React.Component {
 
     _joinTheExam(id) {
         return () => {
-            hashHistory.push('/joinExam/' + id);
+            request
+                .get('/api/personal')
+                .end((err, res) => {
+                    if (err || res.statusCode === 401) {
+                        alert('请先登录,from exam list');
+                        return hashHistory.push('/login');
+                    }else{
+                        return  hashHistory.push('/joinExam/' + id);
+                    }
+                });
         };
     }
 }

@@ -27,7 +27,7 @@ export default class PersonalPage extends Component {
                         alert('please login!');
                         return hashHistory.push('/login');
                     } else {
-                        return alert('请先登录!');
+                        return alert('请先登录!!!!!!');
                     }
                 }
                 console.log("statusCode:" + res.statusCode);
