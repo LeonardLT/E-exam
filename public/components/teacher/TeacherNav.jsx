@@ -42,6 +42,7 @@ export default class TeacherNav extends React.Component {
                                     className="caret"></span></a>
                                 <ul className="dropdown-menu" role="menu">
                                     <li><Link to="/addExam">创建考试</Link></li>
+                                    <li><Link to="/showExam">查看考试</Link></li>
                                 </ul>
                             </li>
                             <li><Link to="/teacher">成绩</Link></li>

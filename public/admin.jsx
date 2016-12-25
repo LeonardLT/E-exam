@@ -12,6 +12,7 @@ import QuestionBankPage from './components/teacher/QuestionBankPage.jsx';
 import ExamQuestionBankPage from './components/teacher/ExamQuestionBankPage.jsx';
 import PracticeQuestionBankPage from './components/teacher/PracticeQuestionBankPage.jsx';
 import AddExam from './components/teacher/AddExam.jsx';
+import ShowExam from './components/teacher/ShowExam.jsx';
 
 
 const router = <Router history={hashHistory}>
@@ -23,6 +24,7 @@ const router = <Router history={hashHistory}>
         <Route path='/examQuestionBankPage' components={ExamQuestionBankPage}/>
         <Route path='/practiceQuestionBankPage' components={PracticeQuestionBankPage}/>
         <Route path='/addExam' components={AddExam}/>
+        <Route path='/showExam' components={ShowExam}/>
     </Route>
     <Route path='/' component={LoginForm}/>
 </Router>;

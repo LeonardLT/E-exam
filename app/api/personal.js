@@ -16,9 +16,13 @@ router.get('/', function (req, res, next) {
             if (err) return next(err);
             if (isValidateToken) {
                 const username = getUsernameFromToken(token);
-                return res.json({username});
+                User.findOne({username: username}, (err, data) => {
+                    const {branch, major, classroom} = data;
+                    return res.json({username, branch, major, classroom});
+                });
+            } else {
+                return res.sendStatus(401);
             }
-            return res.sendStatus(401);
         });
     }
 });

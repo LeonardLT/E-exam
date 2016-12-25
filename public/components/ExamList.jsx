@@ -7,16 +7,32 @@ class ExamList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            examLists: []
+            examLists: [],
+            username: 'unknown',
+            branch: 'unknown',
+            major: 'unknown',
+            classroom: 'unknown'
         };
     }
 
     componentWillMount() {
-        request.get("/api/exams")
+        request
+            .get('/api/personal')
             .end((err, res) => {
-                this.setState({
-                    examLists: res.body
-                });
+                if (err || res.statusCode === 401) {
+                    alert('please login!');
+                    return hashHistory.push('/login');
+                }
+                const {username, branch, major, classroom} = res.body;
+                this.setState({username, branch, major, classroom});
+                console.log(branch+"//////");
+                request.get("/api/exams")
+                    .query({branch, major, classroom})
+                    .end((err, res) => {
+                        this.setState({
+                            examLists: res.body
+                        });
+                    });
             });
     }
 
@@ -41,7 +57,7 @@ class ExamList extends React.Component {
                         </thead>
                         <tbody>
                         {
-                            this.state.examLists.map(exam =><tr>
+                            this.state.examLists.map(exam => <tr>
                                 <td>{exam._id}</td>
                                 <td>{exam.examName}</td>
                                 <td>{exam.time}</td>
@@ -69,8 +85,8 @@ class ExamList extends React.Component {
                     if (err || res.statusCode === 401) {
                         alert('请先登录,from exam list');
                         return hashHistory.push('/login');
-                    }else{
-                        return  hashHistory.push('/joinExam/' + _id);
+                    } else {
+                        return hashHistory.push('/joinExam/' + _id);
                     }
                 });
         };

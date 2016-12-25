@@ -4,11 +4,27 @@ const router = express.Router();
 
 
 router.get("/", (req, res, next) => {
-
-    Exam.find({branch: "信息工程学院"}, (err, data) => {
+    const {branch, major, classroom} = req.query;
+    Exam.find({branch, major, classroom}, (err, data) => {
         if (err) return next(err);
-        const result = data.map(({_id, examId, examName, time, branch, major}) => {
-            return {_id, examId, examName, time, branch, major};
+        const result = data.map(({_id, examId, examName, time, branch, major, questions}) => {
+            return {_id, examId, examName, time, branch, major, questions};
+        });
+
+
+        console.log(result);
+        return res.json(result);
+    });
+});
+
+//查看所有考试
+router.get("/allExam", (req, res, next) => {
+    const {branch, major, classroom} = req.query;
+    Exam.find({}, (err, data) => {
+        if (err) return next(err);
+        const result = data.map(({_id, examId, examName, time, branch, major, questions}) => {
+            return {_id, examId, examName, time, branch, major, questions};
+
         });
 
 

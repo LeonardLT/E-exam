@@ -53,7 +53,7 @@ class ExamQuestionBankPage extends React.Component {
                     </thead>
                     <tbody>
                     {this.state.questions.map(question => <tr>
-                        <td>{question._id}</td>
+                        <td>{question.questionId}</td>
                         <td>{question.questionType}</td>
                         <td>{question.question.substr(0, 10)}……</td>
                         <td>
@@ -86,7 +86,7 @@ class ExamQuestionBankPage extends React.Component {
                             <h4 className="modal-title">Modal title</h4>
                         </div>
                         <div className="modal-body">
-                            <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestion_Id}
+                            <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestionId}
                             <hr/>
                             <label>题目类型 :&nbsp;&nbsp; </label>{this.state.currentQuestionType}
                             <hr/>

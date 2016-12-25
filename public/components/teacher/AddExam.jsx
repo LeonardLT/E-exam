@@ -1,5 +1,6 @@
 import React from 'react';
 import request from 'superagent';
+import {hashHistory} from 'react-router'
 
 class AddExam extends React.Component {
     constructor(props) {
@@ -54,16 +55,27 @@ class AddExam extends React.Component {
                     <div className="form-group">
                         <label className="col-sm-2 control-label">branch</label>
                         <div className="col-sm-10">
-                            <input className="form-control" type="text" name="branch"
-                                   onChange={this._onBranchChange.bind(this)}/>
+                            {/*<input className="form-control" type="text" name="branch"*/}
+                            {/*onChange={this._onBranchChange.bind(this)}/>*/}
+                            <select className="form-control" onChange={this._onBranchChange.bind(this)}>
+                                <option value="全部">全部</option>
+                                <option value="信息工程学院">信息工程学院</option>
+                            </select>
                         </div>
                     </div>
 
                     <div className="form-group">
                         <label className="col-sm-2 control-label">major</label>
                         <div className="col-sm-10">
-                            <input className="form-control" type="text" name="major"
-                                   onChange={this._onMajorChange.bind(this)}/>
+                            {/*<input className="form-control" type="text" name="major"*/}
+                            {/*onChange={this._onMajorChange.bind(this)}/>*/}
+                            <select className="form-control" onChange={this._onMajorChange.bind(this)}>
+                                <option value="全部">全部</option>
+                                <option value="软件工程">软件工程</option>
+                                <option value="通信工程">通信工程</option>
+                                <option value="电子信息工程">电子信息工程</option>
+                                <option value="网络工程">网络工程</option>
+                            </select>
                         </div>
                     </div>
 
@@ -219,7 +231,8 @@ class AddExam extends React.Component {
             .end((err, res) => {
                 if (res.statusCode === 201) {
                     alert("save success");
-                }else {
+                    return hashHistory.push('/showExam');
+                } else {
                     alert('保存失败');
                 }
             });
