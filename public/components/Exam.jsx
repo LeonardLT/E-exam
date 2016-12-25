@@ -99,6 +99,7 @@ export default class Exam extends React.Component {
             .send(
                 {
                     'username':this.state.username,
+                    'examName' : this.state.exam.examName,
                     '_id': this.state.exam._id,
                     'studentAnswers': this.studentAnswers
                 }

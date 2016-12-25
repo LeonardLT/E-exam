@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const examScore = new Schema({
     examId: String,
+    examName: String,
     username: String,
     score: Number
 });

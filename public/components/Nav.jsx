@@ -14,9 +14,9 @@ export default class Nav extends React.Component {
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                                 data-target="#bs-example-navbar-collapse-1">
                             <span className="sr-only">Toggle navigation</span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
+                            <span className="icon-bar"/>
+                            <span className="icon-bar"/>
+                            <span className="icon-bar"/>
                         </button>
                         <a className="navbar-brand" href="#"><big>EXAM</big></a>
                     </div>
@@ -47,8 +47,9 @@ export default class Nav extends React.Component {
                 if (err || res.statusCode === 401) {
                     alert('请先登录！');
                     return hashHistory.push('/login');
+                } else {
+                    return hashHistory.push('/personalPage');
                 }
-                return hashHistory.push('/personalPage');
             });
     }
 };

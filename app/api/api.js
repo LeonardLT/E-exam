@@ -6,6 +6,7 @@ import userApi from './users-api';
 import personal from './personal';
 import exams from './exams-api';
 import question from './question-api';
+import score from './score-api';
 
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.use('/users', userApi);
 router.use('/personal', personal);
 router.use('/exams', exams);
 router.use('/question', question);
+router.use('/score', score);
 
 export default router;

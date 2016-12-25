@@ -10,6 +10,7 @@ import LoginForm from './components/LoginForm.jsx';
 import Register from './components/Register.jsx';
 import PersonalPage from './components/PersonalPage.jsx';
 import ExamList from './components/ExamList.jsx';
+import MyScore from './components/MyScore.jsx';
 
 
 const router = <Router history={hashHistory}>
@@ -19,7 +20,9 @@ const router = <Router history={hashHistory}>
         <Route path='/login' component={LoginForm}/>
         <Route path='/joinExam/:_id' component={Exam}/>
         <Route path='/exam' component={ExamList}/>
-        <Route path='/personalPage' component={PersonalPage}/>
+        <Route path='/personalPage' component={PersonalPage}>
+            <Route path="/myScore" component={MyScore}/>
+        </Route>
     </Route>
 </Router>;
 

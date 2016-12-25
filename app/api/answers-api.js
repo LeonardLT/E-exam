@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', (req, res, next) => {
 
-    const {username, _id, studentAnswers} = req.body;
+    const {username, examName, _id, studentAnswers} = req.body;
     console.log(username + "~!@~!~@!~");
     let score = 0;
     let findAnswer = (questionId, questions) => {
@@ -34,6 +34,7 @@ router.post('/', (req, res, next) => {
 
         var examScore = new ExamScore({
             examId: _id,
+            examName: examName,
             username: username,
             score: score
         });
