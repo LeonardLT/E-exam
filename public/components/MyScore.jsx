@@ -45,14 +45,14 @@ export default class MyScore extends React.Component {
             <table className="table">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>exam_id</th>
                     <th>考试名称</th>
                     <th>成绩</th>
                 </tr>
                 </thead>
                 <tbody>
                 {this.state.data.map(exam => <tr>
-                        <td>{exam.examId}</td>
+                        <td>{exam.exam_Id}</td>
                         <td>{exam.examName}</td>
                         <td> {exam.score}</td>
                     </tr>)}

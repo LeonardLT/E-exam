@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const examScore = new Schema({
-    examId: String,
+    exam_Id: String,
     examName: String,
     username: String,
     score: Number

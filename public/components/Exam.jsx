@@ -44,7 +44,7 @@ export default class Exam extends React.Component {
         return (
             <div className="container">
                 {exam._id}
-                <div>考试ID：{exam.examId}</div>
+                <div>考试ID：{exam._id}</div>
                 <div>考试名称：{exam.examName}</div>
                 <div>考试时间：{exam.time}</div>
                 <hr/>
@@ -52,7 +52,7 @@ export default class Exam extends React.Component {
                 <div>
                     <form onSubmit={this._onSubmit.bind(this)}>
                         <div>{questions.map(question => <div>
-                            <Problem questionId={question.questionId}
+                            <Problem question_Id={question._id}
                                      question={question.question}
                                      answer={question.answer}
                                      saveAnswers={this._saveAnswers.bind(this)}
@@ -67,21 +67,21 @@ export default class Exam extends React.Component {
         );
     }
 
-    _saveAnswers(questionId, answer) {
+    _saveAnswers(question_Id, answer) {
 
-        const isExistInArray = (questionId, array) => {
+        const isExistInArray = (question_Id, array) => {
             for (let item of array) {
-                if (item.questionId == questionId) {
+                if (item.question_Id == question_Id) {
                     return item;
                 }
             }
             return null;
         };
 
-        let item = isExistInArray(questionId, this.studentAnswers);
+        let item = isExistInArray(question_Id, this.studentAnswers);
         if (item === null) {
             this.studentAnswers.push({
-                questionId: questionId,
+                question_Id: question_Id,
                 answer: answer
             });
         } else {
@@ -123,10 +123,10 @@ class Problem extends React.Component {
     }
 
     render() {
-        let {questionId, question, answer} = this.props;
+        let {question_Id, question, answer} = this.props;
         return (<div>
                 <div>
-                    <div>题目ID:{questionId}</div>
+                    <div>题目ID:{question_Id}</div>
                     <h4>题目：{question}</h4>
                 </div>
                 <div>答案： <input className="form-control" type="text"
@@ -149,7 +149,7 @@ class Problem extends React.Component {
     }
 
     _onBlur(event) {
-        this.saveAnswers(this.props.questionId, event.target.value);
+        this.saveAnswers(this.props.question_Id, event.target.value);
     }
 
 

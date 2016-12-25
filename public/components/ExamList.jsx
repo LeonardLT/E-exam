@@ -42,7 +42,7 @@ class ExamList extends React.Component {
                         <tbody>
                         {
                             this.state.examLists.map(exam =><tr>
-                                <td>{exam.examId}</td>
+                                <td>{exam._id}</td>
                                 <td>{exam.examName}</td>
                                 <td>{exam.time}</td>
                                 <td>{exam.branch}</td>
@@ -61,7 +61,7 @@ class ExamList extends React.Component {
         </div>);
     }
 
-    _joinTheExam(id) {
+    _joinTheExam(_id) {
         return () => {
             request
                 .get('/api/personal')
@@ -70,7 +70,7 @@ class ExamList extends React.Component {
                         alert('请先登录,from exam list');
                         return hashHistory.push('/login');
                     }else{
-                        return  hashHistory.push('/joinExam/' + id);
+                        return  hashHistory.push('/joinExam/' + _id);
                     }
                 });
         };

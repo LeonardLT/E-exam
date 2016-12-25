@@ -24,10 +24,10 @@ class AddQuestion extends React.Component {
                 <form onSubmit={this._onSubmit.bind(this)}>
                     <div className='col-md-6 col-md-offset-3'>
                         <label>questionType : {this.state.questionType}</label><br/>
-                        <label>questionId:</label>
-                        <input className="form-control" type="text" name="questionId"
-                               onChange={this._onQuestionIdChange.bind(this)}/>
-                        {this.state.questionId}
+                        {/*<label>questionId:</label>*/}
+                        {/*<input className="form-control" type="text" name="questionId"*/}
+                               {/*onChange={this._onQuestionIdChange.bind(this)}/>*/}
+                        {/*{this.state.questionId}*/}
                         <label>question:</label>
                         <textarea className="form-control" rows="3" name="question"
                                   onChange={this._onQuestionChange.bind(this)}>
@@ -51,7 +51,6 @@ class AddQuestion extends React.Component {
         event.preventDefault();
         request.post('/api/question')
             .send({
-                questionId: this.state.questionId,
                 question: this.state.question,
                 rightAnswer: this.state.rightAnswer,
                 questionType: this.state.questionType

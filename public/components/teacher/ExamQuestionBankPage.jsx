@@ -53,7 +53,7 @@ class ExamQuestionBankPage extends React.Component {
                     </thead>
                     <tbody>
                     {this.state.questions.map(question => <tr>
-                        <td>{question.questionId}</td>
+                        <td>{question._id}</td>
                         <td>{question.questionType}</td>
                         <td>{question.question.substr(0, 10)}……</td>
                         <td>
@@ -86,7 +86,7 @@ class ExamQuestionBankPage extends React.Component {
                             <h4 className="modal-title">Modal title</h4>
                         </div>
                         <div className="modal-body">
-                            <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestionId}
+                            <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestion_Id}
                             <hr/>
                             <label>题目类型 :&nbsp;&nbsp; </label>{this.state.currentQuestionType}
                             <hr/>
@@ -213,11 +213,11 @@ class ExamQuestionBankPage extends React.Component {
         };
     }
 
-    _onDelete(id) {
+    _onDelete(_id) {
         return () => {
-            alert(id);
+            alert(_id);
             request.delete('/api/question')
-                .query({id: id})
+                .query({_id: _id})
                 .end((err, res) => {
                     this.setState({
                         questions: res.body

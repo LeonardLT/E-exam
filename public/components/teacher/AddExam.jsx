@@ -14,7 +14,7 @@ class AddExam extends React.Component {
             questions: [],
             selectedQuestions: [],
             type: 'all',
-            currentQuestionId: '',
+            //currentQuestionId: '',
             currentQuestionType: '',
             currentQuestion: '',
             currentQuestion_Id: '',
@@ -87,7 +87,7 @@ class AddExam extends React.Component {
                         </thead>
                         <tbody>
                         {this.state.selectedQuestions.map(selectedQuestion => <tr>
-                            <td>{selectedQuestion.questionId}</td>
+                            <td>{selectedQuestion._id}</td>
                             <td>{selectedQuestion.questionType}</td>
                             <td data-toggle="tooltip"
                                 title={selectedQuestion.question}>{selectedQuestion.question.substr(0, 10)}……
@@ -112,7 +112,7 @@ class AddExam extends React.Component {
                                     <h4 className="modal-title">Modal title</h4>
                                 </div>
                                 <div className="modal-body">
-                                    <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestionId}
+                                    <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestion_Id}
                                     <hr/>
                                     <label>题目类型 :&nbsp;&nbsp; </label>{this.state.currentQuestionType}
                                     <hr/>
@@ -175,7 +175,7 @@ class AddExam extends React.Component {
                                 </thead>
                                 <tbody>
                                 {this.state.questions.map(question => <tr>
-                                    <td>{question.questionId}</td>
+                                    <td>{question._id}</td>
                                     <td>{question.questionType}</td>
                                     <td>{question.question.substr(0, 10)}……</td>
                                     <td>

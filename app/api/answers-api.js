@@ -9,8 +9,8 @@ router.post('/', (req, res, next) => {
     const {username, examName, _id, studentAnswers} = req.body;
     console.log(username + "~!@~!~@!~");
     let score = 0;
-    let findAnswer = (questionId, questions) => {
-        const rightAnswers = questions.find(question => question.questionId == questionId).rightAnswers;
+    let findAnswer = (question_Id, questions) => {
+        const rightAnswers = questions.find(question => question._id == question_Id).rightAnswers;
         // console.log(rightAnswers[0].rightAnswer);
         return rightAnswers[0].rightAnswer;
     };
@@ -23,8 +23,8 @@ router.post('/', (req, res, next) => {
         });
 
 
-        studentAnswers.map(({questionId, answer}) => {
-            const rightAnswer = findAnswer(questionId, questions);
+        studentAnswers.map(({question_Id, answer}) => {
+            const rightAnswer = findAnswer(question_Id, questions);
             console.log("++answer" + answer);
             console.log("++rightAnswer" + rightAnswer);
             if (answer == rightAnswer) {
@@ -33,7 +33,7 @@ router.post('/', (req, res, next) => {
         });
 
         var examScore = new ExamScore({
-            examId: _id,
+            exam_Id: _id,
             examName: examName,
             username: username,
             score: score

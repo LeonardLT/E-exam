@@ -5,11 +5,10 @@ const router = express.Router();
 
 router.post('/', (req, res, next) => {
 
-    const {questionId, question, rightAnswer, questionType} = req.body;
+    const { question, rightAnswer, questionType} = req.body;
     let rightAnswers = [];
     rightAnswers.push({rightAnswer});
     var blankQuestion = new BlankQuestion({
-        questionId: questionId,
         question: question,
         rightAnswers: rightAnswers,
         questionType: questionType
@@ -31,8 +30,9 @@ router.get('/examQuestions', (req, res, next) => {
 });
 
 router.delete('/', (req, res, next) => {
-    const id = req.query.id;
-    BlankQuestion.find({_id: id}).remove(err => {
+    const _id = req.query._id;
+    console.log(_id+"dddddddd");
+    BlankQuestion.find({_id: _id}).remove(err => {
         if (err) return next(err);
         BlankQuestion.find({}, (err, data) => {
             if (err) return next(err);
@@ -42,12 +42,11 @@ router.delete('/', (req, res, next) => {
 });
 
 router.post('/updateQuestion', (req, res, next) => {
-    const {question_Id, question, questionId, questionType, questionRightAnswer} = req.body;
+    const {question_Id, question,  questionType, questionRightAnswer} = req.body;
     let rightAnswers = [];
     rightAnswers.push({rightAnswer: questionRightAnswer});
     BlankQuestion.findOneAndUpdate({_id: question_Id},
         {
-            questionId: questionId,
             question: question,
             rightAnswers: rightAnswers,
             questionType: questionType
