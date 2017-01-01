@@ -56,12 +56,12 @@ router.post("/updateExam", (req, res, next) => {
         {
             exam_Id: exam_Id,
             examId: 1,
-            examName:examName,
-            time:time,
-            branch:branch,
-            major:major,
-            classroom:classroom,
-            questions:questions,
+            examName: examName,
+            time: time,
+            branch: branch,
+            major: major,
+            classroom: classroom,
+            questions: questions,
             score: 0
         }, (err) => {
             if (err) return next(err);
@@ -75,6 +75,18 @@ router.post("/updateExam", (req, res, next) => {
                 return res.json(result);
             });
         });
+});
+
+router.delete("/", (req, res, next) => {
+    const _id = req.query._id;
+    Exam.find({_id: _id}).remove(err => {
+        if (err) return next(err);
+        Exam.find({}, (err, data) => {
+            if (err) return next(err);
+            return res.json(data);
+        });
+    });
+
 });
 
 export default router;

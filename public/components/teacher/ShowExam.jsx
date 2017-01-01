@@ -48,23 +48,24 @@ class ShowExam extends React.Component {
             <div className="row">
                 <div className="col-md-4"></div>
                 <div className="col-md-8">
-                    <h3>我的考试</h3>
+                    <h3>我发布的考试</h3>
                     <hr/>
                     <table className="table">
                         <thead>
                         <tr>
-                            <th>考试Id</th>
+                            {/*<th>考试Id</th>*/}
                             <th>考试名称</th>
                             <th>时间</th>
                             <th>分院</th>
                             <th>专业</th>
+                            <th>班级</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
                         {
                             this.state.examLists.map(exam => <tr>
-                                <td>{exam._id}</td>
+                                {/*<td>{exam._id}</td>*/}
                                 <td>{exam.examName}</td>
                                 <td>{exam.time}</td>
                                 <td>{exam.branch}</td>
@@ -76,6 +77,8 @@ class ShowExam extends React.Component {
                                     {/*<input className="btn btn-primary btn-sm" type="button" value="修改"*/}
                                     {/*data-toggle="modal" data-target=".updateExamDetail" ref="updateDetailBtn"*/}
                                     {/*onClick={this._updateExam.bind(this)}/>*/}
+                                    <input value="删除" type="button" className="btn btn-danger btn-sm"
+                                           onClick={this._deleteExam(exam._id)}/>
                                 </td>
                             </tr>)
                         }
@@ -131,9 +134,9 @@ class ShowExam extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal"><span
-                                aria-hidden="true">&times;</span><span className="sr-only"
-                                                                       ref="updateDetailBtn">Close</span></button>
-                            <h4 className="modal-title">Modal title</h4>
+                                aria-hidden="true">&times;</span>
+                                <span className="sr-only" ref="updateDetailBtn">Close</span></button>
+                            <h4 className="modal-title">考试详情</h4>
                         </div>
                         <div className="modal-body">
                             <p>考试ID：{this.state.currentExam_id}</p>
@@ -152,8 +155,9 @@ class ShowExam extends React.Component {
                             </p>
                             <p>专业：
                                 {/*<input className="form-control" type="text" value={this.state.currentExamMajor}*/}
-                                         {/*onChange={this._onExamMajorChange.bind(this)}/>*/}
-                                <select className="form-control" onChange={this._onExamMajorChange.bind(this)} value={this.state.currentExamMajor}>
+                                {/*onChange={this._onExamMajorChange.bind(this)}/>*/}
+                                <select className="form-control" onChange={this._onExamMajorChange.bind(this)}
+                                        value={this.state.currentExamMajor}>
                                     <option value="全部">全部</option>
                                     <option value="软件工程">软件工程</option>
                                     <option value="通信工程">通信工程</option>
@@ -187,6 +191,19 @@ class ShowExam extends React.Component {
                 </div>
             </div>
         </div>);
+    }
+
+    _deleteExam(exam_id) {
+        return () => {
+            alert("delete success");
+            request.delete("/api/exams")
+                .query({_id: exam_id})
+                .end((err, res) => {
+                    this.setState({
+                        examLists: res.body
+                    });
+                });
+        };
     }
 
     _onRemoveQuestion(id) {
