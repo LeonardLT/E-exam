@@ -69,6 +69,7 @@ class ShowExam extends React.Component {
                                 <td>{exam.time}</td>
                                 <td>{exam.branch}</td>
                                 <td>{exam.major}</td>
+                                <td>{exam.classroom}</td>
                                 <td><input className="btn btn-success btn-sm" type="button" value="查看详情"
                                            data-toggle="modal" data-target=".showExamDetail"
                                            onClick={this._showDetail(exam)}/>
@@ -135,29 +136,52 @@ class ShowExam extends React.Component {
                             <h4 className="modal-title">Modal title</h4>
                         </div>
                         <div className="modal-body">
-                            <p>考试ID：<input className="form-control" type="text" value={this.state.currentExam_id}/></p>
-                            <p>考试名称：<input className="form-control" type="text" value={this.state.currentExamName}/></p>
-                            <p>考试时间：<input className="form-control" type="text" value={this.state.currentExamTime}/></p>
-                            <p>分院：<input className="form-control" type="text" value={this.state.currentExamBranch}/></p>
-                            <p>专业：<input className="form-control" type="text" value={this.state.currentExamMajor}/></p>
-                            <p>班级：<input className="form-control" type="text" value={this.state.currentExamClassroom}/>
+                            <p>考试ID：{this.state.currentExam_id}</p>
+                            <p>考试名称：<input className="form-control" type="text" value={this.state.currentExamName}
+                                           onChange={this._onExamNameChange.bind(this)}/></p>
+                            <p>考试时间：<input className="form-control" type="text" value={this.state.currentExamTime}
+                                           onChange={this._onExamTimeChange.bind(this)}/></p>
+                            <p>分院：
+                                {/*<input className="form-control" type="text" value={this.state.currentExamBranch}*/}
+                                {/*onChange={this._onExamBranchChange.bind(this)}/>*/}
+                                <select className="form-control" onChange={this._onExamBranchChange.bind(this)}
+                                        value={this.state.currentExamBranch}>
+                                    <option value="全部">全部</option>
+                                    <option value="信息工程学院">信息工程学院</option>
+                                </select>
                             </p>
-                            <p>问题数量：<input className="form-control" type="text"
-                                           value={this.state.currentQuestions.length}/></p>
+                            <p>专业：
+                                {/*<input className="form-control" type="text" value={this.state.currentExamMajor}*/}
+                                         {/*onChange={this._onExamMajorChange.bind(this)}/>*/}
+                                <select className="form-control" onChange={this._onExamMajorChange.bind(this)} value={this.state.currentExamMajor}>
+                                    <option value="全部">全部</option>
+                                    <option value="软件工程">软件工程</option>
+                                    <option value="通信工程">通信工程</option>
+                                    <option value="电子信息工程">电子信息工程</option>
+                                    <option value="网络工程">网络工程</option>
+                                </select>
+                            </p>
+                            <p>班级：<input className="form-control" type="text" value={this.state.currentExamClassroom}
+                                         onChange={this._onExamClassroomChange.bind(this)}/>
+                            </p>
+                            <p>问题数量：{this.state.currentQuestions.length}</p>
                             <hr/>
                             <p>题目：{this.state.currentQuestions.map(question => <div>
                                 问题类型：{question.questionType}<br/>
                                 问题内容：{question.question}<br/>
                                 问题答案：{question.rightAnswers[0].rightAnswer}<br/>
-                                <input type="button" value="移除" className="btn btn-danger"/>
+                                <input type="button" value="移除" className="btn btn-danger"
+                                       onClick={this._onRemoveQuestion(question._id)}/>
                                 <hr/>
                             </div>)}</p>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" onClick={this._closeDetail.bind(this)}>
-                                Close
+                            <input type="button" className="btn btn-default" onClick={this._closeDetail.bind(this)}
+                                   ref="btnClose" value="关闭"/>
+
+                            <button type="button" className="btn btn-primary" onClick={this._updateExam.bind(this)}>
+                                保存修改
                             </button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -165,10 +189,54 @@ class ShowExam extends React.Component {
         </div>);
     }
 
+    _onRemoveQuestion(id) {
+        return () => {
+            var arr = [];
+            this.state.currentQuestions.forEach((question) => {
+                if (question._id != id) {
+                    arr.push(question)
+                }
+            });
+            this.setState({
+                currentQuestions: arr
+            });
+        }
+    }
+
     _closeDetail(event) {
         this.refs.updateDetailBtn.click();
         this.refs.detailCloseBtn.click();
 
+    }
+
+    _onExamNameChange(event) {
+        this.setState({
+            currentExamName: event.target.value
+        });
+    }
+
+    _onExamTimeChange(event) {
+        this.setState({
+            currentExamTime: event.target.value
+        });
+    }
+
+    _onExamBranchChange(event) {
+        this.setState({
+            currentExamBranch: event.target.value
+        });
+    }
+
+    _onExamMajorChange(event) {
+        this.setState({
+            currentExamMajor: event.target.value
+        });
+    }
+
+    _onExamClassroomChange(event) {
+        this.setState({
+            currentExamClassroom: event.target.value
+        });
     }
 
     _showDetail(exam) {
@@ -187,7 +255,22 @@ class ShowExam extends React.Component {
 
 
     _updateExam(event) {
-
+        this.refs.btnClose.click();
+        request.post("/api/exams/updateExam")
+            .send({
+                exam_Id: this.state.currentExam_id,
+                examName: this.state.currentExamName,
+                time: this.state.currentExamTime,
+                branch: this.state.currentExamBranch,
+                major: this.state.currentExamMajor,
+                classroom: this.state.currentExamClassroom,
+                questions: this.state.currentQuestions
+            })
+            .end((err, res) => {
+                this.setState({
+                    examLists: res.body
+                });
+            });
     }
 
 }
