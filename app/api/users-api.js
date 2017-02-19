@@ -5,12 +5,13 @@ import {validateEmail, validatePhone} from '../tools/user-field-validation';
 
 
 function existEmpty(userData) {
-    return !('' === userData.username
+    return !('' === userData.userAccount
     || '' === userData.password
     || '' === userData.email
     || '' === userData.phone
     || '' === userData.branch
-    || '' === userData.major );
+    || '' === userData.major
+    || '' === userData.type);
 }
 
 function isEmailRight(userData) {
@@ -38,7 +39,7 @@ function isUserInformationLegal(userData) {
 
 
 function isExist(userData, next, callback) {
-    User.findOne({username: userData.username}, function (err, doc) {
+    User.findOne({userAccount: userData.userAccount}, function (err, doc) {
         if (err) return next(err);
 
         callback(null, doc);
@@ -56,17 +57,19 @@ router.post('/', function (req, res, next) {
             if (err) return next(err);
             if (doc === null) {
                 var user = new User({
-                    username: userData.username,
+                    userAccount: userData.userAccount,
+                    nickname: userData.userAccount,
+                    headImg: "../images/head.png",
                     password: userData.password,
-                    cardID: userData.username,
-                    name: userData.username,
-                    sex: '男',
+                    name: userData.userAccount,
+                    cardId: userData.userAccount,
+                    sex: 0,
                     email: userData.email,
                     phone: userData.phone,
                     branch: userData.branch,
                     major: userData.major,
-                    class: '',
-                    type: '学生'
+                    classroom: "",
+                    type: userData.type
                 });
                 user.save(function (err) {
                     if (err) return next(err);
@@ -88,8 +91,8 @@ router.post('/', function (req, res, next) {
 
 
 router.get('/', function (req, res, next) {
-    const username = req.query.username;
-    User.findOne({username: username}, (err, userInformation) => {
+    const userAccount = req.query.userAccount;
+    User.findOne({userAccount: userAccount}, (err, userInformation) => {
         if (err) return next(err);
 
         res.json(userInformation);

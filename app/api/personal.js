@@ -7,18 +7,18 @@ const router = express.Router();
 
 router.get('/', function (req, res, next) {
     const token = req.cookies['token'];
-    console.log(token);
     if (_.isEmpty(token)) {
+        // return res.sendStatus(401).send('not login');
         return res.sendStatus(401);
     }
     else {
         validateToken(token, next, function (err, isValidateToken) {
             if (err) return next(err);
             if (isValidateToken) {
-                const username = getUsernameFromToken(token);
-                User.findOne({username: username}, (err, data) => {
-                    const {branch, major, classroom} = data;
-                    return res.json({username, branch, major, classroom});
+                const userAccount = getUserAccountFromToken(token);
+                User.findOne({userAccount: userAccount}, (err, data) => {
+                    const {nickname,branch, major, classroom} = data;
+                    return res.json({nickname, branch, major, classroom});
                 });
             } else {
                 return res.sendStatus(401);
@@ -27,11 +27,11 @@ router.get('/', function (req, res, next) {
     }
 });
 
-function generateToken(name, password) {
-    return name + ':' + sha1(password);
+function generateToken(userAccount, password) {
+    return userAccount + ':' + sha1(password);
 }
 
-function getUsernameFromToken(token) {
+function getUserAccountFromToken(token) {
     const separatorIndex = _.lastIndexOf(token, ':');
     return token.substring(0, separatorIndex);
 }
@@ -40,18 +40,18 @@ function validateToken(token, next, callback) {
     if (token === null || token.length === 0 || !token.includes(':')) {
         callback(null, false);
     }
-    const name = getUsernameFromToken(token);
-    findUser(name, next, function (err, user) {
+    const userAccount = getUserAccountFromToken(token);
+    findUser(userAccount, next, function (err, user) {
         if (err) return next(err);
         if (user) {
-            const {name, password} = user;
-            callback(null, generateToken(name, password) === token);
+            const {userAccount, password} = user;
+            callback(null, generateToken(userAccount, password) === token);
         }
     });
 }
 
-function findUser(username, next, callback) {
-    User.findOne({username}, (err, userData) => {
+function findUser(userAccount, next, callback) {
+    User.findOne({userAccount}, (err, userData) => {
         if (err) return next(err);
         callback(null, userData);
     });

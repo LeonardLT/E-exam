@@ -9,14 +9,19 @@ export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
-            email: '',
-            phone: '',
-            password: '',
-            confirmPassword: '',
-            branch: '',
-            major: '',
-            class: ''
+            userAccount: "",
+            nickname: "",
+            headImg: "",
+            password: "",
+            name: "",
+            cardId: "",
+            sex: 0,
+            email: "",
+            phone: "",
+            branch: "",
+            major: "",
+            classroom: "",
+            type: 0
         }
     }
 
@@ -27,11 +32,11 @@ export default class Register extends Component {
                 <h3>欢迎注册</h3>
                 <hr/>
                 <div className="form-group">
-                    <label>学号：</label>
-                    <input type="text" className="form-control" id="username"
+                    <label>账号：</label>
+                    <input type="text" className="form-control" id="userAccount"
                            placeholder="请输入学号" required
-                           value={this.state.username}
-                           onChange={this._onUsernameChange.bind(this)}/>
+                           value={this.state.userAccount}
+                           onChange={this._onUserAccountChange.bind(this)}/>
                 </div>
                 <div className="form-group">
                     <label>分院：</label>
@@ -99,9 +104,9 @@ export default class Register extends Component {
         });
     }
 
-    _onUsernameChange(event) {
+    _onUserAccountChange(event) {
         this.setState({
-            username: event.target.value
+            userAccount: event.target.value
         });
     }
 
@@ -140,12 +145,13 @@ export default class Register extends Component {
         else {
             request.post('/api/users')
                 .send({
-                    username: this.state.username,
+                    userAccount: this.state.userAccount,
                     password: this.state.password,
                     email: this.state.email,
                     phone: this.state.phone,
                     branch: this.state.branch,
                     major: this.state.major,
+                    type:0
                 })
                 .end((err, res) => {
                     if (res.statusCode === 400 && res.text === 'Please finish the form') {

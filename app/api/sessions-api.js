@@ -6,27 +6,34 @@ import sha1 from 'sha1';
 
 const router = express.Router();
 router.post('/', (req, res, next) => {
-    const username = req.body.username;
+    const userAccount = req.body.userAccount;
     const password = req.body.password;
-    const type = req.body.type;
-    if (_.isEmpty(username) || _.isEmpty(password) || _.isEmpty(type)) {
+    const type = Number(req.body.type);
+    if (_.isEmpty(userAccount) || _.isEmpty(password) || type == null) {
         return res.status(400).send('username or password or type can not be null');
     }
     else {
-        User.findOne({username}, (err, userData) => {
+        User.findOne({userAccount}, (err, userData) => {
             if (err) return next(err);
-            if (userData === null || userData.password !== password || userData.type !== type) {
+            // if (userData === null || userData.password !== password || userData.type !== type) {
+            if (userData === null || userData.password !== password) {
                 return res.status(401).send('username or password is wrong');
             }
-            else if (userData.password === password && userData.type === type) {
-                res.cookie('token', generateInfo(username, password), {maxAge: 60 * 1000});
-                return res.status(201).send('login success');
+            // else if (userData.password === password && userData.type === type) {
+            else if (userData.password === password ) {
+                res.cookie('token', generateInfo(userAccount, password), {maxAge: 60 * 30000});
+                // return res.status(201).send('login success');
+                return res.status(201).send({type:userData.type});
             }
 
         });
     }
-    function generateInfo(userId, password) {
-        return userId + ':' + sha1(password);
+    function generateInfo(userAccount, password) {
+        return userAccount + ':' + sha1(password);
     }
+});
+
+router.post('/loginOut',(req,res,next) => {
+    res.clearCookie("token").send('login out');
 });
 export default router;

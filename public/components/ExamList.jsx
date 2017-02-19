@@ -20,7 +20,7 @@ class ExamList extends React.Component {
             .get('/api/personal')
             .end((err, res) => {
                 if (err || res.statusCode === 401) {
-                    alert('please login!');
+                    // alert('please login!');
                     return hashHistory.push('/login');
                 }
                 const {username, branch, major, classroom} = res.body;

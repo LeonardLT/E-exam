@@ -59,3 +59,4 @@ if (require.main === module) {
         console.log('Listening on 3000 , http://localhost:3000');
     });
 }
+export default app;

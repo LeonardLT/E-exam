@@ -10,9 +10,9 @@ export default class SignIn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
+            userAccount: '',
             password: '',
-            type: '学生'
+            type: 0
         }
 
     }
@@ -25,10 +25,10 @@ export default class SignIn extends React.Component {
                     <h3 className="welcome">Eurasia-EXAM</h3>
                     <hr/>
                     <div className="form-group">
-                        <label>用户名：</label>
-                        <input className="form-control" type="text" placeholder="请输入用户名" id="username"
-                               value={this.state.username}
-                               onChange={this._onStudentIdChange.bind(this)}
+                        <label>账号：</label>
+                        <input className="form-control" type="text" placeholder="请输入用户名" id="userAccount"
+                               value={this.state.userAccount}
+                               onChange={this._onUserAccountChange.bind(this)}
                         />
                     </div>
 
@@ -40,16 +40,16 @@ export default class SignIn extends React.Component {
                         />
                     </div>
 
-                    <div className="row">
-                        <div className='col-md-8'>
-                        </div>
-                        <div className="col-md-4">
-                            <select className="form-control" onChange={this._onTypeChange.bind(this)}>
-                                <option value="学生">学生</option>
-                                <option value="教师">教师</option>
-                            </select>
-                        </div>
-                    </div>
+                    {/*<div className="row">*/}
+                        {/*<div className='col-md-8'>*/}
+                        {/*</div>*/}
+                        {/*<div className="col-md-4">*/}
+                            {/*<select className="form-control" onChange={this._onTypeChange.bind(this)}>*/}
+                                {/*<option value="0">学生</option>*/}
+                                {/*<option value="1">教师</option>*/}
+                            {/*</select>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
                     <div>
                         <hr/>
                         <button type="submit" className="btn btn-lg btn-block btn-primary">登录</button>
@@ -65,9 +65,9 @@ export default class SignIn extends React.Component {
         });
     }
 
-    _onStudentIdChange(event) {
+    _onUserAccountChange(event) {
         this.setState({
-            username: event.target.value
+            userAccount: event.target.value
         });
     }
 
@@ -81,25 +81,31 @@ export default class SignIn extends React.Component {
         event.preventDefault();
         request.post('/api/sessions')
             .send({
-                username: this.state.username,
+                userAccount: this.state.userAccount,
                 password: this.state.password,
                 type: this.state.type
             })
-            .end((err, res,req) => {
+            .end((err, res, req) => {
                 if (res.statusCode === 201) {
+                    const userType = res.body.type;
                     alert('login success');
-                    $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.username + '</a></li>' + '<li><a href="/" onchange={console.log(1231)}>退出</a></li>');
-                    if ('教师' === this.state.type) {
+                    // $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.username + '</a></li>' + '<li><a href="/" onchange={console.log(1231)}>退出</a></li>');
+                    console.log( this.state.type);
+                    console.log(1 === this.state.type);
+                    if (1 === userType) {
                         alert("Welcome the teacher!");
                         // var a = req.cookies['token'];
                         // const token = req.cookies['token'];
                         // console.log(token);
                         self.location = '/admin#/teacher';
-                    }else if('学生' === this.state.type){
-                        hashHistory.push('/');
-                    } else {
-                        hashHistory.push('/teacher');
+                    } else if (0 === userType) {
+                        // hashHistory.push('/');
+                        // console.log(res.body.type);
+                        self.location = '/';
                     }
+                    // else {
+                    //     hashHistory.push('/teacher');
+                    // }
                 } else if (res.statusCode === 400 && res.text == 'username and password can not be null') {
                     alert(res.text);
                 }
