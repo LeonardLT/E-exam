@@ -89,14 +89,7 @@ export default class SignIn extends React.Component {
                 if (res.statusCode === 201) {
                     const userType = res.body.type;
                     alert('login success');
-                    // $("#loginNav").html('' + '<li><a href="/#/personalPage">' + this.state.username + '</a></li>' + '<li><a href="/" onchange={console.log(1231)}>退出</a></li>');
-                    console.log( this.state.type);
-                    console.log(1 === this.state.type);
                     if (1 === userType) {
-                        alert("Welcome the teacher!");
-                        // var a = req.cookies['token'];
-                        // const token = req.cookies['token'];
-                        // console.log(token);
                         self.location = '/admin#/teacher';
                     } else if (0 === userType) {
                         // hashHistory.push('/');

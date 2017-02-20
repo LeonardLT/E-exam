@@ -6,6 +6,26 @@ import {hashHistory} from 'react-router'
 
 export default class TeacherNav extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            nickname: '登录',
+            currentNav: 0
+        }
+
+    }
+
+    componentWillMount() {
+        request
+            .get('/api/personal')
+            .end((err, res) => {
+                if (err || res.statusCode === 401) {
+                    return;
+                }
+                const {nickname} = res.body;
+                this.setState({nickname: nickname || '登录'});
+            });
+    }
 
     render() {
         return (<div>
@@ -46,11 +66,15 @@ export default class TeacherNav extends React.Component {
                                 </ul>
                             </li>
                             <li><Link to="/teacher">成绩</Link></li>
-                            <li><a onClick={this._personalClick.bind(this)}>个人中心</a></li>
+                            <li><a>个人中心</a></li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">
-                            <li><Link to="/login">登陆</Link></li>
-                            <li><Link to="/register">注册</Link></li>
+                            <li><Link to={this.state.nickname!=='登录' ? '/personalPage' :'/login'}>{this.state.nickname}</Link></li>
+                            {this.state.nickname !== '登录' ?
+                                <li><a href='javascript:void(0);' onClick={this._loginOut.bind(this)}>退出</a></li>
+                                :
+                                <li><Link to="/register">注册</Link></li>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -60,15 +84,11 @@ export default class TeacherNav extends React.Component {
         </div>);
     }
 
-    _personalClick(event) {
+    _loginOut(event) {
         request
-            .get('/api/personal')
+            .post('/api/sessions/loginOut')
             .end((err, res) => {
-                if (err || res.statusCode === 401) {
-                    alert('请先登录！');
-                    return hashHistory.push('/');
-                }
-                return hashHistory.push('/personalPage');
+                window.location.href = "/";
             });
     }
 }
