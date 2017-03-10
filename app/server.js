@@ -8,9 +8,11 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import apiRouter from './api/api.js';
 import db from './db/db';
+import fileUpload from 'express-fileupload';
 
 
 const app = express();
+app.use(fileUpload());
 const compiler = webpack(webpackConfig);
 
 app.use(webpackDevMiddleware(compiler, {
@@ -43,9 +45,26 @@ app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname, '..') + '/public/index.html')
 });
 
-app.get('/admin', function (req, res) {
+app.get('/teacher', function (req, res) {
     res.sendFile(path.resolve(__dirname, '..') + '/public/admin.html')
 });
+
+app.post('/api/uploaded-images', function(req, res) {
+    const imageFile = req.files.image;
+    const targetName = generateTargetName(imageFile.name);
+    imageFile.mv('./public//uploaded-images/' + targetName, function(err) {
+        if (err) return res.status(500).send('Error happens when uploading');
+        res.status(201).send('/uploaded-images/' + targetName);
+    })
+});
+
+function generateTargetName(fileName) {
+    const extName = path.extname(fileName);
+    const prefixName = path.basename(fileName, extName);
+    const timestamp = Date.now();
+    return prefixName + '-' + timestamp + extName;
+}
+
 
 // app.listen(3000, function () {
 // app.listen(process.env.PORT || 3000, function () {

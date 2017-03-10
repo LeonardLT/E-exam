@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/', (req, res, next) => {
     const userAccount = req.body.userAccount;
     const password = req.body.password;
-    const type = Number(req.body.type);
+    const type = Number(req.body.userType);
     if (_.isEmpty(userAccount) || _.isEmpty(password) || type == null) {
         return res.status(400).send('username or password or type can not be null');
     }
@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => {
             else if (userData.password === password ) {
                 res.cookie('token', generateInfo(userAccount, password), {maxAge: 60 * 30000});
                 // return res.status(201).send('login success');
-                return res.status(201).send({type:userData.type});
+                return res.status(201).send({userType:userData.userType});
             }
 
         });

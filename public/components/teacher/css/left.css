@@ -1,0 +1,23 @@
+.leftImgArea{
+    border: 2px solid #cdd6ce;
+    padding: 10px;
+    /*height: 180px;*/
+}
+.headImg{
+    width: 100px;
+    height: 100px;
+    margin-left: 30px;
+}
+.userName{
+    text-align: center;
+    font-size: 20px;
+}
+.userType{
+    text-align: center;
+    font-size: 15px;
+}
+.left-nav{
+    border: 2px solid #cdd6ce;
+    height: 500px;
+    margin-top: 5px;
+}

@@ -57,7 +57,7 @@ class ExamList extends React.Component {
                         </thead>
                         <tbody>
                         {
-                            this.state.examLists.map(exam => <tr>
+                            this.state.examLists.map((exam,i) => <tr key={i}>
                                 <td>{exam._id}</td>
                                 <td>{exam.examName}</td>
                                 <td>{exam.time}</td>

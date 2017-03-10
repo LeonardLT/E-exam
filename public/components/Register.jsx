@@ -13,15 +13,16 @@ export default class Register extends Component {
             nickname: "",
             headImg: "",
             password: "",
-            name: "",
+            realName: "",
             cardId: "",
             sex: 0,
             email: "",
             phone: "",
             branch: "",
             major: "",
+            grade: 0,
             classroom: "",
-            type: 0
+            userType: 0
         }
     }
 
@@ -58,6 +59,23 @@ export default class Register extends Component {
                     </select>
                 </div>
                 <div className="form-group">
+                    <label>年级：</label>
+                    <select className="form-control" id="grade"
+                            onChange={this._onGradeChange.bind(this)}>
+                        <option disabled="disabled" selected="selected">请选择</option>
+                        <option value="13">13</option>
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>班级：</label>
+                    <select className="form-control" id="classroom"
+                            onChange={this._onClassroomChange.bind(this)}>
+                        <option disabled="disabled" selected="selected">请选择</option>
+                        <option value="1301">1301</option>
+                        <option value="1302">1302</option>
+                    </select>
+                </div>
+                <div className="form-group">
                     <label>邮箱：</label>
                     <input type="email" className="form-control" id="email"
                            placeholder="请输入邮箱" required
@@ -90,6 +108,14 @@ export default class Register extends Component {
                 <span className="pull-right">有账号?<Link to="login" className="to-register">登陆 </Link></span>
             </div>
         </form>
+    }
+
+    _onGradeChange(event) {
+        this.setState({grade: event.target.value});
+    }
+
+    _onClassroomChange(event) {
+        this.setState({classroom: event.target.value});
     }
 
     _onMajorChange(event) {
@@ -139,7 +165,7 @@ export default class Register extends Component {
         if (this.state.password !== this.state.confirmPassword) {
             alert('密码不一致,请重新输入密码!');
         }
-        if ('' === this.state.branch || '' === this.state.major) {
+        if ('' === this.state.branch || '' === this.state.major || '' === this.state.grade || '' === this.state.classroom) {
             alert('分院或专业不能为空');
         }
         else {
@@ -151,7 +177,9 @@ export default class Register extends Component {
                     phone: this.state.phone,
                     branch: this.state.branch,
                     major: this.state.major,
-                    type:0
+                    grade:this.state.grade,
+                    classroom:this.state.classroom,
+                    userType: 0
                 })
                 .end((err, res) => {
                     if (res.statusCode === 400 && res.text === 'Please finish the form') {

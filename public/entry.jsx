@@ -11,7 +11,8 @@ import Register from './components/Register.jsx';
 import PersonalPage from './components/PersonalPage.jsx';
 import ExamList from './components/ExamList.jsx';
 import MyScore from './components/MyScore.jsx';
-
+import UploadForm from './components/UploadForm.jsx';
+import {isLogin} from './js/UserUtil'
 
 const router = <Router history={hashHistory}>
     <Route path="/" component={Student}>
@@ -19,8 +20,9 @@ const router = <Router history={hashHistory}>
         <Route path='/register' component={Register}/>
         <Route path='/login' component={LoginForm}/>
         <Route path='/joinExam/:_id' component={Exam}/>
-        <Route path='/exam' component={ExamList}/>
-        <Route path='/personalPage' component={PersonalPage}>
+        <Route path='/exam' component={ExamList} onEnter={isLogin}/>
+        <Route path='/uploadForm' component={UploadForm} onEnter={isLogin}/>
+        <Route path='/personalPage' component={PersonalPage} onEnter={isLogin}>
             <Route path="/myScore" component={MyScore}/>
         </Route>
     </Route>

@@ -18,7 +18,7 @@ describe('dummy', () => {
         db.close(finish(done));
     });
 
-    it('save a user', (done) => {
+    fit('save a user', (done) => {
         async.series([
                 (cb) => request(app)
                     .post('/api/users')
@@ -27,15 +27,16 @@ describe('dummy', () => {
                         nickname: "Leonard",
                         headImg: "img/head.png",
                         password: "123456",
-                        name: "刘陶俊楠",
+                        realName: "刘陶俊楠",
                         cardId: "13420601152251",
                         sex: 1,
                         email: "364125168@qq.com",
                         phone: "18829078216",
                         branch: "信息工程学院",
                         major: "软件工程",
+                        grade:13,
                         classroom: "1301",
-                        type: 0
+                        userType: 0
                     }).expect(201, 'register success', cb)
             ],
             finish(done)
@@ -59,6 +60,7 @@ describe('dummy', () => {
                         phone: "1882907821",
                         branch: "信息工程学院",
                         major: "软件工程",
+                        grade:13,
                         classroom: "1301",
                         type: 0
                     }).expect(400, 'The phone number is error', cb)

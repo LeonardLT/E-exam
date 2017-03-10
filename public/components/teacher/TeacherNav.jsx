@@ -20,7 +20,7 @@ export default class TeacherNav extends React.Component {
             .get('/api/personal')
             .end((err, res) => {
                 if (err || res.statusCode === 401) {
-                    return;
+                    return hashHistory.push("/login");
                 }
                 const {nickname} = res.body;
                 this.setState({nickname: nickname || '登录'});
@@ -45,11 +45,12 @@ export default class TeacherNav extends React.Component {
 
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
-                            <li className="active"><Link to="/teacher">首页</Link></li>
+                            <li className="active"><Link to="/index">首页</Link></li>
                             {/*<li><Link to="/questionBankPage">题库</Link></li>*/}
                             <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">题库 <span
-                                    className="caret"></span></a>
+                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">题库
+                                    <span className="glyphicon glyphicon-chevron-down"/>
+                                </a>
                                 <ul className="dropdown-menu" role="menu">
                                     <li><Link to="/examQuestionBankPage">考试题库</Link></li>
                                     {/*<li><Link to="/practiceQuestionBankPage">练习题库</Link></li>*/}
@@ -58,8 +59,9 @@ export default class TeacherNav extends React.Component {
                             </li>
                             {/*<li><Link to="/exam">考试</Link></li>*/}
                             <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">考试 <span
-                                    className="caret"></span></a>
+                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">考试
+                                    <span className="glyphicon glyphicon-chevron-down"/>
+                                </a>
                                 <ul className="dropdown-menu" role="menu">
                                     <li><Link to="/addExam">创建考试</Link></li>
                                     <li><Link to="/showExam">查看考试</Link></li>

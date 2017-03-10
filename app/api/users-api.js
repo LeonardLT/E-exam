@@ -1,5 +1,7 @@
 import express from 'express';
 import {User} from '../schema/userSchema';
+import {IncId} from '../schema/ids';
+import incId from '../tools/incId';
 const router = express.Router();
 import {validateEmail, validatePhone} from '../tools/user-field-validation';
 
@@ -56,25 +58,28 @@ router.post('/', function (req, res, next) {
         isExist(userData, next, function (err, doc) {
             if (err) return next(err);
             if (doc === null) {
-                var user = new User({
-                    userAccount: userData.userAccount,
-                    nickname: userData.userAccount,
-                    headImg: "../images/head.png",
-                    password: userData.password,
-                    name: userData.userAccount,
-                    cardId: userData.userAccount,
-                    sex: 0,
-                    email: userData.email,
-                    phone: userData.phone,
-                    branch: userData.branch,
-                    major: userData.major,
-                    classroom: "",
-                    type: userData.type
-                });
-                user.save(function (err) {
-                    if (err) return next(err);
-                    console.log('save status:', err ? 'failed' : 'success');
-                    res.status(201).send('register success');
+                incId(next,(err,incId) => {
+                    new User({
+                        id: incId,
+                        userAccount: userData.userAccount,
+                        nickname: userData.userAccount,
+                        headImg: "../images/head.png",
+                        password: userData.password,
+                        realName: userData.userAccount,
+                        cardId: userData.userAccount,
+                        sex: 0,
+                        email: userData.email,
+                        phone: userData.phone,
+                        branch: userData.branch,
+                        major: userData.major,
+                        grade:userData.grade,
+                        classroom: userData.classroom,
+                        userType: userData.userType
+                    }).save(function (err) {
+                        if (err) return next(err);
+                        console.log('save status : success');
+                        res.status(201).send('register success');
+                    });
                 });
             }
             else if (doc !== null) {
@@ -98,5 +103,13 @@ router.get('/', function (req, res, next) {
         res.json(userInformation);
     });
 
+});
+
+router.put("/", (req, res, next) => {
+    const {userAccount, nickname, headImg, realName, sex, email, phone} = req.body;
+    User.findOneAndUpdate({userAccount}, {nickname, headImg, realName, sex, email, phone}, (err, data) => {
+        if (err) return next(err);
+        return res.status(200).send("update success");
+    });
 });
 export default router;

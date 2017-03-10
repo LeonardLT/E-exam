@@ -1,0 +1,18 @@
+#userInfoForm{
+    width:70%;
+    margin: 0 auto;
+}
+.iconImg{
+    width: 10px;
+    cursor: pointer;
+}
+#userInfoForm span {
+    cursor: pointer;
+    padding: 0 10px 0 10px;
+}
+.userInfo {
+    padding-top: 7px;
+}
+/*.form-group{*/
+    /*margin-left: 5px;*/
+/*}*/

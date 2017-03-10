@@ -12,7 +12,7 @@ export default class SignIn extends React.Component {
         this.state = {
             userAccount: '',
             password: '',
-            type: 0
+            userType: 0
         }
 
     }
@@ -61,7 +61,7 @@ export default class SignIn extends React.Component {
 
     _onTypeChange(event) {
         this.setState({
-            type: event.target.value
+            userType: event.target.value
         });
     }
 
@@ -83,14 +83,15 @@ export default class SignIn extends React.Component {
             .send({
                 userAccount: this.state.userAccount,
                 password: this.state.password,
-                type: this.state.type
+                userType: this.state.userType
             })
             .end((err, res, req) => {
                 if (res.statusCode === 201) {
-                    const userType = res.body.type;
+                    const userType = res.body.userType;
                     alert('login success');
+                    console.log(res.body);
                     if (1 === userType) {
-                        self.location = '/admin#/teacher';
+                        self.location = '/teacher#/index';
                     } else if (0 === userType) {
                         // hashHistory.push('/');
                         // console.log(res.body.type);

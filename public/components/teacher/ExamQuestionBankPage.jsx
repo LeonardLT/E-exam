@@ -2,7 +2,9 @@ import React from 'react';
 import AddQuestion from './AddQuestion.jsx';
 import {Link} from 'react-router';
 import request from 'superagent';
-
+import moment from 'moment';
+import {Radio, Pagination} from 'antd';
+import {Table, Icon} from 'antd';
 
 class ExamQuestionBankPage extends React.Component {
     constructor(props) {
@@ -16,8 +18,14 @@ class ExamQuestionBankPage extends React.Component {
             currentQuestion: '',
             currentQuestion_Id: '',
             currentQuestionRightAnswers: [],
-            currentQuestionRightAnswer: ''
-
+            currentQuestionOptions: [],
+            currentQuestionRightAnswer: '',
+            date: '',
+            currentQuestionCreateDate: '',
+            currentQuestionUserName: '',
+            currentQuestionLevel: '',
+            currentQuestionAnswerAnalysis: '',
+            currentQuestionId: '',
         }
 
     }
@@ -27,52 +35,66 @@ class ExamQuestionBankPage extends React.Component {
         request
             .get('/api/question/examQuestions')
             .end((err, res) => {
-                this.setState({
-                    questions: res.body
+                var data = res.body.map(({_id,userName,answerAnalysis,questionLevel, questionType, questionContent, questionOptions, createDate, rightAnswers}) => {
+                    return {_id,userName,answerAnalysis, questionType:questionType===1?"选择题":"other",questionLevel, questionContent, questionOptions, createDate: moment(createDate).format('YYYY-MM-DD'), rightAnswers};
                 });
+                console.log(data);
+                this.setState({
+                    // questions: res.body
+                    questions: data
+                });
+
             });
     }
 
-    render() {
-        return (<div>
-            <div className="col-md-4">
-                <h1>ExamQuestionBankPage</h1>
-                <Link to="/addQuestion">AddBlankQuestion</Link>
-                <input type="button" value="Add" onClick={this._onADD.bind(this)}/>
-            </div>
-            <div className="col-md-8" id="test">
+    _test(record) {
+        return () => {
+            console.log(record);
+        };
+    }
 
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>题目ID</th>
-                        <th>题目类型</th>
-                        <th>题目内容</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.questions.map(question => <tr>
-                        <td>{question.questionId}</td>
-                        <td>{question.questionType}</td>
-                        <td>{question.question.substr(0, 10)}……</td>
-                        <td>
-                            {/*<input type="button" value="查看详情" className="btn btn-primary btn-sm"/>*/}
-                            <button type="button" className="btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#details" onClick={this._onDetailsClick(question)}>查看详情
-                            </button>
-                            &nbsp;
-                            {/*<input type="button" value="修改" className="btn btn-success btn-sm"/>*/}
-                            <button type="button" className="btn btn-success btn-sm" data-toggle="modal"
-                                    data-target="#change" onClick={this._onDetailsClick(question)}>修改
-                            </button>
-                            &nbsp;
-                            <input type="button" value="删除" className="btn btn-danger btn-sm"
-                                   onClick={this._onDelete(question._id)}/>
-                        </td>
-                    </tr>)}
-                    </tbody>
-                </table>
+    render() {
+        const columns = [{
+            title: '题目类型',
+            dataIndex: 'questionType',
+            key: 'questionType',
+        }, {
+            title: '题目内容',
+            dataIndex: 'questionContent',
+            key: 'questionContent',
+            width: 500
+        }, {
+            title: '创建时间',
+            dataIndex: 'createDate',
+            key: 'createDate',
+        }, {
+            title: 'Action',
+            key: 'action',
+            render: (text, record) => (
+                <span>
+
+      <span className="ant-divider"/>
+      <a onClick={this._onDetailsClick(record)}>查看</a>
+      <span className="ant-divider"/>
+                    <a href="#">修改</a>
+      <span className="ant-divider"/>
+                    <a href="#">删除</a>
+      <span className="ant-divider"/>
+
+
+    </span>
+            ),
+        }];
+
+        return (<div>
+            <div className="col-md-3">
+                <h1>EQB</h1>
+                <Link to="/addQuestion">添加试题</Link>
+                {/*<input type="button" value="Add" onClick={this._onADD.bind(this)}/>*/}
+            </div>
+            <div className="col-md-9" id="test">
+                <Table rowKey={this.state.questions._id} columns={columns} dataSource={this.state.questions}
+                       pagination={{defaultCurrent: 1, pageSize: 3, onChange: this.onChange}}/>
             </div>
 
 
@@ -83,19 +105,32 @@ class ExamQuestionBankPage extends React.Component {
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal"><span
                                 aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                            <h4 className="modal-title">Modal title</h4>
+                            <h4 className="modal-title">问题详情</h4>
                         </div>
                         <div className="modal-body">
-                            <label>题目ID :&nbsp;&nbsp; </label>{this.state.currentQuestionId}
+                            <input type="hidden" id="currentQuestionId" value={this.state.currentQuestionId}/>
+                            <div className="row">
+                                <div className="col-md-4 text-center">创建时间:{this.state.currentQuestionCreateDate}</div>
+                                <div className="col-md-4 text-center">题目难度:{this.state.currentQuestionLevel}</div>
+                                <div className="col-md-4 text-center">创建人：{this.state.currentQuestionUserName}</div>
+                            </div>
                             <hr/>
-                            <label>题目类型 :&nbsp;&nbsp; </label>{this.state.currentQuestionType}
+                            <label>题目类型 :&nbsp;&nbsp; </label>{this.state.currentQuestionType===1?"选择题":""}
                             <hr/>
                             <label>题目内容 : </label><br/>{this.state.currentQuestion}
                             <hr/>
+                            <label>选项 : </label><br/>
+                            {this.state.currentQuestionOptions.map((cQOptions) => <div>
+                                {cQOptions.option} :
+                                {cQOptions.optionContent}
+                            </div>)}
+                            <hr/>
                             <label>正确答案 : </label><br/>
                             {this.state.currentQuestionRightAnswers.map(rightAnswer => <div>
-                                {rightAnswer.rightAnswer}
+                                {rightAnswer.answerContent}
                             </div>)}
+                            <hr/>
+                            <div>答案解析：{this.state.currentQuestionAnswerAnalysis}</div>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
@@ -195,21 +230,20 @@ class ExamQuestionBankPage extends React.Component {
         });
     }
 
-    _onDetailsClick(question) {
-        let rightAnswer = '';
-        question.rightAnswers.forEach(ele => {
-            rightAnswer = ele.rightAnswer;
-        });
+    _onDetailsClick(record) {
         return () => {
             this.setState({
-                currentQuestion_Id: question._id,
-                currentQuestion: question.question,
-                currentQuestionType: question.questionType,
-                currentQuestionId: question.questionId,
-                currentQuestionRightAnswers: question.rightAnswers,
-                currentQuestionRightAnswer: rightAnswer
+                currentQuestion_Id: record._id,
+                currentQuestion: record.questionContent,
+                currentQuestionType: (record.questionType===1?"选择题":"other"),
+                currentQuestionOptions: record.questionOptions,
+                currentQuestionRightAnswers: record.rightAnswers,
+                currentQuestionCreateDate: record.createDate,
+                currentQuestionLevel: record.questionLevel,
+                currentQuestionUserName: record.userName,
+                currentQuestionAnswerAnalysis: record.answerAnalysis,
             });
-
+            $('#details').modal('show');
         };
     }
 
@@ -232,6 +266,12 @@ class ExamQuestionBankPage extends React.Component {
         var btn = document.createElement("input");
         btn.setAttribute("type", "button");
         btn.setAttribute("value", "testBtn");
+    }
+
+    onChange(page, current, total) {
+        console.log("page" + page);
+        console.log("current" + current);
+        console.log("total" + total);
     }
 }
 

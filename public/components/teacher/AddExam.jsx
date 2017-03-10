@@ -20,7 +20,8 @@ class AddExam extends React.Component {
             currentQuestion: '',
             currentQuestion_Id: '',
             currentQuestionRightAnswers: [],
-            currentQuestionRightAnswer: ''
+            currentQuestionRightAnswer: '',
+            questionType:'0'
 
         };
     }
@@ -32,14 +33,14 @@ class AddExam extends React.Component {
             <form className="form-horizontal" role="form" onSubmit={this._onSubmit.bind(this)}>
                 <div className='col-md-6 col-md-offset-3'>
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">examId</label>
+                        <label className="col-sm-2 control-label">考试编号</label>
                         <div className="col-sm-10">
                             <input className="form-control" type="text" name="examId"
                                    onChange={this._onExamIdChange.bind(this)}/>
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">examName</label>
+                        <label className="col-sm-2 control-label">考试名称</label>
                         <div className="col-sm-10">
                             <input className="form-control" type="text" name="examName"
                                    onChange={this._onExamNameChange.bind(this)}/>
@@ -53,7 +54,7 @@ class AddExam extends React.Component {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">branch</label>
+                        <label className="col-sm-2 control-label">分院</label>
                         <div className="col-sm-10">
                             {/*<input className="form-control" type="text" name="branch"*/}
                             {/*onChange={this._onBranchChange.bind(this)}/>*/}
@@ -65,7 +66,7 @@ class AddExam extends React.Component {
                     </div>
 
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">major</label>
+                        <label className="col-sm-2 control-label">专业</label>
                         <div className="col-sm-10">
                             {/*<input className="form-control" type="text" name="major"*/}
                             {/*onChange={this._onMajorChange.bind(this)}/>*/}
@@ -80,7 +81,7 @@ class AddExam extends React.Component {
                     </div>
 
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">classroom</label>
+                        <label className="col-sm-2 control-label">班级</label>
                         <div className="col-sm-10">
                             <input className="form-control" type="text" name="classroom"
                                    onChange={this._onClassroomChange.bind(this)}/>
@@ -151,13 +152,14 @@ class AddExam extends React.Component {
                         <div className="col-sm-8">
                             <select className="form-control" onChange={this._onTypeChange.bind(this)}>
                                 <option value="all">全部</option>
-                                <option value="blankQuestion">填空题</option>
+                                <option value='2'>填空题</option>
+                                <option value='1'>选择题</option>
                             </select>
                         </div>
                         <div className="col-sm-2">
                             <button type="button" className="btn btn-primary btn-sm" data-toggle="modal"
                                     ref="showQuestions"
-                                    data-target="#details" onClick={this._onShowQuestionClick(this.state.type)}>预览题库
+                                    data-target="#details" onClick={this._onShowQuestionClick(this.state.questionType)}>预览题库
                             </button>
                         </div>
                     </div>
@@ -270,8 +272,11 @@ class AddExam extends React.Component {
     }
 
     _onTypeChange(event) {
+        // this.setState({
+        //     type: event.target.value
+        // });
         this.setState({
-            type: event.target.value
+            questionType: event.target.value
         });
     }
 
@@ -283,9 +288,10 @@ class AddExam extends React.Component {
                     questionType: type
                 })
                 .end((err, res) => {
-                    this.setState({
-                        questions: res.body
-                    });
+                console.log(res.body);
+                    // this.setState({
+                    //     questions: res.body
+                    // });
                 });
         };
     }

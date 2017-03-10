@@ -24,6 +24,7 @@ export default class Nav extends React.Component {
                 }
                 const {nickname} = res.body;
                 this.setState({nickname: nickname || '登录'});
+                console.log(nickname);
             });
     }
 
