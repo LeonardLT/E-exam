@@ -1,51 +1,54 @@
 import express from 'express';
 import {Exam} from '../schema/examSchema';
 import {ExamScore} from '../schema/examScoreSchema';
+import async from 'async';
 
 const router = express.Router();
 
+
 router.post('/', (req, res, next) => {
 
-    const {username, examName, _id, studentAnswers} = req.body;
-    console.log(username + "~!@~!~@!~");
+    const {username, userId, examName, examId, studentSelAnswers, studentShortAnswer} = req.body;
     let score = 0;
-    let findAnswer = (question_Id, questions) => {
-        const rightAnswers = questions.find(question => question._id == question_Id).rightAnswers;
-        // console.log(rightAnswers[0].rightAnswer);
-        return rightAnswers[0].rightAnswer;
+
+    let findAnswer = (questionId, questions) => {
+        const rightAnswers = questions.find(question => question._id == questionId).rightAnswers;
+        return rightAnswers[0].answerContent;
     };
 
-    const rightAnswers = [];
-    Exam.findOne({_id: _id}, (err, {questions}) => {
-        if (err) return next(err);
-        questions.map(question => {
-            rightAnswers.push(question.answer)
-        });
-
-
-        studentAnswers.map(({question_Id, answer}) => {
-            const rightAnswer = findAnswer(question_Id, questions);
-            console.log("++answer" + answer);
-            console.log("++rightAnswer" + rightAnswer);
-            if (answer == rightAnswer) {
-                score += 1;
+    async.series({
+            getExamPaperQuestion: (cb) => {
+                Exam.findOne({_id: examId}, (err, {examPaper}) => {
+                    if (err) return next(err);
+                    cb(null, examPaper);
+                });
             }
-        });
-
-        var examScore = new ExamScore({
-            exam_Id: _id,
-            examName: examName,
-            username: username,
-            score: score
-        });
-        console.log(examScore);
-        examScore.save(() => {
-            if (err) return next(err);
+            // ,
+            // getShortAnswerQuestionByBankId: (cb) => {
+            //     cb();
+            // }
+        }, (err, results) => {
+            const {selectQuestions, shortAnswerQuestions} = results.getExamPaperQuestion;
+            studentSelAnswers.map(({questionId, answer}) => {
+                const rightAnswer = findAnswer(questionId, selectQuestions);
+                if (answer == rightAnswer) {
+                    score += 1;
+                }
+            });
             console.log("成绩：" + score);
-            console.log('save status:', err ? 'failed' : 'success');
-            return res.json({score: score});
-        });
-    });
+            new ExamScore({
+                examId,//考试编号
+                examName,//考试名称
+                userId,//学生编号
+                username,//学生姓名
+                score//成绩
+            }).save((err) => {
+                if (err) return next(err);
+                console.log("save success");
+                return res.status(201).send('save success');
+            });
+        }
+    );
 
 
 });

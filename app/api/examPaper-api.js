@@ -57,6 +57,18 @@ router.put('/', (req, res, next) => {
     });
 });
 
+router.delete('/', (req, res, next) => {
+    const {examPaperId, userId} = req.query;
+    ExamPaper.findOneAndRemove({_id: examPaperId}, (err) => {
+        if (err) return next(err);
+
+        ExamPaper.find({createUserId: userId}, (err, data) => {
+            if (err) return next(err);
+            return res.status(200).send(data);
+        });
+    });
+});
+
 
 export default router;
 

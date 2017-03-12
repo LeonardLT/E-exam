@@ -18,6 +18,10 @@ const examPaper = new Schema({
             option: Number,
             optionContent: String
         }],
+        rightAnswers: [{
+            answerId: Number,
+            answerContent: String
+        }],
         questionType: Number,//问题类型
     }],
     shortAnswerQuestions:[{

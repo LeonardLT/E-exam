@@ -73,12 +73,12 @@ router.post("/", (req, res, next) => {
         // console.log(examPaper);
 
         const {_id, selectQuestionsScore, shortAnswerQuestionsScore, scoreCount, selectQuestions, shortAnswerQuestions} = examPaper;
-        let ePaper = {paperId:_id, selectQuestionsScore, shortAnswerQuestionsScore, scoreCount, selectQuestions, shortAnswerQuestions}
+        let ePaper = {paperId: _id, selectQuestionsScore, shortAnswerQuestionsScore, scoreCount, selectQuestions, shortAnswerQuestions}
 
         new Exam({
             examName, examDescription, examScore, examType, createDate, createUserName, userId, paperType,
             joinNum, beginTime, endTime, examTime, publishDate, examState, branch, major, classroom, showScoreDate,
-            examPaper:ePaper
+            examPaper: ePaper
         }).save((err) => {
             if (err) return next(err);
             console.log('save status:success');
@@ -87,24 +87,6 @@ router.post("/", (req, res, next) => {
     } else {
         return res.status(400).send(isEmpty.message);
     }
-
-
-    // const {examId, examName, time, branch, major, classroom, questions} = req.body;
-    // let exam = new Exam({
-    //     examId,
-    //     examName,
-    //     time,
-    //     branch,
-    //     major,
-    //     classroom,
-    //     questions,
-    //     score: 0
-    // });
-    // exam.save((err) => {
-    //     if (err) return next(err);
-    //     console.log('save status:', err ? 'failed' : 'success');
-    //     res.status(201).send('save success');
-    // });
 });
 
 //更新考试信息
@@ -145,6 +127,15 @@ router.delete("/", (req, res, next) => {
         });
     });
 
+});
+
+router.get('/myExam', (req, res, next) => {
+    const {branch, major, classroom} = req.query;
+    Exam.find({branch, major, classroom}, (err, data) => {
+        if (err) return next(err);
+        console.log(data);
+        return res.status(200).send(data);
+    });
 });
 
 export default router;

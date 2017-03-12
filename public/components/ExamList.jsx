@@ -1,6 +1,9 @@
 import React from 'react';
 import request from 'superagent';
 import {hashHistory} from 'react-router'
+import {Table, Popconfirm, Button, Icon, message, Modal} from 'antd';
+import moment from 'moment';
+const confirm = Modal.confirm;
 
 
 class ExamList extends React.Component {
@@ -8,10 +11,10 @@ class ExamList extends React.Component {
         super(props);
         this.state = {
             examLists: [],
-            username: 'unknown',
-            branch: 'unknown',
-            major: 'unknown',
-            classroom: 'unknown'
+            realName: '',
+            branch: '',
+            major: '',
+            classroom: ''
         };
     }
 
@@ -20,23 +23,57 @@ class ExamList extends React.Component {
             .get('/api/personal')
             .end((err, res) => {
                 if (err || res.statusCode === 401) {
-                    // alert('please login!');
+                    message.error("请先登录");
                     return hashHistory.push('/login');
                 }
-                const {username, branch, major, classroom} = res.body;
-                this.setState({username, branch, major, classroom});
-                console.log(branch+"//////");
-                request.get("/api/exams")
+                const {realName, branch, major, classroom} = res.body;
+                this.setState({realName, branch, major, classroom});
+                request.get("/api/exams/myExam")
                     .query({branch, major, classroom})
                     .end((err, res) => {
+                        const data = res.body.map(({_id, examName, beginTime, endTime}) => {
+                            return {
+                                _id,
+                                examName,
+                                beginTime: moment(beginTime).format('YYYY-MM-DD HH:mm'),
+                                endTime: moment(endTime).format('YYYY-MM-DD HH:mm')
+                            };
+                        });
+                        console.log(res.body);
                         this.setState({
-                            examLists: res.body
+                            examLists: data
                         });
                     });
             });
     }
 
     render() {
+        const columns = [{
+            title: '考试名称',
+            dataIndex: 'examName',
+            key: 'examName',
+            width: '30%'
+        }, {
+            title: '开始时间',
+            dataIndex: 'beginTime',
+            key: 'beginTime',
+            width: '30%'
+        }, {
+            title: '结束时间',
+            dataIndex: 'endTime',
+            key: 'endTime',
+            width: '30%'
+        }, {
+            title: '操作',
+            key: 'action',
+            render: (text, record) => (
+                <span>
+                    <span className="ant-divider"/>
+                    <a onClick={this._joinTheExam(record._id)}>参加考试</a>
+                    <span className="ant-divider"/>
+                </span>
+            ),
+        }];
         return (<div>
 
             <div className="row">
@@ -44,32 +81,8 @@ class ExamList extends React.Component {
                 <div className="col-md-8">
                     <h3>我的考试</h3>
                     <hr/>
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>考试Id</th>
-                            <th>考试名称</th>
-                            <th>时间</th>
-                            <th>分院</th>
-                            <th>专业</th>
-                            <th>参加考试</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            this.state.examLists.map((exam,i) => <tr key={i}>
-                                <td>{exam._id}</td>
-                                <td>{exam.examName}</td>
-                                <td>{exam.time}</td>
-                                <td>{exam.branch}</td>
-                                <td>{exam.major}</td>
-                                <td><input className="btn btn-success btn-sm" type="button" value="参加考试"
-                                           onClick={this._joinTheExam(exam._id)}
-                                /></td>
-                            </tr>)
-                        }
-                        </tbody>
-                    </table>
+                    <Table rowKey={this.state.examLists._id} columns={columns} dataSource={this.state.examLists}
+                           pagination={{defaultCurrent: 1, pageSize: 5}}/>
                 </div>
             </div>
 
@@ -77,18 +90,10 @@ class ExamList extends React.Component {
         </div>);
     }
 
-    _joinTheExam(_id) {
+    _joinTheExam(examId) {
         return () => {
-            request
-                .get('/api/personal')
-                .end((err, res) => {
-                    if (err || res.statusCode === 401) {
-                        alert('请先登录,from exam list');
-                        return hashHistory.push('/login');
-                    } else {
-                        return hashHistory.push('/joinExam/' + _id);
-                    }
-                });
+            message.success("joinTheExam" + examId);
+            return hashHistory.push('/examPaper/' + examId);
         };
     }
 }

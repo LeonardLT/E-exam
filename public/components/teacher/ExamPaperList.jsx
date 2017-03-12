@@ -74,7 +74,7 @@ export default class ExamPaperList extends React.Component {
             </Button>
             <div>
                 <Table rowKey={this.state.paperList._id} columns={columns} dataSource={this.state.paperList}
-                       pagination={{defaultCurrent: 1, pageSize: 5}}/>
+                       pagination={{defaultCurrent: 1, pageSize: 10}}/>
             </div>
         </div>);
     }
@@ -89,7 +89,17 @@ export default class ExamPaperList extends React.Component {
     }
     _deletePaper(paperId){
         return ()=> {
-            message.success("删除成功");
+            request
+                .delete("/api/papers")
+                .query({examPaperId:paperId,userId: this.state.userId})
+                .end((err,res)=> {
+                    if(res.statusCode===200){
+                        message.success("删除成功");
+                        this.setState({
+                            paperList: res.body
+                        });
+                    }
+                });
         };
     }
 }

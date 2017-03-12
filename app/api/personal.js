@@ -17,8 +17,8 @@ router.get('/', function (req, res, next) {
             if (isValidateToken) {
                 const userAccount = getUserAccountFromToken(token);
                 User.findOne({userAccount: userAccount}, (err, data) => {
-                    const {_id,id,userAccount,realName,headImg,nickname,userType} = data;
-                    return res.json({_id,id,userAccount,realName,headImg,nickname,userType});
+                    const {_id,id,userAccount,realName,headImg,nickname,userType,branch,major,classroom} = data;
+                    return res.json({_id,id,userAccount,realName,headImg,nickname,userType,branch,major,classroom});
                 });
             } else {
                 return res.sendStatus(401);

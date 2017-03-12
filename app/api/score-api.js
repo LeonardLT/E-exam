@@ -4,9 +4,9 @@ import {Exam} from '../schema/examSchema';
 
 const router = express.Router();
 router.get('/getMyAllScore', (req, res, next) => {
-    const userAccount = req.query.userAccount;
-    console.log(userAccount);
-    ExamScore.find({userAccount: userAccount}, (err, data) => {
+    const {userId} = req.query;
+    console.log(userId);
+    ExamScore.find({userId: userId}, (err, data) => {
         if (err) return next(err);
         console.log(data);
         return res.json(data);

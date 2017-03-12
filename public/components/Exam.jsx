@@ -7,7 +7,7 @@ export default class Exam extends React.Component {
 
     constructor(props) {
         super(props);
-        this.studentAnswers = [];
+        this.studentSelAnswers = [];
         this._id = this.props.params._id;
         this.state = {
             username:'unknown',
@@ -78,22 +78,22 @@ export default class Exam extends React.Component {
             return null;
         };
 
-        let item = isExistInArray(question_Id, this.studentAnswers);
+        let item = isExistInArray(question_Id, this.studentSelAnswers);
         if (item === null) {
-            this.studentAnswers.push({
+            this.studentSelAnswers.push({
                 question_Id: question_Id,
                 answer: answer
             });
         } else {
             item.answer = answer;
         }
-        console.log(this.studentAnswers);
+        console.log(this.studentSelAnswers);
     }
 
 
     _onSubmit(event) {
         event.preventDefault();
-        console.log(this.studentAnswers);
+        console.log(this.studentSelAnswers);
         console.log(this.state.username+"======");
         request.post('/api/answer')
             .send(
@@ -101,7 +101,7 @@ export default class Exam extends React.Component {
                     'username':this.state.username,
                     'examName' : this.state.exam.examName,
                     '_id': this.state.exam._id,
-                    'studentAnswers': this.studentAnswers
+                    "studentSelAnswers": this.studentSelAnswers
                 }
             )
             .end((err, res) => {
