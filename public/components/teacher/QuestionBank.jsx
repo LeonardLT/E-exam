@@ -72,6 +72,9 @@ export default class QuestionBank extends React.Component {
                     <a onClick={this.addSelectQuestion()}>选择题</a>
                 </Menu.Item>
                 <Menu.Item>
+                    <a onClick={this._addQuestion("3")}>简答题</a>
+                </Menu.Item>
+                <Menu.Item>
                     <Link to="/blankQuestion">填空题</Link>
                 </Menu.Item>
             </Menu>
@@ -169,6 +172,15 @@ export default class QuestionBank extends React.Component {
         return () => {
             $("#goBack").show();
             hashHistory.push('/selectQuestion/' + this.bankId);
+        };
+    }
+
+    _addQuestion(questionType){
+        return () => {
+            $("#goBack").show();
+            if(questionType==3){
+                hashHistory.push('/shortAnswerQuestion/' + this.bankId);
+            }
         };
     }
 }

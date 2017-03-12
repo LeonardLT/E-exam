@@ -2,3 +2,4 @@ node_modules/
 assets
 .DS_Store
 .idea/
+public/uploaded-images/

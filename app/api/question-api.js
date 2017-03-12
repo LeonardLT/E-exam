@@ -1,7 +1,9 @@
 import express from 'express';
 // import {BlankQuestion} from '../schema/blankQuestion';
-import {SelectQuestion} from '../schema/questionSchema';
+import {SelectQuestion, ShortAnswerQuestion} from '../schema/questionSchema';
 import moment from 'moment';
+import async from 'async';
+
 
 const router = express.Router();
 
@@ -35,42 +37,64 @@ function selQueIsEmpty(data) {
 }
 
 router.post('/', (req, res, next) => {
-    const {
-        blankType,
-        questionType,
-        questionContent,
-        questionOptions,
-        rightAnswers,
-        answerAnalysis,
-        createDate,
-        userId,
-        userName,
-        questionLevel,
-        bankId
-    } = req.body;
+    const {questionType} = req.body;
+    if (questionType == 1) {
+        const {
+            blankType, questionType, questionContent, questionOptions, rightAnswers, answerAnalysis,
+            createDate, userId, userName, questionLevel, bankId
+        } = req.body;
+        const isEmpty = selQueIsEmpty(req.body);
+        if (isEmpty === true) {
+            const selectQuestion = new SelectQuestion({
+                blankType: blankType,
+                questionContent: questionContent,
+                questionOptions: questionOptions,
+                rightAnswers: rightAnswers,
+                answerAnalysis: answerAnalysis,
+                questionType: questionType,
+                createDate: createDate,
+                userId: userId,
+                userName: userName,
+                questionLevel: questionLevel,
+                bankId: bankId
+            }).save((err) => {
+                if (err) return next(err);
+                console.log("save selectQuestion success");
+                return res.status(201).send('save success');
+            });
+        } else {
+            return res.status(400).send(isEmpty.message);
+        }
+    } else if (questionType == 3) {
+        const {
+            questionContent, questionLevel, userName, userId, createDate, questionType, rightAnswers,answerAnalysis, bankId
+        } = req.body;
+        if (questionContent === '' || questionLevel === '' || userName === '' || userId === '' || createDate === '' ||
+            questionType === '' || rightAnswers === ''||answerAnalysis==='' || bankId === '') {
+            return res.status(400).send("题目信息不完整");
+        } else {
+            new ShortAnswerQuestion({
+                questionContent,
+                questionLevel,
+                userName,
+                userId,
+                createDate,
+                questionType,
+                rightAnswers,
+                answerAnalysis,
+                bankId
+            }).save((err) => {
+                if (err) return next(err);
+                console.log("save success");
+                return res.status(201).send('save success');
+            });
+        }
 
-    const isEmpty = selQueIsEmpty(req.body);
-    if (isEmpty === true) {
-        const selectQuestion = new SelectQuestion({
-            blankType: blankType,
-            questionContent: questionContent,
-            questionOptions: questionOptions,
-            rightAnswers: rightAnswers,
-            answerAnalysis: answerAnalysis,
-            questionType: questionType,
-            createDate: createDate,
-            userId: userId,
-            userName: userName,
-            questionLevel: questionLevel,
-            bankId: bankId
-        }).save((err) => {
-            if (err) return next(err);
-            console.log("save selectQuestion success");
-            return res.status(201).send('save success');
-        });
-    } else {
-        return res.status(400).send(isEmpty.message);
     }
+    else {
+        return res.status(400).send("err");
+    }
+
 });
 
 router.post('/selectQuestion', (req, res, next) => {
@@ -121,24 +145,82 @@ router.get('/examQuestions', (req, res, next) => {
     });
 });
 
-router.get('/bankQuestions', (req, res, next) => {
-    const bankId = req.query.bankId;
+function getSelectQuestionsByBankId(bankId, cb) {
     SelectQuestion.find({bankId}, (err, data) => {
         if (err) return next(err);
-        res.json(data);
+        cb(null, data);
     });
-    // res.send('ok');
+}
+function getShortAnswerQuestionByBankId(bankId, cb) {
+    ShortAnswerQuestion.find({bankId}, (err, data) => {
+        if (err) return next(err);
+        cb(null, data);
+    });
+}
+
+function getQuestions(res, next, bankId) {
+    // const bankId = req.query.bankId;
+
+    async.series({
+            getSelectQuestionsByBankId: (cb) => {
+                SelectQuestion.find({bankId}, (err, data) => {
+                    if (err) return next(err);
+                    cb(null, data);
+                });
+            },
+            getShortAnswerQuestionByBankId: (cb) => {
+                ShortAnswerQuestion.find({bankId}, (err, data) => {
+                    if (err) return next(err);
+                    cb(null, data);
+                });
+            }
+        }, (err, results) => {
+            const selectQuestions = results.getSelectQuestionsByBankId;
+            const shortAnswerQuestion = results.getShortAnswerQuestionByBankId;
+            let questions = selectQuestions.concat(shortAnswerQuestion);
+            res.send(questions);
+        }
+    );
+}
+router.get('/bankQuestions', (req, res, next) => {
+    const bankId = req.query.bankId;
+    //
+    // async.series({
+    //         getSelectQuestionsByBankId: (cb) => {
+    //             SelectQuestion.find({bankId}, (err, data) => {
+    //                 if (err) return next(err);
+    //                 cb(null, data);
+    //             });
+    //         },
+    //         getShortAnswerQuestionByBankId: (cb) => {
+    //             ShortAnswerQuestion.find({bankId}, (err, data) => {
+    //                 if (err) return next(err);
+    //                 cb(null, data);
+    //             });
+    //         }
+    //     }, (err, results) => {
+    //         const selectQuestions = results.getSelectQuestionsByBankId;
+    //         const shortAnswerQuestion = results.getShortAnswerQuestionByBankId;
+    //         let questions = selectQuestions.concat(shortAnswerQuestion);
+    //         res.send(questions);
+    //     }
+    // );
+    getQuestions(res,next,bankId);
+
 });
 
 router.delete('/', (req, res, next) => {
     // const _id = req.query._id;
-    const {bankId,questionId, questionType} = req.query;
+    const {bankId, questionId, questionType} = req.query;
     if (questionType == 1) {
         SelectQuestion.findOneAndRemove({_id: questionId}, (err) => {
             if (err) return next(err);
-            SelectQuestion.find({bankId}, (err, data) => {
-                res.status(200).send(data);
-            });
+            getQuestions(res,next,bankId);
+        });
+    }else if(questionType==3){
+        ShortAnswerQuestion.findOneAndRemove({_id: questionId}, (err) => {
+            if (err) return next(err);
+            getQuestions(res,next,bankId);
         });
     }
 });
@@ -163,8 +245,10 @@ router.post('/updateQuestion', (req, res, next) => {
 
 router.get('/type', (req, res, next) => {
     const questionType = req.query.questionType;
+    console.log(questionType);
     SelectQuestion.find({questionType: questionType}, (err, data) => {
         if (err) return next(err);
+        console.log(data);
         res.json(data);
     });
 });

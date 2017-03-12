@@ -8,6 +8,7 @@ import exams from './exams-api';
 import question from './question-api';
 import score from './score-api';
 import questionBank from './questionBank';
+import paper from './examPaper-api';
 
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.use('/exams', exams);
 router.use('/question', question);
 router.use('/questionBank', questionBank);
 router.use('/score', score);
+router.use('/papers', paper);
 
 export default router;

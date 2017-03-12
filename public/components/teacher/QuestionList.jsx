@@ -4,7 +4,7 @@ import {hashHistory} from 'react-router';
 import moment from 'moment';
 import {Link} from 'react-router';
 import {Radio, Pagination} from 'antd';
-import {Table, Icon} from 'antd';
+import {Table, Icon,Tag} from 'antd';
 import {Popconfirm, message} from 'antd';
 
 export default class QuestionList extends React.Component {
@@ -78,6 +78,15 @@ export default class QuestionList extends React.Component {
             title: '题目类型',
             dataIndex: 'questionType',
             key: 'questionType',
+            render:(text)=> {
+                if(text==='选择题'){
+                    return <Tag color="#108ee9">{text}</Tag>;
+                }else if(text==='填空题'){
+                    return <Tag color="#87d068">{text}</Tag>;
+                }else if(text==='简答题'){
+                    return <Tag color="#f50">{text}</Tag>;
+                }
+            }
         }, {
             title: '题目内容',
             dataIndex: 'questionContent',
@@ -95,9 +104,9 @@ export default class QuestionList extends React.Component {
 
       <span className="ant-divider"/>
       <a onClick={this._onDetailsClick(record)}>查看</a>
-      {/*<span className="ant-divider"/>*/}
+                    {/*<span className="ant-divider"/>*/}
                     {/*<a href="#">修改</a>*/}
-      <span className="ant-divider"/>
+                    <span className="ant-divider"/>
                      <Popconfirm title="确定删除？" onConfirm={this._deleteQuestion(record._id, record.questionType)} onCancel={this.cancel} okText="删除"
                                  cancelText="取消">
                         <a href="#">删除</a>
@@ -112,7 +121,7 @@ export default class QuestionList extends React.Component {
             <div className="row">
                 <div className="col-md-12" id="test" style={{marginTop: "20px"}}>
                     <Table rowKey={this.state.questions._id} columns={columns} dataSource={this.state.questions}
-                           pagination={{defaultCurrent: 1, pageSize: 3, onChange: this.onChange}}/>
+                           pagination={{defaultCurrent: 1, pageSize: 5, onChange: this.onChange}}/>
                 </div>
             </div>
 
@@ -137,12 +146,17 @@ export default class QuestionList extends React.Component {
                             <hr/>
                             <label>题目内容 : </label><br/>{this.state.currentQuestion}
                             <hr/>
-                            <label>选项 : </label><br/>
-                            {this.state.currentQuestionOptions.map((cQOptions) => <div>
-                                {cQOptions.option} :
-                                {cQOptions.optionContent}
-                            </div>)}
-                            <hr/>
+                            {this.state.currentQuestionType === '选择题' ?
+                                <div>
+                                    <label>选项 : </label><br/>
+                                    {this.state.currentQuestionOptions.map((cQOptions) => <span style={{marginRight: "15px"}}>
+                                {this._questionOptionText(cQOptions.option)} :
+                                        {cQOptions.optionContent}
+                            </span>)}
+                                    <hr/>
+
+                                </div>
+                                : ""}
                             <label>正确答案 : </label><br/>
                             {this.state.currentQuestionRightAnswers.map(rightAnswer => <div>
                                 {rightAnswer.answerContent}
@@ -160,13 +174,14 @@ export default class QuestionList extends React.Component {
 
         </div>);
     }
-    _formatDate(data){
+
+    _formatDate(data) {
         return data.map(({_id, userName, answerAnalysis, questionLevel, questionType, questionContent, questionOptions, createDate, rightAnswers}) => {
             return {
                 _id,
                 userName,
                 answerAnalysis,
-                questionType: questionType,
+                questionType: this._questionTypeText(questionType),
                 questionLevel,
                 questionContent,
                 questionOptions,
@@ -180,14 +195,14 @@ export default class QuestionList extends React.Component {
         return () => {
             request
                 .delete("/api/question")
-                .query({bankId:this.bankId,questionId, questionType})
+                .query({bankId: this.bankId, questionId, questionType})
                 .end((err, res) => {
                     if (res.statusCode === 200) {
                         message.success("删除成功");
                         this.setState({
-                            questions:this._formatDate(res.body)
+                            questions: this._formatDate(res.body)
                         });
-                    }else{
+                    } else {
                         message.error("删除失败");
                     }
                 });
@@ -199,7 +214,7 @@ export default class QuestionList extends React.Component {
             this.setState({
                 currentQuestion_Id: record._id,
                 currentQuestion: record.questionContent,
-                currentQuestionType: (record.questionType === 1 ? "选择题" : "other"),
+                currentQuestionType: record.questionType,
                 currentQuestionOptions: record.questionOptions,
                 currentQuestionRightAnswers: record.rightAnswers,
                 currentQuestionCreateDate: record.createDate,
@@ -211,10 +226,41 @@ export default class QuestionList extends React.Component {
         };
     }
 
+    _questionTypeText(questionType) {
+        switch (questionType) {
+            case 1:
+                return "选择题";
+                break;
+            case 2:
+                return "填空题";
+                break;
+            case 3:
+                return "简答题";
+                break;
+        }
+    }
+
     onChange(page, current, total) {
         console.log("page" + page);
         console.log("current" + current);
         console.log("total" + total);
+    }
+
+    _questionOptionText(option) {
+        switch (option) {
+            case 0:
+                return "A";
+                break;
+            case 1:
+                return "B";
+                break;
+            case 2:
+                return "C";
+                break;
+            case 3:
+                return "D";
+                break;
+        }
     }
 
 }
