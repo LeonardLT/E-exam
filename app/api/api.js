@@ -9,6 +9,7 @@ import question from './question-api';
 import score from './score-api';
 import questionBank from './questionBank';
 import paper from './examPaper-api';
+import studentAnswer from './studentAnswer';
 
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.use('/question', question);
 router.use('/questionBank', questionBank);
 router.use('/score', score);
 router.use('/papers', paper);
+router.use('/studentAnswer', studentAnswer);
 
 export default router;

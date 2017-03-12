@@ -244,18 +244,6 @@ export default class AddSelectQuestion extends React.Component {
 
     _onSubmit(event) {
         event.preventDefault();
-        // request.post('/api/question')
-        //     .send({
-        //         question: this.state.question,
-        //         rightAnswer: this.state.rightAnswer,
-        //         questionType: this.state.questionType
-        //     })
-        //     .end((err, res) => {
-        //         if (res.statusCode === 201) {
-        //             alert("success");
-        //             hashHistory.push('/examQuestionBankPage');
-        //         }
-        //     });
         var questionContent = this.state.question;
         var questionOptions = [];
         var optionA = {option: 0, optionContent: this.state.optionA};

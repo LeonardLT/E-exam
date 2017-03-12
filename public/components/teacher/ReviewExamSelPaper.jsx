@@ -1,17 +1,17 @@
 import React from 'react';
 import {hashHistory} from 'react-router'
 import request from 'superagent';
-import {Button, Icon, Row, Col, Radio} from 'antd';
+import {Button, Icon, Row, Col, Radio, Layout, Menu, Breadcrumb, InputNumber, Input, message, Alert, Tag, Modal} from 'antd';
 import moment from 'moment';
-import {Layout, Menu, Breadcrumb, Input, message} from 'antd';
 const {Header, Content, Footer, Sider} = Layout;
 const RadioGroup = Radio.Group;
+const confirm = Modal.confirm;
 
-export default class ExamPaper extends React.Component {
+export default class ReviewExamPaper extends React.Component {
     constructor(props) {
         super(props);
-        this.start = moment();
         this.examId = this.props.params.examId;
+        this.userId = this.props.params.userId;
         this.studentSelAnswers = [];
         this.studentShortAnswer = [];
         this.state = {
@@ -39,53 +39,35 @@ export default class ExamPaper extends React.Component {
             value: 1,
             userName: '',
             userId: '',
-
-            now: moment(),
-            elapsed: moment(0),//倒计时为0是自动提交表单
-            hour: ''
+            studentShortAnswer: [],
+            studentSelAnswers: [],
+            studentName: '',
+            selectQuestionsScore: 0,//选择题最大分数
+            shortAnswerQuestionsScore: 0,//简答题最大分数
+            studentSelScore: 0,//学生选择题分数
+            studentShortAnsScore: 0,//学生简答题分数,
+            studentExamScore: {}
 
         };
     }
 
-    _onTick() {
-        this.setState({
-            now: moment(),
-            // elapsed: moment(moment().diff(this.start))
-            elapsed: this.state.elapsed.subtract(1, 'second')
-        });
-        if (this.state.elapsed.isSame(moment(0)) || moment().isAfter(this.state.endTime)) {
-            this._onSubmit();
-            message.warning("已超时，系统自动提交试卷");
-        } else if (this.state.elapsed.isBefore(moment(0).add(60, 'seconds')) && this.state.elapsed.isAfter(moment(0))) {
-            message.warning("距离考试结束还有： " + this.state.elapsed.format("s") + " 秒", 0.6);
-        } else if (this.state.elapsed.isSame(moment(0).add(5, 'minutes'))) {
-            message.warning("距离考试结束还有 5 分钟");
-        }
-    }
-
-    componentDidMount() {
-
-        this.timer = setInterval(this._onTick.bind(this), 1000);
-    }
-
-
-    componentWillUnmount() {//销毁Timer
-
-        this.timer && clearTimeout(this.timer);
-    }
-
     componentWillMount() {
 
-        clearInterval(this.timer);
         request
-            .get('/api/personal')
+            .get('/api/studentAnswer/studentAnswer')
+            .query({examId: this.examId, userId: this.userId})
             .end((err, res) => {
-                if (err || res.statusCode === 401) {
-                    message.error("请重新登录");
-                    return hashHistory.push('/login');
+                if (res.statusCode === 200) {
+                    const studentSelAnswers = res.body.studentSelAnswers;
+                    const studentShortAnswer = res.body.studentShortAnswer;
+                    const studentName = res.body.userName;
+
+                    this.setState({
+                        studentShortAnswer: studentShortAnswer,
+                        studentSelAnswers: studentSelAnswers,
+                        studentName: studentName
+                    });
                 }
-                const {realName, _id} = res.body;
-                this.setState({userName: realName, userId: _id});
             });
         request
             .get('/api/exams/examId')
@@ -95,33 +77,87 @@ export default class ExamPaper extends React.Component {
                     examName, examDescription, examScore, examType, createDate, createUserName, userId, paperType,
                     joinNum, beginTime, endTime, examTime, publishDate, examState, branch, major, classroom, showScoreDate, examPaper
                 }= res.body;
-                console.log(res.body);
                 this.setState({
                     examName, examDescription, examScore, examType, createDate, createUserName, userId, paperType,
                     joinNum, beginTime, endTime, examTime, publishDate, examState, branch, major, classroom, showScoreDate, examPaper,
                     selectQuestions: examPaper.selectQuestions, shortAnswerQuestions: examPaper.shortAnswerQuestions, paperId: examPaper.paperId,
-                    elapsed: moment(0).hours(0).minutes(examTime)
+                    selectQuestionsScore: examPaper.selectQuestionsScore, shortAnswerQuestionsScore: examPaper.shortAnswerQuestionsScore
                 });
             });
+        request
+            .get('/api/score/oneExamScore')
+            .query({examId: this.examId, userId: this.userId})
+            .end((err, res) => {
+                if (res.statusCode === 200) {
+                    this.setState({
+                        studentExamScore: res.body,
+                        studentSelScore: res.body.selScore,
+                        studentShortAnsScore: res.body.shortScore
+                    })
+                } else {
+                    message.error('获取成绩失败');
+                }
+            });
+
     }
 
     onChange(e) {
-        console.log('radio checked', e.target.value);
         this.setState({
             value: e.target.value,
         });
     }
 
+    studentStudentSelScoreChange(value) {
+        if (value >= this.state.selectQuestionsScore) {
+            message.warning("选择题满分" + this.state.selectQuestionsScore);
+            this.setState({
+                studentSelScore: this.state.selectQuestionsScore
+            })
+        } else {
+            this.setState({
+                studentSelScore: value
+            });
+        }
+    }
+
+    _submitScore(e) {
+        const _this = this;
+        const score = this.state.studentShortAnsScore + this.state.studentSelScore;
+        console.log(this.state.studentExamScore.selScore);
+        console.log(this.state.studentShortAnsScore);
+        confirm({
+            title: '提示信息：',
+            content: '确定给该 ' + this.state.studentName + ' 简答题：' + this.state.studentShortAnsScore + '分？',
+            onOk() {
+                request
+                    .put("/api/score")
+                    .send({
+                        examId: _this.examId,
+                        userId: _this.userId,
+                        selScore: _this.state.studentSelScore,
+                        shortScore: _this.state.studentShortAnsScore,
+                        score: score
+                    })
+                    .end((err, res) => {
+                        if (res.statusCode === 200) {
+                            message.success('更新成功');
+                            hashHistory.push('/reviewExam');
+                        } else {
+                            message.error('操作失败');
+                        }
+                    });
+
+            },
+            onCancel() {
+            },
+        });
+    }
+
     render() {
-        const {now, elapsed} = this.state;
         return (<div>
 
 
             <Layout>
-                {/*<Header className="header">*/}
-                {/*<div className="logo" />*/}
-
-                {/*</Header>*/}
                 <Content style={{padding: '0 50px'}}>
 
                     <Layout style={{padding: '24px 0', background: '#fff'}}>
@@ -129,9 +165,16 @@ export default class ExamPaper extends React.Component {
                         <Content style={{padding: '0 24px', minHeight: 800}}>
                             <Button onClick={() => {
                                 history.go(-1)
-                            } }><Icon type="left"/>返回</Button>
-                            <div>Now: {now.format('YYYY-MM-DD HH:mm:ss')}</div>
-                            <div>Elapsed: {elapsed.format('HH:mm:ss')}</div>
+                            } }><Icon type="left"/>返回
+                            </Button>
+                            <Alert message="人工评阅" type="success"/>
+                            姓名：<Tag color="blue">{this.state.studentName}</Tag>&nbsp;
+                            选择题分数：<InputNumber min={0} max={this.state.shortAnswerQuestionsScore} defaultValue={0}
+                                               value={this.state.studentSelScore} onChange={this.studentStudentSelScoreChange.bind(this)}/>
+                            <Tag color="green">{this.state.studentSelScore}</Tag>
+                            简答题分数：{this.state.studentShortAnsScore}
+                            &nbsp;
+                            <Button type="primary" onClick={this._submitScore.bind(this)}>提交</Button>
                             <hr/>
                             <div>
                                 <h4>{this.state.examName}&nbsp;
@@ -160,6 +203,7 @@ export default class ExamPaper extends React.Component {
                                                 questionOptions={question.questionOptions}
                                                 num={++i}
                                                 questionType={question.questionType}
+                                                studentSelAnswers={this.state.studentSelAnswers}
                                                 saveAnswers={this._saveAnswers.bind(this)}
                                 />
                             </div>)}
@@ -176,12 +220,10 @@ export default class ExamPaper extends React.Component {
                                         questionContent={question.questionContent}
                                         num={++i}
                                         questionType={question.questionType}
+                                        studentShortAnswer={this.state.studentShortAnswer}
                                         saveAnswers={this._saveShortAnswers.bind(this)}
                                     />
                                 </div>)}
-                            </div>
-                            <div>
-                                <Button type="primary" onClick={this._onSubmit.bind(this)}>交卷</Button>
                             </div>
                         </Content>
                     </Layout>
@@ -195,7 +237,6 @@ export default class ExamPaper extends React.Component {
 
     _onSubmit() {
         let studentAnswers = this.studentSelAnswers.concat(this.studentShortAnswer);
-        console.log(studentAnswers);
         request
             .post('/api/answer')
             .send({
@@ -207,12 +248,7 @@ export default class ExamPaper extends React.Component {
                 studentShortAnswer: this.studentShortAnswer,
             })
             .end((err, res) => {
-                if (res.statusCode === 201) {
-                    message.success('提交成功');
-                    hashHistory.push("/personalPage");
-                } else {
-                    message.error('操作失败');
-                }
+                message.success('ok');
             });
     }
 
@@ -236,7 +272,6 @@ export default class ExamPaper extends React.Component {
         } else if (questionType === 1) {
             item.answer = answer;
         }
-        console.log(this.studentSelAnswers);
     }
 
     _saveShortAnswers(questionType, questionId, answer) {
@@ -259,7 +294,6 @@ export default class ExamPaper extends React.Component {
         } else if (questionType === 3) {
             item.answer = answer;
         }
-        console.log(this.studentShortAnswer);
     }
 
 }
@@ -269,10 +303,23 @@ class SelectQuestion extends React.Component {
     constructor(props) {
         super(props);
         this.saveAnswers = this.props.saveAnswers;
+        this.studentSelAnswers = this.props.studentSelAnswers;
+        this.questionId = this.props.questionId;
         this.state = {
             studentAnswer: '',
             value: 1
         }
+    }
+
+    getAnswer(questionId, studentSelAnswers) {
+        const answer = studentSelAnswers.find(answer => answer.questionId === questionId);
+        this.setState({
+            value: answer.answer
+        })
+    }
+
+    componentWillMount() {
+        this.getAnswer(this.questionId, this.studentSelAnswers);
     }
 
 
@@ -282,7 +329,7 @@ class SelectQuestion extends React.Component {
             <h4>第{num}题：</h4>{questionContent}
             <br/>
             <div style={{padding: "10px"}}>
-                <RadioGroup onChange={this.onChange.bind(this)} value={this.state.value}>
+                <RadioGroup value={this.state.value} onChange={this.onChange.bind(this)}>
                     {questionOptions.map((questionOption) =>
                         <Radio value={questionOption.optionContent}>{this._questionOptionText(questionOption.option)}:
                             {questionOption.optionContent}</Radio>
@@ -310,11 +357,7 @@ class SelectQuestion extends React.Component {
     }
 
     onChange(e) {
-        console.log('radio checked', e.target.value);
-        this.setState({
-            value: e.target.value,
-        });
-        this.saveAnswers(this.props.questionType, this.props.questionId, e.target.value);
+        message.warning("您不能更改试卷内容");
     }
 }
 
@@ -322,28 +365,39 @@ class ShortAnswerQuestionQuestion extends React.Component {
     constructor(props) {
         super(props);
         this.saveAnswers = this.props.saveAnswers;
+        this.questionId = this.props.questionId;
+        this.studentShortAnswer = this.props.studentShortAnswer;
         super(props);
         this.state = {
             studentAnswer: '',
         }
     }
 
+
+    getAnswer(questionId, studentShortAnswer) {
+        const answer = studentShortAnswer.find(answer => answer.questionId === questionId);
+        this.setState({
+            studentAnswer: answer.answer
+        })
+    }
+
+    componentWillMount() {
+        this.getAnswer(this.questionId, this.studentShortAnswer);
+    }
+
     render() {
-        const {questionId, questionContent, num, questionType} = this.props;
+        const {questionId, questionContent, num, questionType, studentShortAnswer} = this.props;
         return (<div>
             <div>
                 第{num}题：{questionContent}
                 <br/>
-                <Input type="textarea" autosize={{minRows: 4, maxRows: 10}} onChange={this._textAreaChange.bind(this)}/>
+                <Input type="textarea" autosize={{minRows: 4, maxRows: 10}}
+                       value={this.state.studentAnswer} onChange={this._textAreaChange.bind(this)}/>
             </div>
         </div>);
     }
 
     _textAreaChange(e) {
-        this.setState({
-            studentAnswer: e.target.value
-        });
-        this.saveAnswers(this.props.questionType, this.props.questionId, e.target.value);
-
+        message.warning("您不能更改试卷内容");
     }
 }

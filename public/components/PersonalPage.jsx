@@ -71,7 +71,6 @@ export default class PersonalPage extends Component {
                 this.setState({
                     scores: res.body
                 });
-                return hashHistory.push('/myScore');
             });
     }
 

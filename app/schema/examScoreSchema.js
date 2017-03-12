@@ -7,7 +7,9 @@ const examScore = new Schema({
     examName: String,//考试名称
     userId:String,//学生编号
     username: String,//学生姓名
-    score: Number//成绩
+    selScore:Number,//选择题分数
+    shortScore:Number,//简答题分数
+    score: Number//总成绩成绩
 });
 
 const ExamScore = mongoose.model('ExamScore', examScore);

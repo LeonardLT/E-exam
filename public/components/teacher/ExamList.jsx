@@ -145,7 +145,7 @@ export default class ExamList extends React.Component {
             </div>
             <div>
                 <Table rowKey={this.state.examLists._id} columns={columns} dataSource={this.state.examLists}
-                       pagination={{defaultCurrent: 1, pageSize: 5}}/>
+                       pagination={{defaultCurrent: 1, pageSize: 10}}/>
             </div>
         </div>);
     }

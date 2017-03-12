@@ -21,6 +21,11 @@ import AddShortAnswerQuestion from './components/teacher/AddShortAnswerQuestion.
 import TPersonalPage from './components/teacher/TPersonalPage.jsx';
 import ExamPaper from './components/teacher/ExamPaper.jsx';
 import ScoreList from './components/teacher/ScoreList.jsx';
+import ReviewExam from './components/teacher/ReviewExam.jsx';
+import ReviewExamPaper from './components/teacher/ReviewExamPaper.jsx';
+import ReviewExamSel from './components/teacher/ReviewExamSel.jsx';
+import ReviewExamSelPaper from './components/teacher/ReviewExamSelPaper.jsx';
+import AnalysisScore from './components/teacher/AnalysisScore.jsx';
 import {isLogin} from './js/UserUtil'
 import './components/teacher/css/main.css';
 import 'antd/dist/antd.css';
@@ -47,6 +52,11 @@ const router = <Router history={hashHistory}>
         <Route path='/addExam' components={AddExam} onEnter={isLogin}/>
         <Route path='/personalPage' components={TPersonalPage} onEnter={isLogin}/>
         <Route path='/scoreList' components={ScoreList} onEnter={isLogin}/>
+        <Route path='/reviewExam' components={ReviewExam} onEnter={isLogin}/>
+        <Route path='/reviewExamPaper/:examId&:userId' components={ReviewExamPaper} onEnter={isLogin}/>
+        <Route path='/reviewExamSel' components={ReviewExamSel} onEnter={isLogin}/>
+        <Route path='/reviewExamSelPaper/:examId&:userId' components={ReviewExamSelPaper} onEnter={isLogin}/>
+        <Route path='/analysisScore' components={AnalysisScore} onEnter={isLogin}/>
 
     </Route>
     <Route path='/' component={LoginForm}>

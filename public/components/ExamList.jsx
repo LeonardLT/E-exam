@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import {hashHistory} from 'react-router'
-import {Table, Popconfirm, Button, Icon, message, Modal} from 'antd';
+import {Table, Tag, Popconfirm, Button, Icon, message, Modal} from 'antd';
 import moment from 'moment';
 const confirm = Modal.confirm;
 
@@ -14,7 +14,8 @@ class ExamList extends React.Component {
             realName: '',
             branch: '',
             major: '',
-            classroom: ''
+            classroom: '',
+            userId: ''
         };
     }
 
@@ -26,20 +27,20 @@ class ExamList extends React.Component {
                     message.error("请先登录");
                     return hashHistory.push('/login');
                 }
-                const {realName, branch, major, classroom} = res.body;
-                this.setState({realName, branch, major, classroom});
+                const {_id, realName, branch, major, classroom} = res.body;
+                this.setState({userId: _id, realName, branch, major, classroom});
                 request.get("/api/exams/myExam")
                     .query({branch, major, classroom})
                     .end((err, res) => {
-                        const data = res.body.map(({_id, examName, beginTime, endTime}) => {
+                        const data = res.body.map(({_id, joinNum, examName, beginTime, endTime}) => {
                             return {
                                 _id,
                                 examName,
+                                joinNum,
                                 beginTime: moment(beginTime).format('YYYY-MM-DD HH:mm'),
                                 endTime: moment(endTime).format('YYYY-MM-DD HH:mm')
                             };
                         });
-                        console.log(res.body);
                         this.setState({
                             examLists: data
                         });
@@ -68,9 +69,13 @@ class ExamList extends React.Component {
             key: 'action',
             render: (text, record) => (
                 <span>
-                    <span className="ant-divider"/>
-                    <a onClick={this._joinTheExam(record._id)}>参加考试</a>
-                    <span className="ant-divider"/>
+                    {moment().isAfter(record.endTime)
+                        ? <Tag color="red">已过期</Tag>
+                        : <span>
+                            <span className="ant-divider"/>
+                            <a onClick={this._joinTheExam(record)}>参加考试</a>
+                            <span className="ant-divider"/>
+                    </span>}
                 </span>
             ),
         }];
@@ -90,10 +95,28 @@ class ExamList extends React.Component {
         </div>);
     }
 
-    _joinTheExam(examId) {
+    _joinTheExam(exam) {
         return () => {
-            message.success("joinTheExam" + examId);
-            return hashHistory.push('/examPaper/' + examId);
+            if (moment().isAfter(exam.endTime)) {
+                return message.warning('考试已经过期，不能参加考试');
+            }
+            const {_id, joinNum} = exam;
+            const examId = _id;
+            request
+                .get('/api/exams/joined')
+                .query({examId, userId: this.state.userId})
+                .end((err, res) => {
+                    if (res.statusCode === 200) {
+                        const {joinedTimes} = res.body;
+                        if (joinedTimes >= joinNum) {
+                            return message.warning('您已经参加过' + joinedTimes + '次该考试，这场考试只允许参加' + joinNum + '次', 2);
+                        } else {
+                            let num = joinedTimes + 1;
+                            message.success('这是您第' + num + '次参加该场考试，祝你好运！', 3);
+                            return hashHistory.push('/examPaper/' + examId);
+                        }
+                    }
+                });
         };
     }
 }

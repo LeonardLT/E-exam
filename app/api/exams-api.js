@@ -1,5 +1,6 @@
 import express from 'express';
 import {Exam} from '../schema/examSchema';
+import {StudentExamAnswer} from '../schema/studentExamAnswer';
 const router = express.Router();
 
 
@@ -20,9 +21,8 @@ router.get("/allExam", (req, res, next) => {
     const {branch, major, classroom} = req.query;
     Exam.find({}, (err, data) => {
         if (err) return next(err);
-        const result = data.map(({_id, examName, publishDate, branch, major, classroom}) => {
-            return {_id, examName, publishDate, branch, major, classroom};
-
+        const result = data.map(({_id,endTime, examName, publishDate, branch, major, classroom}) => {
+            return {_id,endTime, examName, publishDate, branch, major, classroom};
         });
         return res.json(result);
     });
@@ -132,4 +132,12 @@ router.get('/myExam', (req, res, next) => {
     });
 });
 
+router.get('/joined', (req, res, next) => {
+    const {examId, userId} = req.query;
+    StudentExamAnswer.find({examId, userId}, (err, data) => {
+        if (err) return next(err);
+        return res.status(200).send({joinedTimes:data.length});
+    });
+
+});
 export default router;

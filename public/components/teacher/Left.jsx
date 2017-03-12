@@ -31,7 +31,6 @@ export default class Left extends React.Component {
     }
 
     handleClick(e) {
-        console.log('click ', e.key == 1);
         switch (e.key) {
             case '1':
                 hashHistory.push('questionBankList');
@@ -48,6 +47,15 @@ export default class Left extends React.Component {
             case '5':
                 hashHistory.push('scoreList');
                 break;
+            case '6':
+                hashHistory.push('reviewExam');
+                break;
+            case '7':
+                hashHistory.push('reviewExamSel');
+                break;
+            case '8':
+                hashHistory.push('analysisScore');
+                break;
         }
 
     };
@@ -55,7 +63,7 @@ export default class Left extends React.Component {
     render() {
         var {nickname, userType} = this.props;
         return (<div>
-            
+
             <div className="container" style={{width: "210px", marginTop: "20px"}}>
                 <div className="leftImgArea">
                     <img src={this.state.headImg} id="leftHeadImg" className="img-circle headImg"/>
@@ -66,22 +74,27 @@ export default class Left extends React.Component {
                     onClick={this.handleClick}
                     style={{width: 200}}
                     defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1','sub2','sub3']}
+                    defaultOpenKeys={['sub1', 'sub2', 'sub3','sub4']}
                     mode="inline"
                 >
 
                     <SubMenu key="sub1" title={<span><Icon type="mail"/><span>试题试卷</span></span>}>
-                        <Menu.Item key="1" onClick={this.goToPage("questionBankList")}><Icon type="file" />试题</Menu.Item>
-                        <Menu.Item key="2"><Icon type="copy" />试卷</Menu.Item>
+                        <Menu.Item key="1" onClick={this.goToPage("questionBankList")}><Icon type="file"/>试题</Menu.Item>
+                        <Menu.Item key="2"><Icon type="copy"/>试卷</Menu.Item>
                     </SubMenu>
 
                     <SubMenu key="sub2" title={<span><Icon type="appstore"/><span>考试管理</span></span>}>
-                        <Menu.Item key="3"><Icon type="switcher" />考试</Menu.Item>
-                        <Menu.Item key="5"><Icon type="pie-chart" />成绩</Menu.Item>
+                        <Menu.Item key="3"><Icon type="switcher"/>考试</Menu.Item>
+                        <Menu.Item key="5"><Icon type="exception" />成绩</Menu.Item>
+                        <Menu.Item key="8"><Icon type="pie-chart"/>分析</Menu.Item>
+                        <SubMenu key="sub4" title="试卷评阅">
+                            <Menu.Item key="7"><Icon type="solution"/>选择题</Menu.Item>
+                            <Menu.Item key="6"><Icon type="solution"/>简答题</Menu.Item>
+                        </SubMenu>
                     </SubMenu>
 
-                    <SubMenu key="sub3" title={<span><Icon type="setting" /><span>个人中心</span></span>}>
-                        <Menu.Item key="4"><Icon type="user" />个人中心</Menu.Item>
+                    <SubMenu key="sub3" title={<span><Icon type="setting"/><span>个人中心</span></span>}>
+                        <Menu.Item key="4"><Icon type="user"/>个人中心</Menu.Item>
                     </SubMenu>
                 </Menu>
             </div>

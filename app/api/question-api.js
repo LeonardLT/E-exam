@@ -166,13 +166,13 @@ function getQuestions(res, next, bankId) {
                 SelectQuestion.find({bankId}, (err, data) => {
                     if (err) return next(err);
                     cb(null, data);
-                });
+                }).sort({createDate:-1});
             },
             getShortAnswerQuestionByBankId: (cb) => {
                 ShortAnswerQuestion.find({bankId}, (err, data) => {
                     if (err) return next(err);
                     cb(null, data);
-                });
+                }).sort({createDate:-1});
             }
         }, (err, results) => {
             const selectQuestions = results.getSelectQuestionsByBankId;

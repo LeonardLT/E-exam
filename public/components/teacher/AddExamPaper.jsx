@@ -398,7 +398,6 @@ export default class AddExamPaper extends React.Component {
 
     _addToPaper(question) {
         return () => {
-            console.log(question);
             if (question.questionType === '选择题') {
                 let questions = this.state.paperSelectQuestions;
                 question.questionType = 1;
@@ -407,22 +406,17 @@ export default class AddExamPaper extends React.Component {
                     paperSelectQuestions: questions
                 });
             } else if (question.questionType === '简答题') {
-                console.log("-----");
                 let questions = this.state.paperShortAnswerQuestions;
                 question.questionType = 3;
                 questions.push(question);
                 this.setState({
                     paperShortAnswerQuestions: questions
                 });
-                console.log("========");
-                console.log(this.state.paperShortAnswerQuestions);
-                console.log("========");
             }
         };
     }
 
     callback(key) {
-        console.log(key);
     }
 
     _questionOptionText(option) {
@@ -444,7 +438,6 @@ export default class AddExamPaper extends React.Component {
 
     _deleteSelQuestion(question) {
         return () => {
-            console.log(question);
             var questions = this.removeByValue(this.state.paperSelectQuestions, question)
             this.setState({
                 paperSelectQuestions: questions
@@ -455,7 +448,6 @@ export default class AddExamPaper extends React.Component {
 
     _deleteShortQuestion(question) {
         return () => {
-            console.log(question);
             var questions = this.removeByValue(this.state.paperShortAnswerQuestions, question)
             this.setState({
                 paperShortAnswerQuestions: questions
