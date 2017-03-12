@@ -97,7 +97,7 @@ export default class QuestionBank extends React.Component {
                     <div className="col-md-8" id="updateBankNameArea" style={{display: "none"}}>
                         <input type="text" className="form-control" id="questionBankName" placeholder="题库名称"
                                onChange={this._questionBankNameChange.bind(this)} value={this.state.questionBankName}/>
-                        <button className="btn-primary btn" type="button" onClick={this._updateBank()}>保存</button>
+                        <button className="btn-primary btn pull-right" type="button" onClick={this._updateBank()}>保存</button>
                     </div>
                     <span>
                         </span>

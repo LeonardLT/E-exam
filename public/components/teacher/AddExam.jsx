@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import {hashHistory} from 'react-router';
-import {DatePicker, message, Button, Modal, Table,Popconfirm} from 'antd';
+import {DatePicker, message, Button, Modal, Table, Popconfirm} from 'antd';
 import moment from 'moment';
 const {MonthPicker, RangePicker, InputNumber} = DatePicker;
 const dateFormat = 'YYYY-MM-DD HH:mm';
@@ -40,22 +40,24 @@ class AddExam extends React.Component {
             currentQuestionOptions: [],
             currentQuestionRightAnswer: '',
             questionType: '0',
-            createUserName:'',
-            userId:'',
-            showScoreDate:'',
-            paperVisible:false,
-            paperList:[],
-            examPaper:{},
-            examPaperId:''
+            createUserName: '',
+            userId: '',
+            showScoreDate: '',
+            paperVisible: false,
+            paperList: [],
+            examPaper: {},
+            examPaperId: ''
         };
     }
 
     onChange(date, dateString) {
         console.log(date, dateString);
     }
+
     paperhandleCancel(e) {
         this.setState({paperVisible: false});
     }
+
     paperhandleOk(e) {
         this.setState({paperVisible: false});
     }
@@ -73,9 +75,7 @@ class AddExam extends React.Component {
 
             });
     }
-    // _examTimeChange(value){
-    //     console.log('changed', value);
-    // }
+
     render() {
         const columns = [{
             title: '试卷名称',
@@ -90,7 +90,7 @@ class AddExam extends React.Component {
             title: '创建时间',
             dataIndex: 'createDate',
             key: 'createDate',
-            render:text =><span>{moment(text).format('YYYY-MM-DD')}</span>
+            render: text => <span>{moment(text).format('YYYY-MM-DD')}</span>
         }, {
             title: 'Action',
             key: 'action',
@@ -152,7 +152,8 @@ class AddExam extends React.Component {
                     <div className="form-group">
                         <label className="col-sm-4 control-label">开始时间-结束时间:</label>
                         <div className="col-sm-8">
-                            <RangePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} onChange={this._beginEndTimeChange.bind(this)}/>
+                            <RangePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat}
+                                         onChange={this._beginEndTimeChange.bind(this)}/>
                         </div>
                     </div>
                     <div className="form-group">
@@ -163,9 +164,10 @@ class AddExam extends React.Component {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="col-sm-3 control-label" >成绩发布时间</label>
+                        <label className="col-sm-3 control-label">成绩发布时间</label>
                         <div className="col-sm-9">
-                            <DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} onChange={this._showScoreDateChange.bind(this)}/>
+                            <DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat}
+                                        onChange={this._showScoreDateChange.bind(this)}/>
                         </div>
                     </div>
                     <div className="form-group">
@@ -354,7 +356,8 @@ class AddExam extends React.Component {
 
         </div>);
     }
-    _showPaperModel(){
+
+    _showPaperModel() {
         request
             .get('/api/papers')
             .query({userId: this.state.userId})
@@ -363,7 +366,7 @@ class AddExam extends React.Component {
                     paperList: res.body
                 });
                 console.log(res.body);
-            this.setState({paperVisible:true});
+                this.setState({paperVisible: true});
             });
     }
 
@@ -394,8 +397,8 @@ class AddExam extends React.Component {
                 major: this.state.major,
                 classroom: this.state.classroom,
                 // selectQuestions: this.state.selectedQuestions,
-                examPaper:this.state.examPaper,
-                examPaperId:this.state.examPaperId
+                examPaper: this.state.examPaper,
+                examPaperId: this.state.examPaperId
             })
             .end((err, res) => {
                 if (res.statusCode === 201) {
@@ -444,7 +447,8 @@ class AddExam extends React.Component {
         console.log(dateString);
         this.setState({publishDate: dateString});
     }
-    _showScoreDateChange(date, dateString){
+
+    _showScoreDateChange(date, dateString) {
         console.log(dateString);
         this.setState({showScoreDate: dateString});
     }
@@ -541,18 +545,20 @@ class AddExam extends React.Component {
             classroom: event.target.value
         });
     }
-    _showPaperDetail(paperId){
-        return ()=> {
-            hashHistory.push("/examPaper/"+paperId);
+
+    _showPaperDetail(paperId) {
+        return () => {
+            hashHistory.push("/examPaper/" + paperId);
         };
     }
-    _addToExam(paper){
-        return ()=> {
+
+    _addToExam(paper) {
+        return () => {
             console.log(paper);
             this.setState({
-                examPaper:paper,
-                examPaperId:paper._id,
-                paperVisible:false
+                examPaper: paper,
+                examPaperId: paper._id,
+                paperVisible: false
             });
         };
     }

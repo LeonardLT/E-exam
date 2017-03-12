@@ -184,27 +184,6 @@ function getQuestions(res, next, bankId) {
 }
 router.get('/bankQuestions', (req, res, next) => {
     const bankId = req.query.bankId;
-    //
-    // async.series({
-    //         getSelectQuestionsByBankId: (cb) => {
-    //             SelectQuestion.find({bankId}, (err, data) => {
-    //                 if (err) return next(err);
-    //                 cb(null, data);
-    //             });
-    //         },
-    //         getShortAnswerQuestionByBankId: (cb) => {
-    //             ShortAnswerQuestion.find({bankId}, (err, data) => {
-    //                 if (err) return next(err);
-    //                 cb(null, data);
-    //             });
-    //         }
-    //     }, (err, results) => {
-    //         const selectQuestions = results.getSelectQuestionsByBankId;
-    //         const shortAnswerQuestion = results.getShortAnswerQuestionByBankId;
-    //         let questions = selectQuestions.concat(shortAnswerQuestion);
-    //         res.send(questions);
-    //     }
-    // );
     getQuestions(res,next,bankId);
 
 });
@@ -245,10 +224,8 @@ router.post('/updateQuestion', (req, res, next) => {
 
 router.get('/type', (req, res, next) => {
     const questionType = req.query.questionType;
-    console.log(questionType);
     SelectQuestion.find({questionType: questionType}, (err, data) => {
         if (err) return next(err);
-        console.log(data);
         res.json(data);
     });
 });

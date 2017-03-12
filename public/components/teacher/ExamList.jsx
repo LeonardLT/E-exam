@@ -32,14 +32,12 @@ export default class ExamList extends React.Component {
     }
 
     handleOk(e) {
-        console.log(e);
         this.setState({
             visible: false,
         });
     }
 
     handleCancel(e) {
-        console.log(e);
         this.setState({
             visible: false,
         });
@@ -57,7 +55,6 @@ export default class ExamList extends React.Component {
                 this.setState({username, branch, major, classroom});
                 request.get("/api/exams/allExam")
                     .end((err, res) => {
-                        console.log(res.body);
                         const data = res.body.map(({_id, examName, publishDate, branch, major, classroom}) => {
                             return {_id, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
                         });

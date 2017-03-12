@@ -3,9 +3,7 @@ import {hashHistory} from 'react-router';
 import {Link} from 'react-router';
 import request from 'superagent';
 import moment from 'moment';
-import {Radio, Pagination} from 'antd';
-import {Table, Icon} from 'antd';
-import {Popconfirm, message} from 'antd';
+import {Button, Icon, Table, Radio, Pagination, Popconfirm, message} from 'antd';
 
 class QuestionBank extends React.Component {
     constructor(props) {
@@ -78,7 +76,7 @@ class QuestionBank extends React.Component {
       <span className="ant-divider"/>
       <a onClick={this._onDetailsClick(record)}>查看</a>
       <span className="ant-divider"/>
-                    <Popconfirm  title="确定删除？" onConfirm={this.deleteBank(record._id)} onCancel={this.cancel} okText="删除" cancelText="取消">
+                    <Popconfirm title="确定删除？" onConfirm={this.deleteBank(record._id)} onCancel={this.cancel} okText="删除" cancelText="取消">
                         <a href="#">删除</a>
                     </Popconfirm>
       <span className="ant-divider"/>
@@ -87,9 +85,11 @@ class QuestionBank extends React.Component {
             ),
         }];
 
-        return (<div>
+        return (<div style={{padding: "10px"}}>
             <div>
-                <button className="btn btn-primary" onClick={this.goToPage("addQuestionBank")}>新增</button>
+                <Button onClick={this.goToPage("addQuestionBank")}>
+                    <Icon type="plus"/>新增
+                </Button>
             </div>
             <div className="row" style={{background: "#f7f7f7", padding: "5px"}}>
                 <div className="col-md-10"></div>
@@ -99,7 +99,7 @@ class QuestionBank extends React.Component {
             {this.props.children}
             <div className="col-md-12" id="test" style={{marginTop: "20px"}}>
                 <Table rowKey={this.state.questionBanks._id} columns={columns} dataSource={this.state.questionBanks}
-                       pagination={{defaultCurrent: 1, pageSize: 5, onChange: this.onChange}}/>
+                       pagination={{defaultCurrent: 1, pageSize: 10}}/>
             </div>
 
         </div>);
@@ -118,12 +118,12 @@ class QuestionBank extends React.Component {
     }
 
     deleteBank(bankId) {
-        return () =>{
+        return () => {
             request
                 .delete('/api/questionBank')
-                .query({bankId:bankId})
-                .end((err,res) => {
-                    if(res.statusCode===200){
+                .query({bankId: bankId})
+                .end((err, res) => {
+                    if (res.statusCode === 200) {
                         message.success('删除成功');
                         this.setState({
                             questionBanks: res.body
@@ -134,14 +134,10 @@ class QuestionBank extends React.Component {
     }
 
     cancel(e) {
-        console.log(e);
         // message.error('Click on No');
     }
 
     onChange(page, current, total) {
-        console.log("page" + page);
-        console.log("current" + current);
-        console.log("total" + total);
     }
 }
 

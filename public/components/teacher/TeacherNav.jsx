@@ -36,9 +36,9 @@ export default class TeacherNav extends React.Component {
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                                 data-target="#bs-example-navbar-collapse-1">
                             <span className="sr-only">Toggle navigation</span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
+                            <span className="icon-bar"/>
+                            <span className="icon-bar"/>
+                            <span className="icon-bar"/>
                         </button>
                         <Link className="navbar-brand" to="/teacher"><big>Teacher</big></Link>
                     </div>
@@ -46,32 +46,9 @@ export default class TeacherNav extends React.Component {
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
                             <li className="active"><Link to="/index">首页</Link></li>
-                            {/*<li><Link to="/questionBankPage">题库</Link></li>*/}
-                            <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">题库
-                                    <span className="glyphicon glyphicon-chevron-down"/>
-                                </a>
-                                <ul className="dropdown-menu" role="menu">
-                                    <li><Link to="/examQuestionBankPage">考试题库</Link></li>
-                                    {/*<li><Link to="/practiceQuestionBankPage">练习题库</Link></li>*/}
-                                    <li><Link to="/addQuestion">新增题目</Link></li>
-                                </ul>
-                            </li>
-                            {/*<li><Link to="/exam">考试</Link></li>*/}
-                            <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown">考试
-                                    <span className="glyphicon glyphicon-chevron-down"/>
-                                </a>
-                                <ul className="dropdown-menu" role="menu">
-                                    <li><Link to="/addExam">创建考试</Link></li>
-                                    <li><Link to="/showExam">查看考试</Link></li>
-                                </ul>
-                            </li>
-                            <li><Link to="/teacher">成绩</Link></li>
-                            <li><a>个人中心</a></li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">
-                            <li><Link to={this.state.nickname!=='登录' ? '/personalPage' :'/login'}>{this.state.nickname}</Link></li>
+                            <li><Link to={this.state.nickname !== '登录' ? '/personalPage' : '/login'}>{this.state.nickname}</Link></li>
                             {this.state.nickname !== '登录' ?
                                 <li><a href='javascript:void(0);' onClick={this._loginOut.bind(this)}>退出</a></li>
                                 :

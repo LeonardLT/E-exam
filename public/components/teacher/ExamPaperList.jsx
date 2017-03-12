@@ -33,7 +33,6 @@ export default class ExamPaperList extends React.Component {
                         this.setState({
                             paperList: res.body
                         });
-                        console.log(res.body);
                     });
             });
 

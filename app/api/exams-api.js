@@ -24,9 +24,6 @@ router.get("/allExam", (req, res, next) => {
             return {_id, examName, publishDate, branch, major, classroom};
 
         });
-
-
-        console.log(result);
         return res.json(result);
     });
 });
@@ -53,12 +50,10 @@ router.get("/examId", (req, res, next) => {
     const {examId} =req.query;
     Exam.findOne({_id: examId}, (err, data) => {
         if (err) return next(err);
-        console.log(data);
         res.send(data);
     });
 });
 router.post("/", (req, res, next) => {
-    console.log(req.body);
     const {
         examName, examDescription, examScore, examType, createDate, createUserName, userId, paperType,
         joinNum, beginTime, endTime, examTime, publishDate, examState, branch, major, classroom, showScoreDate, examPaper
@@ -133,7 +128,6 @@ router.get('/myExam', (req, res, next) => {
     const {branch, major, classroom} = req.query;
     Exam.find({branch, major, classroom}, (err, data) => {
         if (err) return next(err);
-        console.log(data);
         return res.status(200).send(data);
     });
 });

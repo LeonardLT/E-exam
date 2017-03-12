@@ -4,7 +4,7 @@ import {hashHistory} from 'react-router';
 import moment from 'moment';
 import {Link} from 'react-router';
 import {Radio, Pagination} from 'antd';
-import {Table, Icon,Tag} from 'antd';
+import {Table, Icon, Tag} from 'antd';
 import {Popconfirm, message} from 'antd';
 
 export default class QuestionList extends React.Component {
@@ -67,7 +67,6 @@ export default class QuestionList extends React.Component {
             .end((err, res) => {
                 var data = this._formatDate(res.body);
                 this.setState({
-                    // questions: res.body
                     questions: data
                 });
             });
@@ -78,12 +77,12 @@ export default class QuestionList extends React.Component {
             title: '题目类型',
             dataIndex: 'questionType',
             key: 'questionType',
-            render:(text)=> {
-                if(text==='选择题'){
+            render: (text) => {
+                if (text === '选择题') {
                     return <Tag color="#108ee9">{text}</Tag>;
-                }else if(text==='填空题'){
+                } else if (text === '填空题') {
                     return <Tag color="#87d068">{text}</Tag>;
-                }else if(text==='简答题'){
+                } else if (text === '简答题') {
                     return <Tag color="#f50">{text}</Tag>;
                 }
             }
@@ -121,7 +120,7 @@ export default class QuestionList extends React.Component {
             <div className="row">
                 <div className="col-md-12" id="test" style={{marginTop: "20px"}}>
                     <Table rowKey={this.state.questions._id} columns={columns} dataSource={this.state.questions}
-                           pagination={{defaultCurrent: 1, pageSize: 5, onChange: this.onChange}}/>
+                           pagination={{defaultCurrent: 1, pageSize: 10, onChange: this.onChange}}/>
                 </div>
             </div>
 
@@ -241,9 +240,6 @@ export default class QuestionList extends React.Component {
     }
 
     onChange(page, current, total) {
-        console.log("page" + page);
-        console.log("current" + current);
-        console.log("total" + total);
     }
 
     _questionOptionText(option) {

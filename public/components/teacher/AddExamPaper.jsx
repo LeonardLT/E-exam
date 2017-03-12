@@ -66,7 +66,7 @@ export default class AddExamPaper extends React.Component {
                     } = res.body;
                     this.setState({
                         examPaperName, createDate, createUserName, createUserId, selectQuestionsScore,
-                        shortAnswerQuestionsScore, scoreCount, paperSelectQuestions: selectQuestions, paperShortAnswerQuestions:shortAnswerQuestions
+                        shortAnswerQuestionsScore, scoreCount, paperSelectQuestions: selectQuestions, paperShortAnswerQuestions: shortAnswerQuestions
                     });
                 });
         }
@@ -271,7 +271,7 @@ export default class AddExamPaper extends React.Component {
                 <h4>简答题：</h4>{this.state.paperShortAnswerQuestions.map((shortAnswerQuestion, i) => <div>
                 <Collapse defaultActiveKey={['1']} onChange={this.callback}>
                     <Panel header={"题目" + (++i) + ":" + shortAnswerQuestion.questionContent} key={++i}>
-                            <Button type="danger" onClick={this._deleteShortQuestion(shortAnswerQuestion)}>删除</Button>
+                        <Button type="danger" onClick={this._deleteShortQuestion(shortAnswerQuestion)}>删除</Button>
                     </Panel>
                 </Collapse>
             </div>)}
@@ -297,6 +297,7 @@ export default class AddExamPaper extends React.Component {
 
     _addPaper(e) {
         if (this.paperId !== undefined) {
+            console.log("-------");
             request
                 .put('/api/papers')
                 .send({
@@ -319,6 +320,7 @@ export default class AddExamPaper extends React.Component {
                     }
                 });
         } else {
+            console.log(this.state.shortAnswerQuestions);
             request
                 .post("/api/papers")
                 .send({
@@ -329,7 +331,7 @@ export default class AddExamPaper extends React.Component {
                     shortAnswerQuestionsScore: this.state.shortAnswerQuestionsScore,
                     scoreCount: this.state.scoreCount,
                     selectQuestions: this.state.paperSelectQuestions,
-                    shortAnswerQuestions: this.state.shortAnswerQuestions,
+                    shortAnswerQuestions: this.state.paperShortAnswerQuestions,
                 })
                 .end((err, res) => {
                     if (res.statusCode === 201) {
@@ -405,12 +407,16 @@ export default class AddExamPaper extends React.Component {
                     paperSelectQuestions: questions
                 });
             } else if (question.questionType === '简答题') {
+                console.log("-----");
                 let questions = this.state.paperShortAnswerQuestions;
                 question.questionType = 3;
                 questions.push(question);
                 this.setState({
                     paperShortAnswerQuestions: questions
                 });
+                console.log("========");
+                console.log(this.state.paperShortAnswerQuestions);
+                console.log("========");
             }
         };
     }
@@ -435,29 +441,32 @@ export default class AddExamPaper extends React.Component {
                 break;
         }
     }
-    _deleteSelQuestion(question){
+
+    _deleteSelQuestion(question) {
         return () => {
             console.log(question);
-            var questions = this.removeByValue(this.state.paperSelectQuestions,question)
+            var questions = this.removeByValue(this.state.paperSelectQuestions, question)
             this.setState({
-                paperSelectQuestions:questions
+                paperSelectQuestions: questions
             });
             message.success("success");
         };
     }
-    _deleteShortQuestion(question){
+
+    _deleteShortQuestion(question) {
         return () => {
             console.log(question);
-            var questions = this.removeByValue(this.state.paperShortAnswerQuestions,question)
+            var questions = this.removeByValue(this.state.paperShortAnswerQuestions, question)
             this.setState({
-                paperShortAnswerQuestions:questions
+                paperShortAnswerQuestions: questions
             });
             message.success("success");
         };
     }
-     removeByValue(arr, val) {
-        for(var i=0; i<arr.length; i++) {
-            if(arr[i] == val) {
+
+    removeByValue(arr, val) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] == val) {
                 arr.splice(i, 1);
                 return arr;
             }

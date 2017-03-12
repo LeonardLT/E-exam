@@ -27,10 +27,8 @@ router.post('/', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
     const {userId} = req.query;
-    console.log(userId);
     ExamPaper.find({createUserId: userId}, (err, data) => {
         if (err) return next(err);
-        console.log(data);
         return res.send(data);
     });
 });
@@ -39,7 +37,6 @@ router.get('/paperId', (req, res, next) => {
     const {paperId} = req.query;
     ExamPaper.findOne({_id: paperId}, (err, data) => {
         if (err) return next(err);
-        console.log(data);
         return res.send(data);
     });
 });
