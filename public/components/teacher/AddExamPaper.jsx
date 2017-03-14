@@ -16,9 +16,9 @@ export default class AddExamPaper extends React.Component {
             createDate: '',//创建时间
             createUserName: '',//创建人姓名
             userId: '',//创建人Id
-            selectQuestionsScore: 100,//选择题分值
-            shortAnswerQuestionsScore: 100,//简答题分值
-            scoreCount: 200,//总分
+            selectQuestionsScore: 0,//选择题分值
+            shortAnswerQuestionsScore: 0,//简答题分值
+            scoreCount: 0,//总分
             selectQuestions: [],//选择题
             shortAnswerQuestions: [],//填空题
             visible: false,
@@ -183,10 +183,11 @@ export default class AddExamPaper extends React.Component {
                     history.go(-1)
                 } }><Icon type="left"/>返回</Button>
             </div>
+            <br/>
             <hr/>
             <Row>
                 <Col span={12}>
-                    <Col span={4}><label> 试卷名称：</label></Col>{this.state.examPaperName}
+                    <Col span={4}><label> 试卷名称：</label></Col>
                     <Col span={10}>
                         <Input placeholder="试卷名称" value={this.state.examPaperName}
                                onChange={this._examPaperChange.bind(this)}/>
@@ -197,9 +198,9 @@ export default class AddExamPaper extends React.Component {
 
             <Row>
                 <Col span={12}>
-                    <Col span={4}><label> 选择题分值：</label></Col>{this.state.selectQuestionsScore}
+                    <Col span={4}><label> 选择题分值：</label></Col>
                     <Col span={10}>
-                        <InputNumber min={0} defaultValue={100} onChange={this._selectQuestionsScoreChange.bind(this)}/>
+                        <InputNumber min={0} value={this.state.selectQuestionsScore}  onChange={this._selectQuestionsScoreChange.bind(this)}/>
 
                     </Col>
                 </Col>
@@ -207,9 +208,9 @@ export default class AddExamPaper extends React.Component {
             </Row>
             <Row>
                 <Col span={12}>
-                    <Col span={4}><label> 简答题分值：</label></Col>{this.state.shortAnswerQuestionsScore}
+                    <Col span={4}><label> 简答题分值：</label></Col>
                     <Col span={10}>
-                        <InputNumber min={0} defaultValue={100} onChange={this._shortAnswerQuestionsScoreChange.bind(this)}/>
+                        <InputNumber min={0} value={this.state.shortAnswerQuestionsScore} onChange={this._shortAnswerQuestionsScoreChange.bind(this)}/>
                     </Col>
                 </Col>
                 <Col span={6}/><Col span={6}/>
@@ -224,9 +225,9 @@ export default class AddExamPaper extends React.Component {
                 <Col span={20}>
                 </Col>
                 <Col span={4}>
-                    <Dropdown overlay={menu} placement="bottomCenter">
-                        <Button>添加题目</Button>
-                    </Dropdown>
+                    {/*<Dropdown overlay={menu} placement="bottomCenter">*/}
+                        {/*<Button>添加题目</Button>*/}
+                    {/*</Dropdown>*/}
                     <Button onClick={this._showQuestionBankList.bind(this)}>预览题库</Button>
 
                 </Col>
@@ -255,7 +256,8 @@ export default class AddExamPaper extends React.Component {
             <div>
                 <h4>选择题：</h4>{this.state.paperSelectQuestions.map((selectedQuestion, i) => <div>
                 <Collapse defaultActiveKey={['1']} onChange={this.callback}>
-                    <Panel header={"题目" + (++i) + ":" + selectedQuestion.questionContent} key={++i}>
+                    <Panel header={"题目" + (++i)} key={++i}>
+                        <p>{selectedQuestion.questionContent}</p>
                         <p>
                             {selectedQuestion.questionOptions.map((questionOption) => <span style={{marginRight: "30px"}}>
                     <label>{this._questionOptionText(questionOption.option)}：</label>{questionOption.optionContent}
@@ -270,7 +272,8 @@ export default class AddExamPaper extends React.Component {
             <div>
                 <h4>简答题：</h4>{this.state.paperShortAnswerQuestions.map((shortAnswerQuestion, i) => <div>
                 <Collapse defaultActiveKey={['1']} onChange={this.callback}>
-                    <Panel header={"题目" + (++i) + ":" + shortAnswerQuestion.questionContent} key={++i}>
+                    <Panel header={"题目" + (++i)} key={++i}>
+                        <p>{shortAnswerQuestion.questionContent}</p>
                         <Button type="danger" onClick={this._deleteShortQuestion(shortAnswerQuestion)}>删除</Button>
                     </Panel>
                 </Collapse>

@@ -11,17 +11,17 @@ export default class PersonalPage extends Component {
         this.state = {
             isLogin: false,
             id: 0,
-            userAccount: 'uk',
-            nickname: 'uk',
-            headImg: 'uk',
-            password: 'uk',
-            realName: 'uk',
-            cardId: 'uk',
-            sex: 'uk',
-            email: 'uk',//邮箱
-            phone: 'uk',//电话
-            branch: 'uk',//分院
-            major: 'uk',//专业
+            userAccount: '',
+            nickname: '',
+            headImg: '',
+            password: '',
+            realName: '',
+            cardId: '',
+            sex: '',
+            email: '',//邮箱
+            phone: '',//电话
+            branch: '',//分院
+            major: '',//专业
             grade: 0,//年级
             classroom: 'uk',//班级
             type: 0,//用户类型，0：学生；1：教师
@@ -60,6 +60,7 @@ export default class PersonalPage extends Component {
 
     _showScore(event) {
         $("#userInfo").collapse('hide')
+
         request.get('/api/score/getMyAllScore')
             .query({
                 userId: this.state.userId
@@ -73,6 +74,7 @@ export default class PersonalPage extends Component {
                 });
             });
     }
+
 
 
     render() {
@@ -112,6 +114,7 @@ export default class PersonalPage extends Component {
                                    href="#userScore"
                                    aria-controls="orderInfomations" onClick={this._showScore.bind(this)}>成绩</a>
                             </li>
+
                         </ul>
                     </div>
 
@@ -238,6 +241,7 @@ export default class PersonalPage extends Component {
                                            pagination={{defaultCurrent: 1, pageSize: 10}}/>
                                 </div>
                             </div>
+
                         </div>
 
                         {this.props.children}

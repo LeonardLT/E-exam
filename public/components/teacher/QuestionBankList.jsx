@@ -10,13 +10,25 @@ class QuestionBank extends React.Component {
         super(props);
         this.state = {
             questions: [],
-            questionBanks: []
+            questionBanks: [],
+            userId: ''
         }
 
     }
 
 
     componentWillMount() {
+        request
+            .get('/api/personal')
+            .end((err, res) => {
+                if (err || res.statusCode === 401) {
+                    alert('please login!');
+                    return hashHistory.push('/login');
+                }
+                const {realName, _id} = res.body;
+                this.setState({userId: _id});
+
+            });
         request
             .get('/api/question/examQuestions')
             .end((err, res) => {
@@ -72,14 +84,16 @@ class QuestionBank extends React.Component {
             key: 'action',
             render: (text, record) => (
                 <span>
-
-      <span className="ant-divider"/>
-      <a onClick={this._onDetailsClick(record)}>查看</a>
-      <span className="ant-divider"/>
-                    <Popconfirm title="确定删除？" onConfirm={this.deleteBank(record._id)} onCancel={this.cancel} okText="删除" cancelText="取消">
-                        <a href="#">删除</a>
-                    </Popconfirm>
-      <span className="ant-divider"/>
+                    <span className="ant-divider"/>
+                    <a onClick={this._onDetailsClick(record)}>查看</a>
+                    <span className="ant-divider"/>
+                    {record.createUserId === this.state.userId ?
+                        <span>
+                        <Popconfirm title="确定删除？" onConfirm={this.deleteBank(record._id)} onCancel={this.cancel} okText="删除" cancelText="取消">
+                            <a href="#">删除</a>
+                        </Popconfirm>
+                        <span className="ant-divider"/>
+                        </span> : ''}
 
     </span>
             ),

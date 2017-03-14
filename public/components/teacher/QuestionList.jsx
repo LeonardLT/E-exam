@@ -15,7 +15,7 @@ export default class QuestionList extends React.Component {
             questionBankId: String,
             createUserName: '',
             questionBankName: '',
-            user_id: Object,
+            user_id: '',
             bankType: 1,
 
 
@@ -32,11 +32,12 @@ export default class QuestionList extends React.Component {
             date: '',
             currentQuestionCreateDate: '',
             currentQuestionUserName: '',
+            currentQuestionUserId: '',
             currentQuestionLevel: '',
             currentQuestionAnswerAnalysis: '',
             currentQuestionId: '',
-
-            bankName: ''
+            bankName: '',
+            modelQuestion: ''
         }
 
     }
@@ -72,6 +73,22 @@ export default class QuestionList extends React.Component {
             });
     }
 
+    _editQueestion(question) {
+        return () => {
+            $('#details').modal('hide');
+            const questionType = question.questionType;
+            const questionId = question._id;
+            const bankId = this.bankId;
+            if (questionType === '选择题') {
+                return hashHistory.push('/editSelectQuestion/' + bankId + "&" + questionId);
+            } else if (questionType === '简答题') {
+                return hashHistory.push('/editShortAnswerQuestion/' + bankId + "&" + questionId);
+            } else {
+                message.warning('操作失败');
+            }
+        };
+    }
+
     render() {
         const columns = [{
             title: '题目类型',
@@ -100,20 +117,25 @@ export default class QuestionList extends React.Component {
             key: 'action',
             render: (text, record) => (
                 <span>
-
-      <span className="ant-divider"/>
-      <a onClick={this._onDetailsClick(record)}>查看</a>
-                    {/*<span className="ant-divider"/>*/}
-                    {/*<a href="#">修改</a>*/}
                     <span className="ant-divider"/>
-                     <Popconfirm title="确定删除？" onConfirm={this._deleteQuestion(record._id, record.questionType)} onCancel={this.cancel} okText="删除"
-                                 cancelText="取消">
-                        <a href="#">删除</a>
-                    </Popconfirm>
-      <span className="ant-divider"/>
+                    <a onClick={this._onDetailsClick(record)}>查看</a>
+                    <span className="ant-divider"/>
+                    {record.userId === this.state.user_id ?
+                        <span>
+                            <a onClick={this._editQueestion(record)}>修改</a>
+                            <span className="ant-divider"/>
+                             <Popconfirm title="确定删除？"
+                                         onConfirm={this._deleteQuestion(record._id, record.questionType)}
+                                         onCancel={this.cancel} okText="删除"
+                                         cancelText="取消">
+                                <a href="#">删除</a>
+                             </Popconfirm>
+                            <span className="ant-divider"/>
+                        </span>
+                        : ''
+                    }
 
-
-    </span>
+                </span>
             ),
         }];
         return (<div>
@@ -164,8 +186,11 @@ export default class QuestionList extends React.Component {
                             <div>答案解析：{this.state.currentQuestionAnswerAnalysis}</div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">关闭</button>
+                            {this.state.currentQuestionUserId === this.state.user_id ?
+                                <button type="button" className="btn btn-primary" onClick={this._editQueestion(this.state.modelQuestion)}>修改</button>
+                                : ''
+                            }
                         </div>
                     </div>
                 </div>
@@ -175,10 +200,11 @@ export default class QuestionList extends React.Component {
     }
 
     _formatDate(data) {
-        return data.map(({_id, userName, answerAnalysis, questionLevel, questionType, questionContent, questionOptions, createDate, rightAnswers}) => {
+        return data.map(({_id, userName, userId, answerAnalysis, questionLevel, questionType, questionContent, questionOptions, createDate, rightAnswers}) => {
             return {
                 _id,
                 userName,
+                userId,
                 answerAnalysis,
                 questionType: this._questionTypeText(questionType),
                 questionLevel,
@@ -192,6 +218,12 @@ export default class QuestionList extends React.Component {
 
     _deleteQuestion(questionId, questionType) {
         return () => {
+            if (questionType === '选择题') {
+                questionType = 1
+            }
+            else if (questionType === '简答题') {
+                questionType = 3
+            }
             request
                 .delete("/api/question")
                 .query({bankId: this.bankId, questionId, questionType})
@@ -219,7 +251,9 @@ export default class QuestionList extends React.Component {
                 currentQuestionCreateDate: record.createDate,
                 currentQuestionLevel: record.questionLevel,
                 currentQuestionUserName: record.userName,
+                currentQuestionUserId: record.userId,
                 currentQuestionAnswerAnalysis: record.answerAnalysis,
+                modelQuestion: record
             });
             $('#details').modal('show');
         };

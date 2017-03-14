@@ -1,7 +1,7 @@
 import React from 'react';
 import {hashHistory} from 'react-router'
 import request from 'superagent';
-import {Button, Icon, Table, message, Modal} from 'antd';
+import {Button, Icon, Table, message, Modal,Tag} from 'antd';
 import moment from 'moment';
 const confirm = Modal.confirm;
 var PieChart = require("react-chartjs").Pie;
@@ -36,8 +36,8 @@ export default class AnalysisScore extends React.Component {
                 this.setState({username, branch, major, classroom});
                 request.get("/api/exams/allExam")
                     .end((err, res) => {
-                        const data = res.body.map(({_id, examName, publishDate, branch, major, classroom}) => {
-                            return {_id, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
+                        const data = res.body.map(({_id,examState, examName, publishDate, branch, major, classroom}) => {
+                            return {_id,examState, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
                         });
                         this.setState({
                             examLists: data
@@ -67,6 +67,15 @@ export default class AnalysisScore extends React.Component {
             dataIndex: 'examName',
             key: 'examName',
             width: '40%'
+        },{
+            title: '状态',
+            dataIndex: 'examState',
+            key: 'examState',
+            width: '10%',
+            render: text => <span>
+                <Tag color={(text == 1 ? "green" : (text == 0 ? 'blue' : 'red'))}>
+                    {text == 1 ? "正常" : (text == 0 ? '暂存' : '已结束')}</Tag>
+            </span>
         }, {
             title: '发布时间',
             dataIndex: 'publishDate',

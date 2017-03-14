@@ -13,6 +13,7 @@ export default class Left extends React.Component {
         this.state = {
             headImg: '',
             realName: '',
+            userAccount: ''
         }
     }
 
@@ -56,6 +57,9 @@ export default class Left extends React.Component {
             case '8':
                 hashHistory.push('analysisScore');
                 break;
+            case '9':
+                hashHistory.push('addTeacher');
+                break;
         }
 
     };
@@ -74,7 +78,7 @@ export default class Left extends React.Component {
                     onClick={this.handleClick}
                     style={{width: 200}}
                     defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1', 'sub2', 'sub3','sub4']}
+                    defaultOpenKeys={['sub1', 'sub2', 'sub3', 'sub4']}
                     mode="inline"
                 >
 
@@ -85,7 +89,7 @@ export default class Left extends React.Component {
 
                     <SubMenu key="sub2" title={<span><Icon type="appstore"/><span>考试管理</span></span>}>
                         <Menu.Item key="3"><Icon type="switcher"/>考试</Menu.Item>
-                        <Menu.Item key="5"><Icon type="exception" />成绩</Menu.Item>
+                        <Menu.Item key="5"><Icon type="exception"/>成绩</Menu.Item>
                         <Menu.Item key="8"><Icon type="pie-chart"/>分析</Menu.Item>
                         <SubMenu key="sub4" title="试卷评阅">
                             <Menu.Item key="7"><Icon type="solution"/>选择题</Menu.Item>
@@ -95,6 +99,10 @@ export default class Left extends React.Component {
 
                     <SubMenu key="sub3" title={<span><Icon type="setting"/><span>个人中心</span></span>}>
                         <Menu.Item key="4"><Icon type="user"/>个人中心</Menu.Item>
+                        {this.state.userAccount === 'teacher' ?
+                            <Menu.Item key="9"><Icon type="plus-circle" />添加教师</Menu.Item>
+                            : ''
+                        }
                     </SubMenu>
                 </Menu>
             </div>

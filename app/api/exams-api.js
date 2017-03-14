@@ -8,8 +8,8 @@ router.get("/", (req, res, next) => {
     const {branch, major, classroom} = req.query;
     Exam.find({branch, major, classroom}, (err, data) => {
         if (err) return next(err);
-        const result = data.map(({_id, examId, examName, time, branch, major, questions}) => {
-            return {_id, examId, examName, time, branch, major, questions};
+        const result = data.map(({_id, examId, endTime, examName, time, branch, major, questions}) => {
+            return {_id, examId, examName, endTime, time, branch, major, questions};
         });
 
         return res.json(result);
@@ -21,11 +21,23 @@ router.get("/allExam", (req, res, next) => {
     const {branch, major, classroom} = req.query;
     Exam.find({}, (err, data) => {
         if (err) return next(err);
-        const result = data.map(({_id,endTime, examName, publishDate, branch, major, classroom}) => {
-            return {_id,endTime, examName, publishDate, branch, major, classroom};
+        const result = data.map(({_id, userId, examType, endTime, examState, examName, publishDate, branch, major, classroom}) => {
+            return {_id, userId, examType, endTime, examName, publishDate, examState, branch, major, classroom};
         });
         return res.json(result);
-    });
+    }).sort({publishDate: -1});
+});
+
+//查看该老师的所有考试
+router.get("/tExam", (req, res, next) => {
+    const {teacherId} = req.query;
+    Exam.find({userId: teacherId}, (err, data) => {
+        if (err) return next(err);
+        const result = data.map(({_id, userId, examType, endTime, examState, examName, publishDate, branch, major, classroom}) => {
+            return {_id, userId, examType, endTime, examName, publishDate, examState, branch, major, classroom};
+        });
+        return res.json(result);
+    }).sort({publishDate: -1});
 });
 
 function selIsEmpty(data) {
@@ -77,11 +89,39 @@ router.post("/", (req, res, next) => {
         }).save((err) => {
             if (err) return next(err);
             console.log('save status:success');
-            res.status(201).send('save success');
+            res.status(201).send('新增成功');
         });
     } else {
         return res.status(400).send(isEmpty.message);
     }
+});
+
+router.put('/', (req, res, next) => {
+    const {
+        examId, examName, examDescription, examScore, examType, createDate, createUserName, userId, paperType,
+        joinNum, beginTime, endTime, examTime, publishDate, examState, branch, major, classroom, showScoreDate, examPaper
+    }= req.body;
+
+    let ePaper;
+    if (examPaper !== '') {
+        const {_id, selectQuestionsScore, shortAnswerQuestionsScore, scoreCount, selectQuestions, shortAnswerQuestions} = examPaper;
+        ePaper = {paperId: _id, selectQuestionsScore, shortAnswerQuestionsScore, scoreCount, selectQuestions, shortAnswerQuestions}
+    } else {
+        ePaper = {};
+    }
+
+    Exam.findOneAndUpdate({_id: examId}, {
+        examName, examDescription, examScore, examType, createDate, createUserName, userId, paperType,
+        joinNum, beginTime, endTime, examTime, publishDate, examState, branch, major, classroom, showScoreDate, examPaper: ePaper
+    }, (err) => {
+        if (err) return next(err);
+        console.log('update success');
+        Exam.findOne({_id: examId}, (err, data) => {
+            if (err) return next(err);
+            // console.log(data);
+            res.status(200).send(data);
+        });
+    });
 });
 
 //更新考试信息
@@ -119,24 +159,32 @@ router.delete("/", (req, res, next) => {
         Exam.find({}, (err, data) => {
             if (err) return next(err);
             return res.status(200).send(data);
-        });
+        }).sort({publishDate: -1});
     });
 
 });
 
 router.get('/myExam', (req, res, next) => {
     const {branch, major, classroom} = req.query;
-    Exam.find({branch, major, classroom}, (err, data) => {
+    Exam.find({branch, major, classroom, examState: 1,examType:1}, (err, data) => {
         if (err) return next(err);
         return res.status(200).send(data);
-    });
+    }).sort({publishDate: -1});
+});
+
+router.get('/procticeExam',(req,res,next)=> {
+    const {branch, major, classroom} = req.query;
+    Exam.find({branch, major, classroom, examState: 1,examType:2}, (err, data) => {
+        if (err) return next(err);
+        return res.status(200).send(data);
+    }).sort({publishDate: -1});
 });
 
 router.get('/joined', (req, res, next) => {
     const {examId, userId} = req.query;
     StudentExamAnswer.find({examId, userId}, (err, data) => {
         if (err) return next(err);
-        return res.status(200).send({joinedTimes:data.length});
+        return res.status(200).send({joinedTimes: data.length});
     });
 
 });

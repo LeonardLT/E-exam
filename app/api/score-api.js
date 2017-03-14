@@ -7,7 +7,16 @@ router.get('/getMyAllScore', (req, res, next) => {
     ExamScore.find({userId: userId}, (err, data) => {
         if (err) return next(err);
         return res.json(data);
-    });
+    }).sort({"_id":-1});
+});
+
+//student
+router.get('/practiceScore',(req,res,next)=> {
+    const {userId} = req.query;
+    ExamScore.find({userId: userId}, (err, data) => {
+        if (err) return next(err);
+        return res.json(data);
+    }).sort({"_id":-1});
 });
 
 //teacher get all students score

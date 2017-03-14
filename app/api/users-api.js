@@ -63,7 +63,7 @@ router.post('/', function (req, res, next) {
                         id: incId,
                         userAccount: userData.userAccount,
                         nickname: userData.userAccount,
-                        headImg: "../images/head.png",
+                        headImg: "/images/defaultHead.jpeg",
                         password: userData.password,
                         realName: userData.userAccount,
                         cardId: userData.userAccount,

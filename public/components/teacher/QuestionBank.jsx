@@ -17,6 +17,7 @@ export default class QuestionBank extends React.Component {
             user_id: Object,
             bankType: 1,
             questions: [],
+            bankUserId: ''
         }
 
     }
@@ -36,9 +37,10 @@ export default class QuestionBank extends React.Component {
         request.get('/api/questionBank/bankId')
             .query({bankId: this.bankId})
             .end((err, res) => {
-                const {questionBankName} = res.body;
+                const {questionBankName, createUserId} = res.body;
                 this.setState({
-                    questionBankName: questionBankName
+                    questionBankName: questionBankName,
+                    bankUserId: createUserId
                 });
             });
 
@@ -90,8 +92,11 @@ export default class QuestionBank extends React.Component {
                     <div className="col-md-4" id="bankName" style={{paddingLeft: "0", marginTop: "-2px"}}>
                         <h4>
                             {this.state.questionBankName}
-                            <span style={{marginLeft: "10px"}} className="glyphicon glyphicon-edit "
-                                  onClick={this._editBankName.bind(this)}/>
+                            {this.state.bankUserId === this.state.user_id ?
+                                <span style={{marginLeft: "10px"}} className="glyphicon glyphicon-edit "
+                                      onClick={this._editBankName.bind(this)}/>
+                                : ''
+                            }
                         </h4>
                     </div>
                     <div className="col-md-8" id="updateBankNameArea" style={{display: "none"}}>
@@ -103,12 +108,17 @@ export default class QuestionBank extends React.Component {
                         </span>
                 </div>
                 <div className="col-md-3" style={{marginTop: "17px"}}>
-                    <Button type="primary" style={{display:"none"}} id="goBack" onClick={this._goBack.bind(this)}>
+                    <Button type="primary" style={{display: "none"}} id="goBack" onClick={this._goBack.bind(this)}>
                         <Icon type="left"/>返回
                     </Button>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <Dropdown overlay={menu} placement="bottomCenter">
+                    {this.state.bankUserId === this.state.user_id ?
+                        <span>
+                        <Dropdown overlay={menu} placement="bottomCenter">
                         <Button>新增题目</Button>
                     </Dropdown>
+                        </span>
+                        : ""
+                    }
 
                 </div>
             </div>
@@ -121,8 +131,9 @@ export default class QuestionBank extends React.Component {
 
         </div>);
     }
-    _goBack(){
-        hashHistory.push("/questionBank/"+this.bankId);
+
+    _goBack() {
+        hashHistory.push("/questionBank/" + this.bankId);
         $("#goBack").hide();
     }
 
@@ -175,10 +186,10 @@ export default class QuestionBank extends React.Component {
         };
     }
 
-    _addQuestion(questionType){
+    _addQuestion(questionType) {
         return () => {
             $("#goBack").show();
-            if(questionType==3){
+            if (questionType == 3) {
                 hashHistory.push('/shortAnswerQuestion/' + this.bankId);
             }
         };

@@ -26,6 +26,7 @@ import ReviewExamPaper from './components/teacher/ReviewExamPaper.jsx';
 import ReviewExamSel from './components/teacher/ReviewExamSel.jsx';
 import ReviewExamSelPaper from './components/teacher/ReviewExamSelPaper.jsx';
 import AnalysisScore from './components/teacher/AnalysisScore.jsx';
+import AddTeacher from './components/teacher/AddTeacher.jsx';
 import {isLogin} from './js/UserUtil'
 import './components/teacher/css/main.css';
 import 'antd/dist/antd.css';
@@ -46,10 +47,13 @@ const router = <Router history={hashHistory}>
         <Route path='/questionBank/:qbid' component={QuestionBank}>
             <IndexRoute components={QuestionList} onEnter={isLogin}/>
             <Route path='/selectQuestion/:qbid' components={AddSelectQuestion} onEnter={isLogin}/>
+            <Route path='/editSelectQuestion/:qbid&:questionId' components={AddSelectQuestion} onEnter={isLogin}/>
             <Route path='/shortAnswerQuestion/:qbid' components={AddShortAnswerQuestion} onEnter={isLogin}/>
+            <Route path='/editShortAnswerQuestion/:qbid&:questionId' components={AddShortAnswerQuestion} onEnter={isLogin}/>
             <Route path='/blankQuestion' components={BlankQuestion} onEnter={isLogin}/>
         </Route>
         <Route path='/addExam' components={AddExam} onEnter={isLogin}/>
+        <Route path='/editExam/:examId' components={AddExam} onEnter={isLogin}/>
         <Route path='/personalPage' components={TPersonalPage} onEnter={isLogin}/>
         <Route path='/scoreList' components={ScoreList} onEnter={isLogin}/>
         <Route path='/reviewExam' components={ReviewExam} onEnter={isLogin}/>
@@ -57,6 +61,7 @@ const router = <Router history={hashHistory}>
         <Route path='/reviewExamSel' components={ReviewExamSel} onEnter={isLogin}/>
         <Route path='/reviewExamSelPaper/:examId&:userId' components={ReviewExamSelPaper} onEnter={isLogin}/>
         <Route path='/analysisScore' components={AnalysisScore} onEnter={isLogin}/>
+        <Route path='/addTeacher' components={AddTeacher} onEnter={isLogin}/>
 
     </Route>
     <Route path='/' component={LoginForm}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {hashHistory} from 'react-router'
 import request from 'superagent';
-import {Table, Popconfirm, Button, Icon, message, Modal} from 'antd';
+import {Table, Popconfirm, Tag, Button, Icon, message, Modal} from 'antd';
 import moment from 'moment';
 const confirm = Modal.confirm;
 
@@ -11,6 +11,7 @@ export default class ExamList extends React.Component {
         this.state = {
             examLists: [],
             username: '',
+            userId: '',
             branch: '',
             major: '',
             classroom: '',
@@ -51,12 +52,12 @@ export default class ExamList extends React.Component {
                     alert('please login!');
                     return hashHistory.push('/');
                 }
-                const {username, branch, major, classroom} = res.body;
-                this.setState({username, branch, major, classroom});
+                const {_id, username, branch, major, classroom} = res.body;
+                this.setState({userId: _id, username, branch, major, classroom});
                 request.get("/api/exams/allExam")
                     .end((err, res) => {
-                        const data = res.body.map(({_id, examName, publishDate, branch, major, classroom}) => {
-                            return {_id, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
+                        const data = res.body.map(({_id, examName,examType,userId, examState, publishDate, branch, major, classroom}) => {
+                            return {_id, examName,userId,examType, examState, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
                         });
                         this.setState({
                             examLists: data
@@ -84,12 +85,33 @@ export default class ExamList extends React.Component {
         }
     }
 
+    _editExam(examId) {
+        return () => {
+            return hashHistory.push('/editExam/' + examId);
+        }
+    }
+
     render() {
         const columns = [{
             title: '考试名称',
             dataIndex: 'examName',
             key: 'examName',
-            width: '40%'
+            width: '25%'
+        },{
+            title:'类型',
+            dataIndex:'examType',
+            key:'examType',
+            width: '10%',
+            render :text=><Tag color={text===1?'#108ee9':''}>{text===1?'在线测试':'在线练习'}</Tag>
+        }, {
+            title: '状态',
+            dataIndex: 'examState',
+            key: 'examState',
+            width: '10%',
+            render: text => <span>
+                <Tag color={(text == 1 ? "green" : (text == 0 ? 'blue' : 'red'))}>
+                            {text == 1 ? "正常" : (text == 0 ? '暂存' : '已结束')}</Tag>
+            </span>
         }, {
             title: '发布时间',
             dataIndex: 'publishDate',
@@ -115,15 +137,18 @@ export default class ExamList extends React.Component {
             key: 'action',
             render: (text, record) => (
                 <span>
+                    <span className="ant-divider"/>
+                    <a onClick={this.goToPage("exam", record._id)}>查看</a>
+                    <span className="ant-divider"/>
 
-      <span className="ant-divider"/>
-      <a onClick={this.goToPage("exam", record._id)}>查看</a>
-      <span className="ant-divider"/>
-                    {/*<Popconfirm title="确定删除？" onConfirm={this._deleteExam(record._id)} onCancel={this.cancel} okText="删除" cancelText="取消">*/}
-                    {/*<a href="#">删除</a>*/}
-                    {/*</Popconfirm>*/}
-                    <a onClick={this.showConfirm(record._id, this)}>删除</a>
-      <span className="ant-divider"/>
+                    {record.userId === this.state.userId ?
+                        <span>
+                        <a onClick={this._editExam(record._id)}>修改</a>
+                        <span className="ant-divider"/>
+                        <a onClick={this.showConfirm(record._id, this)}>删除</a>
+                        <span className="ant-divider"/>
+                    </span> : ''
+                    }
 
     </span>
             ),

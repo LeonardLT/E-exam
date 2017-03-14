@@ -149,7 +149,7 @@ export default class ExamPaper extends React.Component {
                     </Layout>
                 </Content>
                 <Footer style={{textAlign: 'center'}}>
-                    -----------
+                    EU-Exam
                 </Footer>
             </Layout>
         </div>);

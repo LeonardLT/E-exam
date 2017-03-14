@@ -2,11 +2,14 @@ import React from 'react';
 import request from 'superagent';
 import {hashHistory} from 'react-router';
 import moment from 'moment';
+import {message} from 'antd';
+
 
 export default class AddShortAnswerQuestion extends React.Component {
     constructor(props) {
         super(props);
         this.questionBankId = this.props.params.qbid;
+        this.questionId = this.props.params.questionId;
         this.state = {
             userAccount: '',
             realName: '',
@@ -27,10 +30,11 @@ export default class AddShortAnswerQuestion extends React.Component {
             rightAnswers: [],
             answerAnalysis: '',
             questionLevel: 0,
-            userId:Object
+            userId: Object
         }
 
     }
+
     componentWillMount() {
         request
             .get('/api/personal')
@@ -39,10 +43,31 @@ export default class AddShortAnswerQuestion extends React.Component {
                     alert('please login!');
                     return hashHistory.push('/login');
                 }
-                const {userAccount, realName,_id} = res.body;
-                this.setState({userAccount, realName,userId:_id});
+                const {userAccount, realName, _id} = res.body;
+                this.setState({userAccount, realName, userId: _id});
+            });
+        request
+            .get('/api/question/shortQuestion')
+            .query({bankId: this.questionBankId, questionId: this.questionId})
+            .end((err, res) => {
+                if (res.statusCode === 200) {
+                    console.log(res.body);
+                    const {
+                        _id, questionType, blankType, questionContent, rightAnswers, answerAnalysis, createDate,
+                        userId, userName, questionLevel, bankId
+                    } = res.body;
+                    this.setState({
+                        questionType, blankType, question: questionContent, answerAnalysis, createDate, questionLevel,
+                        rightAnswer: rightAnswers[0].answerContent,
+                        userId, userName, bankId
+                    });
+
+                } else {
+                    message.error('操作失败');
+                }
             });
     }
+
     render() {
         return (<div>
             <form className="form-horizontal" onSubmit={this._onSubmit.bind(this)}>
@@ -53,6 +78,7 @@ export default class AddShortAnswerQuestion extends React.Component {
                         </div>
                         <div className="col-md-10">
                             <select className="form-control" id="blankType" defaultValue="-1"
+                                    value={this.state.blankType}
                                     onChange={this._blankTypeChange.bind(this)}>
                                 <option disabled="disabled" value="-1">请选择</option>
                                 <option value="0">考试题库</option>
@@ -73,14 +99,14 @@ export default class AddShortAnswerQuestion extends React.Component {
                             <label className="control-label">题目难度：</label>
                         </div>
                         <div className="col-md-10">
-                                <span style={{marginRight:"10px"}}>
+                                <span style={{marginRight: "10px"}}>
                                     {this.state.questionLevel}
                                 </span>
                             <button type="button" className="btn btn-default" onClick={this._addQuestionLevel()}>
-                                <span className="glyphicon glyphicon-plus" />
+                                <span className="glyphicon glyphicon-plus"/>
                             </button>
                             <button type="button" className="btn btn-default" onClick={this._subQuesionLevel()}>
-                                <span className="glyphicon glyphicon-minus" />
+                                <span className="glyphicon glyphicon-minus"/>
                             </button>
                         </div>
                     </div>
@@ -91,6 +117,7 @@ export default class AddShortAnswerQuestion extends React.Component {
                         </div>
                         <div className="col-md-10">
                                 <textarea className="form-control" rows="3" name="question"
+                                          value={this.state.question}
                                           onChange={this._onQuestionChange.bind(this)}>
 
                                 </textarea>
@@ -209,30 +236,59 @@ export default class AddShortAnswerQuestion extends React.Component {
         var userId = this.state.userId;
         var userName = this.state.realName;
         var questionLevel = this.state.questionLevel;
-        request
-            .post('/api/question')
-            .send({
-                questionType: questionType,
-                blankType: blankType,
-                questionContent: questionContent,
-                rightAnswers: rightAnswers,
-                answerAnalysis: answerAnalysis,
-                createDate: createDate,
-                userId: userId,
-                userName: userName,
-                questionLevel: questionLevel,
-                bankId:this.questionBankId
-            })
-            .end((err, res) => {
+        if (this.questionId !== undefined && this.questionId !== null) {
+            request
+                .put('/api/question')
+                .send({
+                    questionType: questionType,
+                    blankType: blankType,
+                    questionContent: questionContent,
+                    rightAnswers: rightAnswers,
+                    answerAnalysis: answerAnalysis,
+                    createDate: createDate,
+                    userId: userId,
+                    userName: userName,
+                    questionLevel: questionLevel,
+                    bankId: this.questionBankId
+                }).end((err, res) => {
                 const stateCode = res.statusCode;
-                if (stateCode === 201) {
-                    alert(res.text);
-                    return hashHistory.push("/questionBank/"+this.questionBankId);
+                if (stateCode === 200) {
+                    message.success(res.text);
+                    return hashHistory.push("/questionBank/" + this.questionBankId);
                 }
                 else if (stateCode === 400) {
-                    return alert(res.text);
+                    return message.warning(res.text)
+                } else {
+                    return message.error('操作失败');
                 }
             });
+        } else {
+            request
+                .post('/api/question')
+                .send({
+                    questionType: questionType,
+                    blankType: blankType,
+                    questionContent: questionContent,
+                    rightAnswers: rightAnswers,
+                    answerAnalysis: answerAnalysis,
+                    createDate: createDate,
+                    userId: userId,
+                    userName: userName,
+                    questionLevel: questionLevel,
+                    bankId: this.questionBankId
+                })
+                .end((err, res) => {
+                    const stateCode = res.statusCode;
+                    if (stateCode === 201) {
+                        alert(res.text);
+                        return hashHistory.push("/questionBank/" + this.questionBankId);
+                    }
+                    else if (stateCode === 400) {
+                        return alert(res.text);
+                    }
+                });
+
+        }
 
 
     }

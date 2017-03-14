@@ -1,7 +1,7 @@
 import React from 'react';
 import {hashHistory} from 'react-router'
 import request from 'superagent';
-import {Table, Popconfirm, Button, Icon, message, Modal} from 'antd';
+import {Table, Popconfirm, Button, Icon, message, Modal,Tag} from 'antd';
 import moment from 'moment';
 const confirm = Modal.confirm;
 
@@ -33,10 +33,11 @@ export default class ReviewExam extends React.Component {
                 }
                 const {realName, _id, username, branch, major, classroom} = res.body;
                 this.setState({realName, userId: _id, username, branch, major, classroom});
-                request.get("/api/exams/allExam")
+                request.get("/api/exams/tExam")
+                    .query({teacherId: _id})
                     .end((err, res) => {
-                        const data = res.body.map(({_id, examName, publishDate, branch, major, classroom}) => {
-                            return {_id, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
+                        const data = res.body.map(({_id,examState,examType, examName, publishDate, branch, major, classroom}) => {
+                            return {_id,examState, examName,examType, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
                         });
                         this.setState({
                             examLists: data
@@ -64,7 +65,7 @@ export default class ReviewExam extends React.Component {
             title: '考试名称',
             dataIndex: 'examName',
             key: 'examName',
-            width: '40%'
+            width: '35%'
         }, {
             title: '学生姓名',
             dataIndex: 'userName',
@@ -85,8 +86,23 @@ export default class ReviewExam extends React.Component {
             title: '考试名称',
             dataIndex: 'examName',
             key: 'examName',
-            width: '40%'
+            width: '25%'
+        },{
+            title:'类型',
+            dataIndex:'examType',
+            key:'examType',
+            width: '10%',
+            render :text=><Tag color={text===1?'#108ee9':''}>{text===1?'在线测试':'在线练习'}</Tag>
         }, {
+            title: '状态',
+            dataIndex: 'examState',
+            key: 'examState',
+            width: '10%',
+            render: text => <span>
+                <Tag color={(text == 1 ? "green" : (text == 0 ? 'blue' : 'red'))}>
+                    {text == 1 ? "正常" : (text == 0 ? '暂存' : '已结束')}</Tag>
+            </span>
+        },{
             title: '分院',
             dataIndex: 'branch',
             key: 'branch',

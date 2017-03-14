@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {message} from 'antd';
 import request from 'superagent';
 import {hashHistory} from 'react-router';
 import '../../css/personal-page.css';
@@ -168,11 +169,11 @@ export default class TPersonalPage extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label className="col-sm-2 control-label">分院：</label>
-                                            <div className="col-sm-2 userInfo">{this.state.branch}</div>
+                                            <div className="col-sm-3 userInfo">{this.state.branch}</div>
                                             <label className="col-sm-2 control-label" style={{width: "80px"}}>专业：</label>
                                             <div className="col-sm-2 userInfo">{this.state.major}</div>
                                             <label className="col-sm-2 control-label" style={{width: "80px"}}>班级：</label>
-                                            <div className="col-sm-2 userInfo">{this.state.classroom}</div>
+                                            <div className="col-sm-1 userInfo">{this.state.classroom}</div>
                                         </div>
                                         <div className="form-group">
                                             <div className="col-sm-2"></div>
@@ -192,7 +193,12 @@ export default class TPersonalPage extends Component {
                     </div>
                 </div>
             }
-
+            <div>
+                <form id="uploadImgForm">
+                    <input type="file" id="uploadImgBtn" name="image" accept=".jpg,.jpeg,.png,.gif"
+                           onChange={(e) => this._handleImageChange(e)} style={{display: "none"}}/>
+                </form>
+            </div>
         </div>;
 
     }
@@ -201,7 +207,7 @@ export default class TPersonalPage extends Component {
         const file = event.target.files[0];
         var imgSize = file.size;
         if (imgSize > 1024 * 1024 * 5) {
-            alert("您上传的文件过大，请重新选择图片。");
+            message.warning('您上传的文件过大，请重新选择图片。');
             return;
         }
         const formData = new FormData();
@@ -239,18 +245,18 @@ export default class TPersonalPage extends Component {
             })
             .end((err, res) => {
                 if (res.statusCode === 200) {
-                    alert("更新成功");
+                    message.success('更新成功');
                     $('.userInfo').show();
                     $('.changedItem').hide();
                     return this._showUserInfo();
                 } else {
-                    return alert("更新失败");
+                    return message.error('操作失败');
                 }
             });
     }
 
     _showUserInfo(event) {
-        $("#userScore").collapse('hide')
+        $("#userScore").collapse('hide');
         request.get('/api/users')
             .query({userAccount: this.state.userAccount})
             .end((err, res) => {

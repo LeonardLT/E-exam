@@ -130,8 +130,8 @@ export default class ExamPaper extends React.Component {
                             <Button onClick={() => {
                                 history.go(-1)
                             } }><Icon type="left"/>返回</Button>
-                            <div>Now: {now.format('YYYY-MM-DD HH:mm:ss')}</div>
-                            <div>Elapsed: {elapsed.format('HH:mm:ss')}</div>
+                            <div>当前时间: {now.format('YYYY-MM-DD HH:mm:ss')}</div>
+                            <div>剩余时间: {elapsed.format('HH:mm:ss')}</div>
                             <hr/>
                             <div>
                                 <h4>{this.state.examName}&nbsp;

@@ -28,8 +28,8 @@ export default class Main extends React.Component {
                 this.setState({username, branch, major, classroom});
                 request.get("/api/exams/allExam")
                     .end((err, res) => {
-                        const data = res.body.map(({_id,endTime, examName, publishDate, branch, major, classroom}) => {
-                            return {_id,endTime, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
+                        const data = res.body.map(({_id,endTime,examType, examName, publishDate, branch, major, classroom}) => {
+                            return {_id,endTime,examType, examName, publishDate: moment(publishDate).format('YYYY-MM-DD'), branch, major, classroom};
                         });
                         this.setState({
                             examLists: data
@@ -47,13 +47,20 @@ export default class Main extends React.Component {
             title: '考试名称',
             dataIndex: 'examName',
             key: 'examName',
-            width: '40%'
+            width: '35%'
+        },{
+            title:'类型',
+            dataIndex:'examType',
+            key:'examType',
+            width: '10%',
+            render :text=><Tag color={text===1?'#108ee9':''}>{text===1?'在线测试':'在线练习'}</Tag>
         }, {
             title: '结束时间',
             dataIndex: 'endTime',
             key: 'endTime',
             width: '15%',
-            render: text => <span>{moment().isAfter(moment(text))?<span><Tag color="red">已结束</Tag> <br/>{moment(text).format("YYYY-MM-DD HH:mm")}</span>:moment(text).format("YYYY-MM-DD HH:mm")}</span>
+            render: text => <span>{moment().isAfter(moment(text))?<span><Tag color="red">已结束</Tag>
+                    <br/>{moment(text).format("YYYY-MM-DD HH:mm")}</span>:moment(text).format("YYYY-MM-DD HH:mm")}</span>
         }, {
             title: '分院',
             dataIndex: 'branch',

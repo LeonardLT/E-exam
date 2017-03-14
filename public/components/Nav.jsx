@@ -50,13 +50,13 @@ export default class Nav extends React.Component {
                                 <a href="#" onClick={ () => {this.setState({currentNav:0})}}>首页</a>
                             </li>
                             <li className={this.state.currentNav===1 ? 'active' :''}>
-                                <a href="#" onClick={ () => {this.setState({currentNav:1})}}>试题练习</a>
+                                <Link to="/practice" onClick={ () => {this.setState({currentNav:1})}}>试题练习</Link>
                             </li>
                             <li className={this.state.currentNav===2 ? 'active' :''}>
                                 <Link to="/exam" onClick={ () => {this.setState({currentNav:2})}}>在线考试</Link>
                             </li>
                             <li className={this.state.currentNav===3 ? 'active' :''}>
-                                <Link to="/PersonalPage" onClick={ () => {this.setState({currentNav:3})}}>个人中心</Link>
+                                <Link to="/personalPage" onClick={ () => {this.setState({currentNav:3})}}>个人中心</Link>
                             </li>
                         </ul>
                         <ul id="loginNav" className="nav navbar-nav navbar-right">

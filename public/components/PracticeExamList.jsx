@@ -6,7 +6,7 @@ import moment from 'moment';
 const confirm = Modal.confirm;
 
 
-class ExamList extends React.Component {
+export default class PracticeExamList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +29,7 @@ class ExamList extends React.Component {
                 }
                 const {_id, realName, branch, major, classroom} = res.body;
                 this.setState({userId: _id, realName, branch, major, classroom});
-                request.get("/api/exams/myExam")
+                request.get("/api/exams/procticeExam")
                     .query({branch, major, classroom})
                     .end((err, res) => {
                         const data = res.body.map(({_id, joinNum, examName, beginTime, endTime}) => {
@@ -84,7 +84,7 @@ class ExamList extends React.Component {
             <div className="row">
                 <div className="col-md-4"></div>
                 <div className="col-md-8">
-                    <h3>我的考试</h3>
+                    <h3>我的练习</h3>
                     <hr/>
                     <Table rowKey={this.state.examLists._id} columns={columns} dataSource={this.state.examLists}
                            pagination={{defaultCurrent: 1, pageSize: 10}}/>
@@ -123,5 +123,5 @@ class ExamList extends React.Component {
     }
 }
 
-export default ExamList;
+
 

@@ -2,11 +2,14 @@ import React from 'react';
 import request from 'superagent';
 import {hashHistory} from 'react-router';
 import moment from 'moment';
+import {message} from 'antd';
+
 
 export default class AddSelectQuestion extends React.Component {
     constructor(props) {
         super(props);
         this.questionBankId = this.props.params.qbid;
+        this.questionId = this.props.params.questionId;
         this.state = {
             userAccount: '',
             realName: '',
@@ -27,10 +30,11 @@ export default class AddSelectQuestion extends React.Component {
             rightAnswers: [],
             answerAnalysis: '',
             questionLevel: 0,
-            userId:Object
+            userId: Object
         }
 
     }
+
     componentWillMount() {
         request
             .get('/api/personal')
@@ -39,10 +43,34 @@ export default class AddSelectQuestion extends React.Component {
                     alert('please login!');
                     return hashHistory.push('/login');
                 }
-                const {userAccount, realName,_id} = res.body;
-                this.setState({userAccount, realName,userId:_id});
+                const {userAccount, realName, _id} = res.body;
+                this.setState({userAccount, realName, userId: _id});
+            });
+        request
+            .get('/api/question/selQuestion')
+            .query({bankId: this.questionBankId, questionId: this.questionId})
+            .end((err, res) => {
+                if (res.statusCode === 200) {
+                    const {
+                        questionType, blankType, questionContent, questionOptions, rightAnswers, answerAnalysis,
+                        createDate, userId, userName, questionLevel, bankId
+                    } = res.body;
+                    this.setState({
+                        questionType, blankType, question: questionContent, answerAnalysis, createDate, questionLevel,
+                        optionA: questionOptions[0].optionContent,
+                        optionB: questionOptions[1].optionContent,
+                        optionC: questionOptions[2].optionContent,
+                        optionD: questionOptions[3].optionContent,
+                        rightAnswer: rightAnswers[0].answerContent,
+                        userId, userName, bankId
+                    });
+
+                } else {
+                    message.error('操作失败');
+                }
             });
     }
+
     render() {
         return (<div>
             <form className="form-horizontal" onSubmit={this._onSubmit.bind(this)}>
@@ -52,7 +80,7 @@ export default class AddSelectQuestion extends React.Component {
                             <label className="control-label">题库类型：</label>
                         </div>
                         <div className="col-md-10">
-                            <select className="form-control" id="blankType" defaultValue="-1"
+                            <select className="form-control" id="blankType" defaultValue="-1" value={this.state.blankType}
                                     onChange={this._blankTypeChange.bind(this)}>
                                 <option disabled="disabled" value="-1">请选择</option>
                                 <option value="0">考试题库</option>
@@ -73,14 +101,14 @@ export default class AddSelectQuestion extends React.Component {
                             <label className="control-label">题目难度：</label>
                         </div>
                         <div className="col-md-10">
-                                <span style={{marginRight:"10px"}}>
+                                <span style={{marginRight: "10px"}}>
                                     {this.state.questionLevel}
                                 </span>
                             <button type="button" className="btn btn-default" onClick={this._addQuestionLevel()}>
-                                <span className="glyphicon glyphicon-plus" />
+                                <span className="glyphicon glyphicon-plus"/>
                             </button>
                             <button type="button" className="btn btn-default" onClick={this._subQuesionLevel()}>
-                                <span className="glyphicon glyphicon-minus" />
+                                <span className="glyphicon glyphicon-minus"/>
                             </button>
                         </div>
                     </div>
@@ -90,7 +118,7 @@ export default class AddSelectQuestion extends React.Component {
                             <label className="control-label">问题：</label>
                         </div>
                         <div className="col-md-10">
-                                <textarea className="form-control" rows="3" name="question"
+                                <textarea className="form-control" rows="3" name="question" value={this.state.question}
                                           onChange={this._onQuestionChange.bind(this)}>
 
                                 </textarea>
@@ -120,6 +148,7 @@ export default class AddSelectQuestion extends React.Component {
                                 <div className="col-md-1"><label className="control-label">B:</label></div>
                                 <div className="col-md-9">
                                     <input id="B" className="form-control" type="text" name="rightAnswers"
+                                           value={this.state.optionB}
                                            onChange={this._optionBChange.bind(this)}/>
                                 </div>
                                 <div className="cil-md-2">
@@ -132,6 +161,7 @@ export default class AddSelectQuestion extends React.Component {
                                 <div className="col-md-1"><label className="control-label">C:</label></div>
                                 <div className="col-md-9">
                                     <input id="C" className="form-control" type="text" name="rightAnswers"
+                                           value={this.state.optionC}
                                            onChange={this._optionCChange.bind(this)}/>
                                 </div>
                                 <div className="cil-md-2">
@@ -144,6 +174,7 @@ export default class AddSelectQuestion extends React.Component {
                                 <div className="col-md-1"><label className="control-label">D:</label></div>
                                 <div className="col-md-9">
                                     <input id="D" className="form-control" type="text" name="rightAnswers"
+                                           value={this.state.optionD}
                                            onChange={this._optionDChange.bind(this)}/>
                                 </div>
                                 <div className="cil-md-2">
@@ -266,31 +297,65 @@ export default class AddSelectQuestion extends React.Component {
         var userId = this.state.userId;
         var userName = this.state.realName;
         var questionLevel = this.state.questionLevel;
-        request
-            .post('/api/question')
-            .send({
-                questionType: questionType,
-                blankType: blankType,
-                questionContent: questionContent,
-                questionOptions: questionOptions,
-                rightAnswers: rightAnswers,
-                answerAnalysis: answerAnalysis,
-                createDate: createDate,
-                userId: userId,
-                userName: userName,
-                questionLevel: questionLevel,
-                bankId:this.questionBankId
-            })
-            .end((err, res) => {
-                const stateCode = res.statusCode;
-                if (stateCode === 201) {
-                    alert(res.text);
-                    return hashHistory.push("/questionBank/"+this.questionBankId);
-                }
-                else if (stateCode === 400) {
-                    return alert(res.text);
-                }
-            });
+        if (this.questionId !== undefined && this.questionId !== null) {
+            request
+                .put('/api/question')
+                .send({
+                    questionId: this.questionId,
+                    questionType: questionType,
+                    blankType: blankType,
+                    questionContent: questionContent,
+                    questionOptions: questionOptions,
+                    rightAnswers: rightAnswers,
+                    answerAnalysis: answerAnalysis,
+                    createDate: createDate,
+                    userId: userId,
+                    userName: userName,
+                    questionLevel: questionLevel,
+                    bankId: this.questionBankId
+                })
+                .end((err, res) => {
+                    const stateCode = res.statusCode;
+                    if (stateCode === 200) {
+                        message.success(res.text);
+                        return hashHistory.push("/questionBank/" + this.questionBankId);
+                    }
+                    else if (stateCode === 400) {
+                        return message.warning(res.text)
+                    } else {
+                        return message.error('操作失败');
+                    }
+                });
+
+        } else {
+            request
+                .post('/api/question')
+                .send({
+                    questionType: questionType,
+                    blankType: blankType,
+                    questionContent: questionContent,
+                    questionOptions: questionOptions,
+                    rightAnswers: rightAnswers,
+                    answerAnalysis: answerAnalysis,
+                    createDate: createDate,
+                    userId: userId,
+                    userName: userName,
+                    questionLevel: questionLevel,
+                    bankId: this.questionBankId
+                })
+                .end((err, res) => {
+                    const stateCode = res.statusCode;
+                    if (stateCode === 201) {
+                        message.success(res.text);
+                        return hashHistory.push("/questionBank/" + this.questionBankId);
+                    }
+                    else if (stateCode === 400) {
+                        return message.warning(res.text)
+                    } else {
+                        return message.error('操作失败');
+                    }
+                });
+        }
 
 
     }
