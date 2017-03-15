@@ -291,8 +291,8 @@ export default class AddSelectQuestion extends React.Component {
         var answerAnalysis = this.state.answerAnalysis;
         var questionType = this.state.questionType;
         var blankType = this.state.blankType;
-        // var createDate = new Date();
-        var createDate = moment().format('YYYY-MM-DD HH:mm');
+        var createDate = new Date();
+        // var createDate = moment().format('YYYY-MM-DD HH:mm');
         var userAccount = this.state.userAccount;
         var userId = this.state.userId;
         var userName = this.state.realName;
