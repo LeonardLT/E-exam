@@ -27,7 +27,7 @@ export default class Left extends React.Component {
                 }
                 const {id, userAccount, headImg, realName, userType} = res.body;
                 this.setState({id, userAccount, headImg, realName, userType, isLogin: true});
-                this._showUserInfo(userAccount);
+                // this._showUserInfo(userAccount);
             });
     }
 
